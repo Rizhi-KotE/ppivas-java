@@ -1,8 +1,9 @@
 package view;
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -16,8 +17,11 @@ public class WinOfAplication extends JFrame {
 
     // серийный номер класса
     private static final long serialVersionUID = 1L;
+   
 
     public WinOfAplication() {
+    	super();
+    	putContainer("mainframe", this);
         // -------------------------------------------
         // настройка окна
         setTitle("Example window"); // заголовок окна
@@ -30,6 +34,18 @@ public class WinOfAplication extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack(); // устанавливаем желательные размеры
         setVisible(true); // отображаем окно
+    }
+    
+    static private Map<String, Container> containerMap;
+    
+    public static void putContainer(String name, Container comp){
+    	if(containerMap == null){
+    		containerMap = new HashMap<String, Container>();
+    	}
+    	containerMap.put(name, comp);
+    }
+    public static Container getContainer(String name){
+    	return containerMap.get(name);
     }
     
     void loadMenuBar(){
@@ -50,6 +66,10 @@ public class WinOfAplication extends JFrame {
     	JMenuBar menuBar = loader.getMenuBar();
     	
     	setJMenuBar(menuBar);
+    	//menuBar.addLis(ListenerFactory.getInstance().getActionListener("controler.menubarListener.menuBarListener"));
+    }
+    
+    void createNewDocument(){
     	
     }
     
