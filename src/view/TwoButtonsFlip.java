@@ -9,7 +9,6 @@ import javax.swing.JTextField;
 
 public class TwoButtonsFlip extends JFrame {
 
-	private static final long serialVersionUID = 4367936803677964688L;
 	JPanel buttonsPanel;
 	JTextField textPanel;
 

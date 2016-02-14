@@ -13,8 +13,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import controler.menubarListener.ListenerFactory;
-
 public class XMLMenuLoader {
 	private InputSource source;
 	private SAXParser parser;
@@ -111,7 +109,6 @@ public class XMLMenuLoader {
 			String mnemonic = attrs.getValue("mnemonic");
 			String accelerator = attrs.getValue("accelerator");
 			String enabled = attrs.getValue("enabled");
-			String listener = attrs.getValue("listener");
 			// настраиваем свойства меню
 			menuItem.setText(text);
 			if (mnemonic != null) {
@@ -125,9 +122,6 @@ public class XMLMenuLoader {
 				if (enabled.equals("false"))
 					isEnabled = false;
 				menuItem.setEnabled(isEnabled);
-			}
-			if(listener!=null){
-				menuItem.addActionListener(ListenerFactory.getInstance().getActionListener(listener));
 			}
 		}
 	}
