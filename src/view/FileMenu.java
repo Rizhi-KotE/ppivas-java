@@ -14,5 +14,6 @@ class FileMenu extends JMenu{
 		menu.add(close);
 		
 		menu.addSeparator();
+		
 	}
 }
