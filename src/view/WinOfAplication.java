@@ -3,20 +3,26 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import frm.XMLMenuLoader;
-/**
- * @author DarkRaha
- *
- */
+
 public class WinOfAplication extends JFrame {
 
     // серийный номер класса
     private static final long serialVersionUID = 1L;
 
+    static Map<String, Container> winContainers;
+    public static Container getContainer(String s){
+    	if(winContainers == null){
+    		winContainers = new HashMap<String, Container>();
+    	}
+    	return winContainers.get(s);
+    }
     public WinOfAplication() {
         // -------------------------------------------
         // настройка окна
@@ -32,12 +38,13 @@ public class WinOfAplication extends JFrame {
         setVisible(true); // отображаем окно
     }
     
+    
+    
     void loadMenuBar(){
     	InputStream stream = null;
     	try {
 			stream = new FileInputStream("xml/menubar.xml");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
     	XMLMenuLoader loader = new XMLMenuLoader(stream);
