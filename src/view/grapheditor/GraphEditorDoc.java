@@ -1,13 +1,14 @@
 package view.grapheditor;
 
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import javax.swing.*;
 
 public class GraphEditorDoc extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1910037109954695933L;
 	JPanel comp = this;
 
 	public GraphEditorDoc() {

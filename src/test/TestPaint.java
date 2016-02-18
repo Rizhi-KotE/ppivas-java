@@ -17,7 +17,11 @@ import java.util.LinkedList;
 import javax.sound.sampled.Line;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 import view.grapheditor.*;
+
 public class TestPaint extends JFrame {
 
 	PaintingPanel paintingPanel;
@@ -43,9 +47,6 @@ public class TestPaint extends JFrame {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			Shape p = new Ellipse2D.Double(e.getX(), e.getY(), 20, 20);
-			paintingPanel.newShape(p);
-			paintingPanel.repaint();
 		}
 
 		@Override
@@ -74,7 +75,17 @@ public class TestPaint extends JFrame {
 
 	}
 
-		public static void main(String[] s) {
+	public static void main(String[] s) {
 		TestPaint a = new TestPaint();
+		PaintingPanel panel = new PaintingPanel();
+		GraphPanelUI ui = new GraphPanelUI();
+		System.out.println(panel.getUI().getClass().getName());
+		//panel.setOpaque(false);
+		a.add(panel);
+		UIManager.put(panel, ui);
+		//panel.repaint();
+		System.out.println(UIManager.get(panel).getClass().getName());
+	
+		Graphics g;
 	}
 }
