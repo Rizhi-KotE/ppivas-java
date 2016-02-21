@@ -1,30 +1,47 @@
 package view.grapheditor;
 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.JPanel;
 
-public class PaintingPanel extends JPanel {
+import model.Graph;
+
+public class PaintingPanel extends JPanel implements Observer{
 	
 	private static final long serialVersionUID = 1L;
 	
+	private Graph graph;
+	
 	public PaintingPanel() {
 		super();
-		setUI(new GraphPanelUI());
+		GraphPanelUI ui = new GraphPanelUI(this);
+		setUI(ui);
+		
+		graph = new Graph();
+		graph.addObserver(this);
+	}
+
+	
+	//------Observer-----------
+	
+	public Graph getGraph() {
+		return graph;
+	}
+
+	public void setGraph(Graph graph) {
+		graph.deleteObserver(this);
+		
+		this.graph = graph;
 	}
 	
-	class ComponentListenerPP extends ComponentAdapter{
-
-		@Override
-		public void componentResized(ComponentEvent e) {
-			
-			
+	public void update(Observable o, Object arg) {
+		if(graph == null){
+			if(o.getClass().getName().equals("model.Graph"));
+			setGraph((Graph)o);
 		}
-
-		@Override
-		public void componentShown(ComponentEvent e) {
-			// TODO Auto-generated method stub
-			
-		}		
+		repaint();
 	}
+	
+	//------MouseListener--------
 }
