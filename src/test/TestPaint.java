@@ -37,7 +37,7 @@ public class TestPaint extends JFrame {
 		pack();
 
 		paintingPanel = new PaintingPanel();
-		paintingPanel.addMouseListener(new MousePainting());
+		// paintingPanel.addMouseListener(new MousePainting());
 		add(paintingPanel);
 		setVisible(true);
 	}
@@ -77,15 +77,5 @@ public class TestPaint extends JFrame {
 
 	public static void main(String[] s) {
 		TestPaint a = new TestPaint();
-		PaintingPanel panel = new PaintingPanel();
-		GraphPanelUI ui = new GraphPanelUI();
-		System.out.println(panel.getUI().getClass().getName());
-		//panel.setOpaque(false);
-		a.add(panel);
-		UIManager.put(panel, ui);
-		//panel.repaint();
-		System.out.println(UIManager.get(panel).getClass().getName());
-	
-		Graphics g;
 	}
 }

@@ -1,7 +1,9 @@
 package model;
 
-public class Edge {
+public class Edge implements Choosable{
 	private Node node1, node2;
+	
+	private boolean choosed;
 
 	public Node getNode1() {
 		return node1;
@@ -17,6 +19,10 @@ public class Edge {
 
 	public void setNode2(Node node2) {
 		this.node2 = node2;
+	}
+
+	public boolean isChoosed() {
+		return choosed;
 	}
 	
 }

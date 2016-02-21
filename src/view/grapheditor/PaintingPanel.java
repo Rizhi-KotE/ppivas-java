@@ -1,10 +1,16 @@
 package view.grapheditor;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
 
+import controler.graphEditor.GraphControlerFactory;
 import model.Graph;
 
 public class PaintingPanel extends JPanel implements Observer{
@@ -12,14 +18,19 @@ public class PaintingPanel extends JPanel implements Observer{
 	private static final long serialVersionUID = 1L;
 	
 	private Graph graph;
+	GraphPanelUI ui;
 	
 	public PaintingPanel() {
 		super();
-		GraphPanelUI ui = new GraphPanelUI(this);
+		ui = new GraphPanelUI(this);
 		setUI(ui);
 		
 		graph = new Graph();
 		graph.addObserver(this);
+		
+		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("MouseListener", ui);
+		addMouseListener(listener);
+		addMouseMotionListener((MouseMotionListener) listener);
 	}
 
 	
@@ -43,5 +54,5 @@ public class PaintingPanel extends JPanel implements Observer{
 		repaint();
 	}
 	
-	//------MouseListener--------
+	
 }

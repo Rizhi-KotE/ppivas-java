@@ -2,18 +2,19 @@ package model;
 
 import java.awt.Color;
 
-import javax.swing.text.Position;
+public class Node implements Choosable{
+	private float x;
+	private float y;
+	private String idth;
+	private Color color = Color.BLACK;
 
-public class Node {
-	float x;
-	float y;
-	String idth;
-	Color color = Color.BLACK;
-
+	private boolean choosed;
+	
 	private Node() {
 	}
 
 	public Node(String anId) {
+		this();
 		idth = anId;
 	}
 
@@ -28,5 +29,13 @@ public class Node {
 
 	public float getY() {
 		return y;
+	}
+
+	public void setChoosed(boolean is){
+		choosed = is;
+	}
+	
+	public boolean isChoosed() {
+		return choosed;
 	}
 }
