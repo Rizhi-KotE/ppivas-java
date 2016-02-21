@@ -44,7 +44,7 @@ public class XMLMenuLoader {
 
 	private JMenuBar currentMenuBar;// текущая строка меню
 
-	private LinkedList<JMenu> menus = new LinkedList();
+	private LinkedList<JMenu> menus = new LinkedList<JMenu>();
 
 	class XMLParser extends DefaultHandler {
 		public void startElement(String uri, String localName, String qName, Attributes attr) {

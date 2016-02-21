@@ -25,6 +25,8 @@ public class GraphPanelUI extends PanelUI {
 
 	float scale = 1;
 
+	float nodeRadius = 10;
+
 	public void paint(Graphics g, JComponent c) {
 		Graphics2D g2d = (Graphics2D) g;
 
@@ -50,13 +52,18 @@ public class GraphPanelUI extends PanelUI {
 
 		if (nodes != null)
 			for (Node n : nodes) {
-				Shape s = new Ellipse2D.Float(n.getX(), n.getY(), 10, 10);
+				Shape s = new Ellipse2D.Float(scale * (n.getX() - nodeRadius), scale *( n.getY() - nodeRadius),
+						scale * nodeRadius * 2, scale * nodeRadius * 2);
 
 				Color cl = g2d.getColor();
 
+				if (n.isHighlight()) {
+					g2d.setColor(Color.YELLOW);
+				}
 				if (n.isChoosed()) {
 					g2d.setColor(Color.GREEN);
 				}
+
 				paintNode(g2d, s);
 				g2d.setColor(cl);
 			}
@@ -71,10 +78,25 @@ public class GraphPanelUI extends PanelUI {
 	public void addNode(float x, float y) {
 		Graph gr = panel.getGraph();
 
-		gr.addNode(x * scale, y * scale);
+		gr.addNode(scale * (x), scale * (y) );
 	}
 
+	// -------------------choose----------------
+
 	public void choose(float x, float y) {
-		panel.getGraph().choose(x * scale, y * scale);
+		panel.getGraph().choose(scale * (x), scale * (y) );
 	}
+
+	public void highlight(float x, float y) {
+		panel.getGraph().highlight(scale * (x), scale * (y) );
+	}
+
+	public void clearChoose() {
+		panel.getGraph().clearChoose();
+	}
+	
+	public void clearHighlight() {
+		panel.getGraph().clearHighlight();
+	}
+	
 }

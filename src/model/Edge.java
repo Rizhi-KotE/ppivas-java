@@ -24,5 +24,23 @@ public class Edge implements Choosable{
 	public boolean isChoosed() {
 		return choosed;
 	}
+
+	@Override
+	public void setChoosed(boolean is) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isHighlight() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setHighlight(boolean is) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

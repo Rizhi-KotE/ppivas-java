@@ -1,13 +1,11 @@
 package model;
 
-import java.awt.Color;
-
 public class Node implements Choosable{
 	private float x;
 	private float y;
 	private String idth;
-	private Color color = Color.BLACK;
-
+	
+	private boolean highlight;
 	private boolean choosed;
 	
 	private Node() {
@@ -15,7 +13,7 @@ public class Node implements Choosable{
 
 	public Node(String anId) {
 		this();
-		idth = anId;
+		setIdth(anId);
 	}
 
 	public Node(float ax, float ay) {
@@ -37,5 +35,21 @@ public class Node implements Choosable{
 	
 	public boolean isChoosed() {
 		return choosed;
+	}
+
+	public boolean isHighlight() {
+		return highlight;
+	}
+
+	public void setHighlight(boolean highlight) {
+		this.highlight = highlight;
+	}
+
+	public String getIdth() {
+		return idth;
+	}
+
+	private void setIdth(String idth) {
+		this.idth = idth;
 	}
 }

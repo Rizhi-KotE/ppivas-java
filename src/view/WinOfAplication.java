@@ -1,8 +1,10 @@
 package view;
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,28 +12,32 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import frm.XMLMenuLoader;
+import view.grapheditor.PaintingPanel;
 
 public class WinOfAplication extends JFrame {
 
     // серийный номер класса
     private static final long serialVersionUID = 1L;
 
-    static Map<String, Container> winContainers;
-    public static Container getContainer(String s){
-    	if(winContainers == null){
-    		winContainers = new HashMap<String, Container>();
-    	}
-    	return winContainers.get(s);
+    private static WinOfAplication winContainers;
+    
+    private PaintingPanel graphPanel;
+    
+    public static WinOfAplication getInstance(){
+    	return winContainers;
     }
+    
     public WinOfAplication() {
         // -------------------------------------------
         // настройка окна
         setTitle("Example window"); // заголовок окна
         // желательные размеры окна
         setPreferredSize(new Dimension(640, 480));
+        setBackground(Color.gray);
         //загрузить панель меню
         loadMenuBar();
-        
+
+        winContainers = this;
         // завершить приложение при закрытии окна
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack(); // устанавливаем желательные размеры
@@ -60,5 +66,13 @@ public class WinOfAplication extends JFrame {
     	
     }
     
-
+    public void newGraph(){
+    	graphPanel = new PaintingPanel();
+    	add(graphPanel);
+    	pack();
+    }
+    
+    static public void main(String[] args){
+    	WinOfAplication f = new WinOfAplication();
+    }
 }

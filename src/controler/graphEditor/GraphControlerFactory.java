@@ -1,6 +1,6 @@
 package controler.graphEditor;
 
-import java.awt.event.InputMethodListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,12 +44,21 @@ public class GraphControlerFactory {
 				createProperty();
 			}
 			String name = prop.getProperty(s);
-			try {
-				listener = (MouseInputListener) Class.forName(name).getConstructor(ui.getClass()).newInstance(ui);
-			} catch (ReflectiveOperationException e) {
-				ReflectionCatcher.handleExeption(e);
-			} catch (SecurityException e) {
-				e.printStackTrace();
+			
+				try {
+					listener = (MouseInputListener) Class.forName(name).getConstructor(ui.getClass()).newInstance(ui);
+				} catch (ClassNotFoundException e) {
+					ReflectionCatcher.classNotFound(e);
+				}
+				catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException
+						e){
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			if(listener != null){
+				controlers.put(s, listener);
 			}
 		}
 		return listener;

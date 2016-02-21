@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <menubar name="mainMenu">
  <menu name="file" text="Файл" mnemonic="Ф">
- <menuitem name="create" text="Создать" mnemonic="С" accelerator="control N" listener="controler.menubarListener.createListener"/>
+ <menuitem name="create" text="Создать" mnemonic="С" accelerator="control N" listener="controler.menubarListener.CreateListener"/>
  <menuitem name="open" text="Открыть" mnemonic="О" enabled="false"/>
  <menuitem name="close" text="Закрыть" mnemonic="З" enabled="false"/>
  <menuitem name="separator"/>

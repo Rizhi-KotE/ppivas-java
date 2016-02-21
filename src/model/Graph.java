@@ -8,11 +8,13 @@ public class Graph extends Observable {
 
 	private static final float UNIT_DISTANCE = 5;
 
-	private final String name = "Graph";
+	private final String IDname = "Graph";
 
 	LinkedList<Node> nodesLocation;
 
 	LinkedList<Choosable> choose;
+
+	Choosable highlight = null;
 
 	public Graph() {
 		nodesLocation = new LinkedList<Node>();
@@ -42,22 +44,53 @@ public class Graph extends Observable {
 	}
 
 	// ---------------choose---------------
-	public void choose(float x, float y){
+	public void choose(float x, float y) {
 		Iterator<Node> it = nodesLocation.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			Node n = it.next();
-			if((Math.abs(n.getX()-x)<5) &&(Math.abs(n.getY()-y)<5)){
+			if ((Math.abs(n.getX() - x) < 5) && (Math.abs(n.getY() - y) < 5)) {
 				n.setChoosed(true);
 				choose.add(n);
 				setChanged();
 				notifyObservers();
 			}
-				
+
 		}
 	}
 
-	public String getName() {
-		return name;
+	public void highlight(float x, float y) {
+		Iterator<Node> it = nodesLocation.iterator();
+		while (it.hasNext()) {
+			Node n = it.next();
+			if ((Math.abs(n.getX() - x) < 20) && (Math.abs(n.getY() - y) < 20)) {
+				n.setHighlight(true);
+				highlight = n;
+				setChanged();
+				notifyObservers();
+			}
+		}
+	}
+
+	public void clearChoose() {
+		Iterator<Choosable> it = choose.iterator();
+		while (it.hasNext()) {
+			Choosable n = it.next();
+			n.setChoosed(false);
+		}
+		setChanged();
+		notifyObservers();
+	}
+
+	public void clearHighlight() {
+		if (highlight != null) {
+			highlight.setHighlight(false);
+			setChanged();
+			notifyObservers();
+		}
+	}
+
+	public String getIDName() {
+		return IDname;
 	}
 
 }

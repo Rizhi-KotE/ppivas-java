@@ -17,7 +17,5 @@ public class testButtonsFlip {
 		frame.add(area);
 		frame.setVisible(true);
 		frame.pack();
-		PlainDocument
-		System.out.println(area.getDocument().getClass().getName());
 	}
 }
