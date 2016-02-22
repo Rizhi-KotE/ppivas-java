@@ -31,7 +31,8 @@ public class GraphControlerFactory {
 
 	private void createProperty() {
 		prop = new Properties();
-		prop.setProperty("MouseListener", "controler.graphEditor.NodeEditor");
+		prop.setProperty("Node_tool", "controler.graphEditor.NodeEditor");
+		prop.setProperty("Arc_tool", "controler.graphEditor.ArcEditor");
 	}
 
 	public MouseInputListener getMouseInputListener(String s, ComponentUI ui) {
@@ -49,6 +50,7 @@ public class GraphControlerFactory {
 					listener = (MouseInputListener) Class.forName(name).getConstructor(ui.getClass()).newInstance(ui);
 				} catch (ClassNotFoundException e) {
 					ReflectionCatcher.classNotFound(e);
+
 				}
 				catch(InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException

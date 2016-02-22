@@ -2,18 +2,14 @@ package view.grapheditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.event.MouseInputListener;
 
 import controler.graphEditor.GraphControlerFactory;
 import model.Graph;
@@ -37,12 +33,14 @@ public class PaintingPanel extends JPanel implements Observer {
 
 		setBackground(new Color(255, 255, 255));
 
-		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("MouseListener", ui);
+		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool", ui);
 		addMouseListener(listener);
 		addMouseMotionListener((MouseMotionListener) listener);
 
-		toolBar = new GraphToolPanel();
-		add(toolBar, BorderLayout.WEST);
+		setLayout(new BorderLayout());
+		
+		toolBar = new GraphToolPanel(this);
+		add(toolBar, BorderLayout.NORTH);
 
 		setVisible(true);
 	}
@@ -66,6 +64,19 @@ public class PaintingPanel extends JPanel implements Observer {
 			setGraph((Graph) o);
 		}
 		repaint();
+	}
+	
+	protected void changeMouseListener(MouseInputListener listener){
+		MouseListener[] l1 = getMouseListeners();
+		for(MouseListener i : l1){
+			removeMouseListener(i);
+		}
+		MouseMotionListener[] l2 = getMouseMotionListeners();
+		for(MouseMotionListener i : l2){
+			removeMouseMotionListener(i);
+		}
+		addMouseListener(listener);
+		addMouseMotionListener(listener);
 	}
 
 }
