@@ -13,6 +13,10 @@ public class ArcEditor implements MouseInputListener{
 	public ArcEditor(GraphPanelUI ui) {
 		this.ui = ui;		
 	}
+	
+	protected void name() {
+		
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

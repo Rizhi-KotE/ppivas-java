@@ -1,7 +1,10 @@
 package controler.graphEditor;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 import javax.swing.event.MouseInputListener;
 
@@ -9,49 +12,45 @@ import view.grapheditor.GraphPanelUI;
 
 class NodeEditor implements MouseInputListener {
 	GraphPanelUI ui;
-	
+
 	long lastClick;
+
+	boolean isChoose = false;
 
 	public NodeEditor(GraphPanelUI ui) {
 		this.ui = ui;
 	}
 
-	private int oldX, oldY;
+	private Point2D oldP = null;
 
 	public void mouseClicked(MouseEvent e) {
 		long click = System.currentTimeMillis();
 		int x = e.getX();
 		int y = e.getY();
-
-		if((click - lastClick) < 200)
+		ui.clearChoose();
+		if ((click - lastClick) < 400)
 			ui.addNode(x, y);
-		else{
-			ui.clearChoose();
-			ui.choose(x, y);
+		else {
+			
+			isChoose = ui.choose(x, y);
 		}
 		lastClick = click;
 	}
-	
-	
 
-	@Override
 	public void mousePressed(MouseEvent e) {
 
 	}
 
-	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		oldP = null;
+		ui.setCurrentShape(null);
+		isChoose = false;
 	}
 
-	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		// e.getComponent().requestFocus();
 	}
 
-	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 
@@ -59,13 +58,29 @@ class NodeEditor implements MouseInputListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		if (oldP == null) {
+			oldP = new Point(x, y);
+			isChoose=ui.choose(x, y);
+		}
+		int oldX = (int) oldP.getX();
+		int oldY = (int) oldP.getY();
+		
+		if (isChoose) {
+			ui.dragChoosenElementOn(x - oldX, y - oldY);
+			oldP.setLocation(x, y);
+		} else {
+			ui.clearChoose();
+			ui.choose(new Rectangle(Math.min(oldX, x), Math.min(oldY, y), Math.abs(oldX - x), Math.abs(oldY - y)));
+		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		
+
 		ui.clearHighlight();
 		ui.highlight(x, y);
 	}

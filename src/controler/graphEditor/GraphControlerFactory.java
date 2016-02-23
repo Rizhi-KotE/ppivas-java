@@ -26,6 +26,7 @@ public class GraphControlerFactory {
 		if (factory == null) {
 			factory = new GraphControlerFactory();
 		}
+		
 		return factory;
 	}
 
