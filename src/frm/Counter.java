@@ -17,6 +17,7 @@ public class Counter {
 		else{
 			Integer j =counters.get(o.getClass());
 			j++;
+			counters.replace(o.getClass(), j);
 		}
 		return i;
 	}
