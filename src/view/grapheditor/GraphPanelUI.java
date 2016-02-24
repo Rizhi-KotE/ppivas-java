@@ -99,7 +99,7 @@ public class GraphPanelUI extends PanelUI {
 	}
 
 	private void paintEdge(Graphics2D g2d, Edge e){
-		Shape s = e.getShape(scale);
+		Shape s = e.getShape(nodeRadius + 10, scale);
 		g2d.draw(s);
 	}
 	// --------------nodes------------------
@@ -108,6 +108,12 @@ public class GraphPanelUI extends PanelUI {
 		Graph gr = panel.getGraph();
 
 		gr.addNode(scale * (x), scale * (y));
+	}
+	
+	//----------------Edge------------------
+	
+	public void createEdge(double x, double y){
+		panel.getGraph().createEdge(x, y);
 	}
 
 	// -------------------Drag------------------

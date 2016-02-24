@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.geom.Point2D;
+
 import frm.Counter;
 
 public class Node implements Choosable {
@@ -31,6 +33,10 @@ public class Node implements Choosable {
 
 	// -----------------Methods----------------
 
+	public Point2D getPoint() {
+		return new Point2D.Double(x, y);
+	}
+
 	// ----------------Getters & Setters-------
 	public double getX() {
 		return x;
@@ -56,8 +62,8 @@ public class Node implements Choosable {
 		this.idth = idth;
 	}
 
-	//---------------------Choosed-----------
-	
+	// ---------------------Choosed-----------
+
 	public void setChoosed(boolean is) {
 		choosed = is;
 	}

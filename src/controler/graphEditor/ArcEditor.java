@@ -16,13 +16,10 @@ public class ArcEditor implements MouseInputListener{
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		//ui.clearChoose();
+		ui.clearChoose();
 		int x = e.getX();
 		int y = e.getY();
-		boolean choosed = ui.choose(x, y);
-		if(!choosed){
-			
-		}
+		ui.createEdge(x, y);
 	}
 
 	@Override
