@@ -169,10 +169,6 @@ public class Graph extends Observable {
 
 	public void highlight(double x, double y) {
 		Iterator<Node> it = nodesLocation.iterator();
-		/*
-		 * if (highlight != null) { highlight.setHighlight(false); highlight =
-		 * null; }
-		 */
 		while (it.hasNext()) {
 			Node n = it.next();
 			if ((Math.abs(n.getX() - x) < 20) && (Math.abs(n.getY() - y) < 20)) {
