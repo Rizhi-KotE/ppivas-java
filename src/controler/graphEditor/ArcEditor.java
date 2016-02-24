@@ -14,13 +14,15 @@ public class ArcEditor implements MouseInputListener{
 		this.ui = ui;		
 	}
 	
-	protected void name() {
-		
-	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		//ui.clearChoose();
+		int x = e.getX();
+		int y = e.getY();
+		boolean choosed = ui.choose(x, y);
+		if(!choosed){
+			
+		}
 	}
 
 	@Override

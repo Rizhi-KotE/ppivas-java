@@ -17,6 +17,10 @@ public class Graph extends Observable {
 	Set<Node> choose;
 
 	Choosable highlight = null;
+	
+	private Edge newEdge;
+	
+	private Set<Edge> edges;
 
 	public Graph() {
 		nodesLocation = new HashSet<Node>();
@@ -43,6 +47,26 @@ public class Graph extends Observable {
 			}
 		}
 		return n;
+	}
+	
+	public Edge[] getEdges(){
+		int i = 0;
+		if(newEdge!=null){
+			i++;
+		}
+		if(edges!=null){
+			i+=edges.size();
+		}
+		Edge s[] = new Edge[i];
+		i = 0;
+		if(newEdge != null){
+			s[i++]=newEdge;
+		}
+		Iterator<Edge> it = edges.iterator();
+		while(it.hasNext()){
+			s[i++]=it.next();
+		}
+		return s;
 	}
 
 	// ----------------Drag----------------

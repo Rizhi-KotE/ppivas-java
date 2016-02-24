@@ -1,8 +1,9 @@
 package model;
 
-import java.util.Random;
+import frm.Counter;
 
 public class Node implements Choosable {
+	// -----------------Fields-------------
 	private double x;
 	private double y;
 	private String idth;
@@ -11,8 +12,9 @@ public class Node implements Choosable {
 	private boolean highlight;
 	private boolean choosed;
 
+	// -------------------Constructors------
 	private Node() {
-		hash = new Random().nextInt();
+		hash = Counter.getNextNum(this);
 	}
 
 	public Node(String anId) {
@@ -27,6 +29,9 @@ public class Node implements Choosable {
 		y = ay;
 	}
 
+	// -----------------Methods----------------
+
+	// ----------------Getters & Setters-------
 	public double getX() {
 		return x;
 	}
@@ -43,6 +48,16 @@ public class Node implements Choosable {
 		this.x = x;
 	}
 
+	public String getIdth() {
+		return idth;
+	}
+
+	private void setIdth(String idth) {
+		this.idth = idth;
+	}
+
+	//---------------------Choosed-----------
+	
 	public void setChoosed(boolean is) {
 		choosed = is;
 	}
@@ -59,14 +74,7 @@ public class Node implements Choosable {
 		this.highlight = highlight;
 	}
 
-	public String getIdth() {
-		return idth;
-	}
-
-	private void setIdth(String idth) {
-		this.idth = idth;
-	}
-
+	// -----------------For sets------------------------
 	public int hashCode() {
 		return hash;
 	}

@@ -8,14 +8,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.util.LinkedList;
-
 import javax.swing.JComponent;
 import javax.swing.plaf.PanelUI;
 
+import model.Edge;
 import model.Graph;
 import model.Node;
 
@@ -23,8 +19,6 @@ public class GraphPanelUI extends PanelUI {
 	private PaintingPanel panel;
 
 	// -----------elements-------------
-
-	private LinkedList<GeneralPath> edges;
 
 	private Shape currentShape;
 
@@ -47,11 +41,12 @@ public class GraphPanelUI extends PanelUI {
 	public void paint(Graphics g, JComponent c) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
+
 		g2d.setColor(Color.BLACK);
 		g2d.setStroke(new BasicStroke(5));
 		paintNodes(g2d);
 		paintCurrentShape(g2d);
+		paintEdges(g2d);
 	}
 
 	private void paintCurrentShape(Graphics2D g2d) {
@@ -86,6 +81,27 @@ public class GraphPanelUI extends PanelUI {
 		g2d.drawOval(s.x - nodeRadius, s.y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
 	}
 
+	private void paintEdges(Graphics2D g2d) {
+		Edge edges[] = panel.getGraph().getEdges();
+		for (Edge e : edges) {
+			Color cl = g2d.getColor();
+
+			if (e.isHighlight()) {
+				g2d.setColor(Color.YELLOW);
+			}
+			if (e.isChoosed()) {
+				g2d.setColor(Color.GREEN);
+			}
+
+			paintEdge(g2d, e);
+			g2d.setColor(cl);
+		}
+	}
+
+	private void paintEdge(Graphics2D g2d, Edge e){
+		Shape s = e.getShape(scale);
+		g2d.draw(s);
+	}
 	// --------------nodes------------------
 
 	public void addNode(float x, float y) {
@@ -107,7 +123,7 @@ public class GraphPanelUI extends PanelUI {
 	public boolean choose(Rectangle rect) {
 		setCurrentShape(rect);
 		return panel.getGraph().choose(rect);
-		
+
 	}
 
 	public void highlight(float x, float y) {
