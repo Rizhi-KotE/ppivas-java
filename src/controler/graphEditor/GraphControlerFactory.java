@@ -34,6 +34,7 @@ public class GraphControlerFactory {
 		prop = new Properties();
 		prop.setProperty("Node_tool", "controler.graphEditor.NodeEditor");
 		prop.setProperty("Arc_tool", "controler.graphEditor.ArcEditor");
+		prop.setProperty("ShapedComponent", "controler.graphEditor.SCMouseListener");
 	}
 
 	public MouseInputListener getMouseInputListener(String s, PaintingPanel ui) {
@@ -55,6 +56,36 @@ public class GraphControlerFactory {
 				}
 				catch(InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException
+						e){
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			if(listener != null){
+				controlers.put(s, listener);
+			}
+		}
+		return listener;
+	}
+	public MouseInputListener getMouseInputListener(String s) {
+		if (controlers == null) {
+			controlers = new HashMap<String, EventListener>();
+		}
+		MouseInputListener listener = (MouseInputListener) controlers.get(s);
+		if (listener == null) {
+			if (prop == null) {
+				createProperty();
+			}
+			String name = prop.getProperty(s);
+			
+				try {
+					listener = (MouseInputListener) Class.forName(name).newInstance();
+				} catch (ClassNotFoundException e) {
+					ReflectionCatcher.classNotFound(e);
+
+				}
+				catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+						| SecurityException
 						e){
 					// TODO Auto-generated catch block
 					e.printStackTrace();

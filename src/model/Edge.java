@@ -16,11 +16,9 @@ public class Edge implements Choosable {
 
 	private boolean choosed;
 	private boolean highLight;
-
 	private int hash;
-
 	private List<Point2D> extraPoints;
-
+	private Point2D lastPoint;
 	// --------------Constructors--------
 	private Edge() {
 		hash = Counter.getNextNum(this);
@@ -186,5 +184,7 @@ public class Edge implements Choosable {
 		boolean bl = obj instanceof Edge;
 		return bl && (hashCode() == obj.hashCode());
 	}
+	
+	
 
 }

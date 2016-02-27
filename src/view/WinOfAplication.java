@@ -34,6 +34,7 @@ class WinOfAplication {
 		JFrame frame = new JFrame();
 		frame.setPreferredSize(new Dimension(640, 360));
 		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		return frame;
 	}
 

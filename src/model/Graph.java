@@ -142,7 +142,7 @@ public class Graph extends Observable {
 		while (it.hasNext()) {
 			Node n = it.next();
 			if ((Math.abs(n.getX() - x) < 20) && (Math.abs(n.getY() - y) < 20)) {
-				return n;
+				return null;
 			}
 		}
 		return null;
@@ -169,30 +169,7 @@ public class Graph extends Observable {
 		return false;
 	}
 
-	public void highlight(double x, double y) {
-		Iterator<Node> it = nodesLocation.iterator();
-		while (it.hasNext()) {
-			Node n = it.next();
-			if ((Math.abs(n.getX() - x) < 20) && (Math.abs(n.getY() - y) < 20)) {
-				n.setHighlight(true);
-				highlight = n;
-				setChanged();
-				notifyObservers();
-				break;
-			}
-		}
-	}
 
-	public void clearChoose() {
-		Iterator<Node> it = choose.iterator();
-		while (it.hasNext()) {
-			Choosable n = it.next();
-			n.setChoosed(false);
-		}
-		choose.clear();
-		setChanged();
-		notifyObservers();
-	}
 
 	public void clearHighlight() {
 		if (highlight != null) {

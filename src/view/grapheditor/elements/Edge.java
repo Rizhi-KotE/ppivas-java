@@ -4,23 +4,24 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 
 import Exception.LoopEdgeException;
 import frm.Counter;
-import model.Choosable;
 
-public class Edge implements Choosable {
+public class Edge extends Observable implements GraphElement {
+	private final String name = "Edge";
 	// ------------Fields------------------
 	private Node node1;
 	private Node node2;
 
 	private boolean choosed;
 	private boolean highLight;
-
 	private int hash;
-
 	private List<Point2D> extraPoints;
+	private Point2D lastPoint;
 
 	// --------------Constructors--------
 	private Edge() {
@@ -46,7 +47,8 @@ public class Edge implements Choosable {
 	}
 
 	public void addPoint(Point2D p) {
-		extraPoints.add(p);
+		if (extraPoints != null)
+			extraPoints.add(p);
 	}
 	// ------------Seters & Getters-------
 
@@ -71,91 +73,94 @@ public class Edge implements Choosable {
 		return choosed;
 	}
 
-	@Override
 	public void setChoosed(boolean is) {
 		choosed = is;
 
 	}
 
-	@Override
 	public boolean isHighlight() {
 		return highLight;
 	}
 
-	@Override
 	public void setHighlight(boolean is) {
 		highLight = is;
 
 	}
 
 	public Shape getShape(float radius, float scale) {
+		LinkedList<Point2D> points = new LinkedList<Point2D>(extraPoints);
+		if (node1 != null)
+			points.addFirst(node1.getPoint());
+		if (lastPoint != null) {
+			points.addLast(lastPoint);
+		}
+		if (node2 != null)
+			points.addLast(lastPoint);
+		Iterator<Point2D> it = points.iterator();
+		Point2D first = null;
+		if (it.hasNext())
+			first = it.next();
 		GeneralPath s = new GeneralPath();
-		Node n1 = null;
-		Node n2 = null;
-
-		Point2D p = null;
-		if (node1 != null) {
-			n1 = node1;
+		s.moveTo(first.getX(), first.getY());
+		Point2D second = null;
+		while (it.hasNext()) {
+			s.lineTo(second.getX(), second.getY());
+			first = second;
 		}
-		if (n1 == null) {
-			n1 = node2;
-		} else {
-			n2 = node2;
-		}
-		if (extraPoints != null) {
-			Iterator<Point2D> it = extraPoints.iterator();
-			if (it.hasNext()) {
-				p = it.next();
-				Point2D start = calcRadiusPoint(n1.getPoint(), p, radius);
-				s.moveTo(start.getX(), start.getY());
-			} else {
-				if (node2 != null) {
-					Point2D start = calcRadiusPoint(n1.getPoint(), n2.getPoint(), radius);
-					Point2D end = calcRadiusPoint(n2.getPoint(), n1.getPoint(), radius);
-					s.moveTo(start.getX() * scale, start.getY() * scale);
-					s.lineTo(end.getX() * scale, end.getY() * scale);
-					return s;
-				}
-			}
-			while (it.hasNext()) {
-				p = it.next();
-				s.lineTo(p.getX() * scale, p.getY() * scale);
-			}
-		} else {
-			if (node2 != null) {
-				Point2D start = calcRadiusPoint(n1.getPoint(), n2.getPoint(), radius);
-				Point2D end = calcRadiusPoint(n2.getPoint(), n1.getPoint(), radius);
-				s.moveTo(start.getX() * scale, start.getY() * scale);
-				s.lineTo(end.getX() * scale, end.getY() * scale);
-				return s;
-			}
-		}
+		/*
+		 * Node n1 = null; Node n2 = null;
+		 * 
+		 * Point2D p = null; if (node1 != null) { n1 = node1; } if (n1 == null)
+		 * { n1 = node2; } else { n2 = node2; } if (extraPoints != null) {
+		 * Iterator<Point2D> it = extraPoints.iterator(); if (it.hasNext()) { p
+		 * = it.next(); Point2D start = calcRadiusPoint(n1.getPoint(), p,
+		 * radius); s.moveTo(start.getX(), start.getY()); } else { if (node2 !=
+		 * null) { Point2D start = calcRadiusPoint(n1.getPoint(), n2.getPoint(),
+		 * radius); Point2D end = calcRadiusPoint(n2.getPoint(), n1.getPoint(),
+		 * radius); s.moveTo(start.getX() * scale, start.getY() * scale);
+		 * s.lineTo(end.getX() * scale, end.getY() * scale); return s; } } while
+		 * (it.hasNext()) { p = it.next(); s.lineTo(p.getX() * scale, p.getY() *
+		 * scale); } } else { if (node2 != null) { Point2D start =
+		 * calcRadiusPoint(n1.getPoint(), n2.getPoint(), radius); Point2D end =
+		 * calcRadiusPoint(n2.getPoint(), n1.getPoint(), radius);
+		 * s.moveTo(start.getX() * scale, start.getY() * scale);
+		 * s.lineTo(end.getX() * scale, end.getY() * scale); return s; } }
+		 */
 		return s;
 	}
-	
+
 	public Shape getShape() {
-		GeneralPath s = new GeneralPath();
-		Node n1 = null;
-		Node n2 = null;
-		if (node1 != null) {
-			n1 = node1;
-		}
-		if (n1 == null) {
-			n1 = node2;
-		} else {
-			n2 = node2;
-		}
-		s.moveTo(n1.getX(), n1.getY());
+		LinkedList<Point2D> points = new LinkedList<Point2D>();
 		if (extraPoints != null) {
-			Iterator<Point2D> it = extraPoints.iterator();
-			while (it.hasNext()) {
-				Point2D p = it.next();
-				s.lineTo(p.getX(), p.getY());
-			}
+			points.addAll(extraPoints);
 		}
-		if (n2 != null) {
-			s.lineTo(n2.getX(), n2.getY());
+		if (node1 != null)
+			points.addFirst(node1.getPoint());
+		if (lastPoint != null) {
+			points.addLast(lastPoint);
 		}
+		if (node2 != null)
+			points.addLast(lastPoint);
+		Iterator<Point2D> it = points.iterator();
+		Point2D first = null;
+		if (it.hasNext())
+			first = it.next();
+		GeneralPath s = new GeneralPath();
+		s.moveTo(first.getX(), first.getY());
+		Point2D second = null;
+		while (it.hasNext()) {
+			second = it.next();
+			s.lineTo(second.getX(), second.getY());
+			first = second;
+		} /*
+			 * GeneralPath s = new GeneralPath(); Node n1 = null; Node n2 =
+			 * null; if (node1 != null) { n1 = node1; } if (n1 == null) { n1 =
+			 * node2; } else { n2 = node2; } s.moveTo(n1.getX(), n1.getY()); if
+			 * (extraPoints != null) { Iterator<Point2D> it =
+			 * extraPoints.iterator(); while (it.hasNext()) { Point2D p =
+			 * it.next(); s.lineTo(p.getX(), p.getY()); } } if (n2 != null) {
+			 * s.lineTo(n2.getX(), n2.getY()); }
+			 */
 		return s;
 	}
 
@@ -186,6 +191,17 @@ public class Edge implements Choosable {
 	public boolean equals(Object obj) {
 		boolean bl = obj instanceof Edge;
 		return bl && (hashCode() == obj.hashCode());
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setLastPoint(double x, double y) {
+		lastPoint = new Point2D.Double(x, y);
+		setChanged();
+		notifyObservers();
 	}
 
 }

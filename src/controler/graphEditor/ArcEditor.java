@@ -8,18 +8,17 @@ import view.grapheditor.PaintingPanel;
 
 public class ArcEditor implements MouseInputListener{
 
-	PaintingPanel ui = null;
+	PaintingPanel panel = null;
 	
-	public ArcEditor(PaintingPanel ui) {
-		this.ui = ui;		
+	public ArcEditor(PaintingPanel panel) {
+		this.panel = panel;		
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		ui.clearChoose();
 		int x = e.getX();
 		int y = e.getY();
-		ui.createEdge(x, y);
+		panel.addEdge();
 	}
 
 	@Override
@@ -54,8 +53,7 @@ public class ArcEditor implements MouseInputListener{
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		panel.setEdgePoint(e.getX(),e.getY());
 	}
 
 }

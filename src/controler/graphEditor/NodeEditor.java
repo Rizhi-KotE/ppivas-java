@@ -58,7 +58,8 @@ class NodeEditor implements MouseInputListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int x = e.getX();
+		System.out.println("Node draged");
+		/*int x = e.getX();
 		int y = e.getY();
 		if (oldP == null) {
 			oldP = new Point(x, y);
@@ -73,16 +74,13 @@ class NodeEditor implements MouseInputListener {
 		} else {
 			ui.clearChoose();
 			ui.choose(new Rectangle(Math.min(oldX, x), Math.min(oldY, y), Math.abs(oldX - x), Math.abs(oldY - y)));
-		}
+		}*/
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-
-		ui.clearHighlight();
-		ui.highlight(x, y);
 	}
 
 }

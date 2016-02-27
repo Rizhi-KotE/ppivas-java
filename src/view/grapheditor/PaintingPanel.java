@@ -32,6 +32,7 @@ import javax.swing.event.MouseInputListener;
 import controler.graphEditor.GraphControlerFactory;
 import model.Graph;
 import view.grapheditor.elements.Edge;
+import view.grapheditor.elements.GraphElement;
 import view.grapheditor.elements.Node;
 import view.grapheditor.elements.ShapedComponent;
 
@@ -42,6 +43,7 @@ public class PaintingPanel extends JPanel implements Observer {
 	private Graph graph;
 
 	private JToolBar toolBar;
+
 
 	public PaintingPanel() {
 		super();
@@ -118,7 +120,37 @@ public class PaintingPanel extends JPanel implements Observer {
 	// -----------elements-------------
 
 	private Shape currentShape;
+	private Node currentNode;
+	private Edge newEdge;
+	//---------------------node--------------------------
+	
+	public void setCurrentNode(Component c){
+		if(c.getName().equals("ShapedComponent")){
+			GraphElement el = ((ShapedComponent)c).getElement();
+			if(el.getName().equals("Node")){
+				currentNode = (Node)el;
+			}
+		}
+	}
 
+	//----------------------edge-------------------------
+	public void addEdge(){
+		if(currentNode != null)
+			newEdge = new Edge(currentNode,null);
+		ShapedComponent s = new ShapedComponent(newEdge);
+		newEdge.addObserver(s);
+		add(s);
+	}
+	public void setEdgePoint(int x, int y){
+		if(newEdge==null){
+			if(currentNode != null)
+			newEdge = new Edge(currentNode,null);
+		}
+		if(newEdge!=null){
+			newEdge.setLastPoint((double)x,(double)y);
+		}
+		revalidate();
+	}
 	float scale = 1;
 
 	int nodeRadius = 20;
@@ -181,7 +213,7 @@ public class PaintingPanel extends JPanel implements Observer {
 
 	public void addNode(float x, float y) {
 		Node n = new Node(x, y);
-		ShapedComponent s = new ShapedComponent(n.getShape());
+		ShapedComponent s = new ShapedComponent(n);
 		add(s);
 	}
 
@@ -207,13 +239,6 @@ public class PaintingPanel extends JPanel implements Observer {
 
 	}
 
-	public void highlight(float x, float y) {
-		getGraph().highlight(scale * (x), scale * (y));
-	}
-
-	public void clearChoose() {
-		getGraph().clearChoose();
-	}
 
 	public void clearHighlight() {
 		getGraph().clearHighlight();

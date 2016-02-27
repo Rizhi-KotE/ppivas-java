@@ -7,7 +7,8 @@ import java.awt.geom.Point2D;
 import frm.Counter;
 import model.Choosable;
 
-public class Node implements Choosable {
+public class Node implements GraphElement {
+	private final String name = "Node";
 	// -----------------Fields-------------
 	private double x;
 	private double y;
@@ -98,5 +99,8 @@ public class Node implements Choosable {
 	public boolean equals(Object obj) {
 		boolean bl = obj instanceof Node;
 		return bl && (hashCode() == obj.hashCode());
+	}
+	public String getName(){
+		return name;
 	}
 }
