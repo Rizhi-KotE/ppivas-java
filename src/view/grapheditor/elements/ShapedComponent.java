@@ -17,9 +17,6 @@ public class ShapedComponent extends JLabel {
 
 	public ShapedComponent(Shape s) {
 		super();
-		setMaximumSize(new Dimension(50,50));
-		setMinimumSize(new Dimension(50,50));
-		setVisible(true);
 		shape = s;
 	}
 

@@ -23,12 +23,13 @@ class NodeEditor implements MouseInputListener {
 	private Point2D oldP = null;
 
 	public void mouseClicked(MouseEvent e) {
-		/*long click = System.currentTimeMillis();
+		/*long click = System.currentTimeMillis();*/
 		int x = e.getX();
 		int y = e.getY();
-		ui.clearChoose();
+		/*ui.clearChoose();
 		if ((click - lastClick) < 400)*/
 			ui.addNode(e.getX(), e.getY());
+			
 		/*else {
 			
 			isChoose = ui.choose(x, y);

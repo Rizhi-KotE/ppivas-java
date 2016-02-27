@@ -3,6 +3,7 @@ package view.grapheditor;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,6 +12,10 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Observable;
@@ -19,6 +24,7 @@ import java.util.Observer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
@@ -45,17 +51,32 @@ public class PaintingPanel extends JPanel implements Observer {
 
 		setBackground(new Color(255, 255, 255));
 
+		setLayout(new BorderLayout());
 		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool", this);
 		addMouseListener(listener);
 		addMouseMotionListener((MouseMotionListener) listener);
+		// addNode(60, 60);
+		System.out.println(getLayout().getClass().getName());
+		
+		addContainerListener(new ContainerListener() {
 
-		setLayout(null);
+			@Override
+			public void componentRemoved(ContainerEvent e) {
+				revalidate();
+			}
 
-		addNode(60, 60);
-		//toolBar = createToolBar();
-		//add(toolBar, BorderLayout.NORTH);
-
-		setVisible(true);
+			@Override
+			public void componentAdded(ContainerEvent e) {
+				revalidate();
+			}
+		});
+	}
+	
+	@Override
+	public Component add(Component comp) {
+		if(!(comp instanceof JLabel))
+			return null;
+		return super.add(comp);
 	}
 
 	// ------Observer-----------
@@ -79,7 +100,7 @@ public class PaintingPanel extends JPanel implements Observer {
 		repaint();
 	}
 
-	protected void changeMouseListener(MouseInputListener listener) {
+	public void changeMouseListener(MouseInputListener listener) {
 		MouseListener[] l1 = getMouseListeners();
 		for (MouseListener i : l1) {
 			removeMouseListener(i);
@@ -92,32 +113,7 @@ public class PaintingPanel extends JPanel implements Observer {
 		addMouseMotionListener(listener);
 	}
 
-	private JToolBar createToolBar() {
-		JToolBar toolBar = new JToolBar();
-
-		JButton but1 = new JButton(new ImageIcon("image/tool-select.png"));
-		but1.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool",
-					PaintingPanel.this);
-				changeMouseListener(listener);
-			}
-		});
-		toolBar.add(but1);
-
-		JButton but2 = new JButton(new ImageIcon("image/tool-pair.png"));
-		but2.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
-						PaintingPanel.this);
-				changeMouseListener(listener);
-			}
-		});
-		toolBar.add(but2);
-		return toolBar;
-	}
+	
 	// ------------------------paint----------------------
 	// -----------elements-------------
 
@@ -127,17 +123,6 @@ public class PaintingPanel extends JPanel implements Observer {
 
 	int nodeRadius = 20;
 	// -------paint---------------
-
-	public void paintComponent(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(5));
-		paintNodes(g2d);
-		paintCurrentShape(g2d);
-		paintEdges(g2d);
-	}
 
 	private void paintCurrentShape(Graphics2D g2d) {
 		if (currentShape != null) {
@@ -198,7 +183,6 @@ public class PaintingPanel extends JPanel implements Observer {
 		Node n = new Node(x, y);
 		ShapedComponent s = new ShapedComponent(n.getShape());
 		add(s);
-		repaint();
 	}
 
 	// ----------------Edge------------------

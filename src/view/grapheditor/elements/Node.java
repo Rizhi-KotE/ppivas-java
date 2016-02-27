@@ -43,7 +43,7 @@ public class Node implements Choosable {
 	}
 
 	public Shape getShape() {
-		return new Ellipse2D.Double(x, y, radius, radius);
+		return new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
 	}
 
 	// ----------------Getters & Setters-------
