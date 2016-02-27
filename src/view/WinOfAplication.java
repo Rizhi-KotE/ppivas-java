@@ -2,6 +2,7 @@ package view;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Shape;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;

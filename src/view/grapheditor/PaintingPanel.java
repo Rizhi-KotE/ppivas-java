@@ -7,6 +7,8 @@ import java.awt.event.MouseMotionListener;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
@@ -23,6 +25,7 @@ public class PaintingPanel extends JPanel implements Observer {
 
 	private JToolBar toolBar;
 
+	
 	public PaintingPanel() {
 		super();
 		ui = new GraphPanelUI(this);
