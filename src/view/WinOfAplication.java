@@ -1,78 +1,104 @@
 package view;
-import java.awt.Color;
-import java.awt.Container;
+
 import java.awt.Dimension;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
-import frm.XMLMenuLoader;
 import view.grapheditor.PaintingPanel;
 
-public class WinOfAplication extends JFrame {
+class WinOfAplication {
 
-    // серийный номер класса
-    private static final long serialVersionUID = 1L;
+	private JFrame mainFrame;
+	private JMenuBar menuBar;
+	private PaintingPanel graphPanel;
 
-    private static WinOfAplication winContainers;
-    
-    private PaintingPanel graphPanel;
-    
-    public static WinOfAplication getInstance(){
-    	return winContainers;
-    }
-    
-    public WinOfAplication() {
-        // -------------------------------------------
-        // настройка окна
-        setTitle("Example window"); // заголовок окна
-        // желательные размеры окна
-        setPreferredSize(new Dimension(640, 480));
-        setBackground(Color.gray);
-        //загрузить панель меню
-        loadMenuBar();
+	public WinOfAplication() {
+		mainFrame = loadFrame();
+		menuBar = loadMenuBar();
+		mainFrame.pack();
+	}
 
-        winContainers = this;
-        // завершить приложение при закрытии окна
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack(); // устанавливаем желательные размеры
-        setVisible(true); // отображаем окно
-    }
-    
-    
-    
-    void loadMenuBar(){
-    	InputStream stream = null;
-    	try {
-			stream = new FileInputStream("xml/menubar.xml");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} 
-    	XMLMenuLoader loader = new XMLMenuLoader(stream);
-    	try {
-			loader.parse();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	JMenuBar menuBar = loader.getMenuBar();
-    	
-    	setJMenuBar(menuBar);
-    	
-    }
-    
-    public void newGraph(){
-    	graphPanel = new PaintingPanel();
-    	add(graphPanel);
-    	pack();
-    }
-    
-    static public void main(String[] args){
-    	WinOfAplication f = new WinOfAplication();
-    }
+	private JFrame loadFrame() {
+		JFrame frame = new JFrame();
+		frame.setPreferredSize(new Dimension(640, 360));
+		frame.setVisible(true);
+		return frame;
+	}
+
+	JMenuBar loadMenuBar() {
+		JMenuBar menuBar = new JMenuBar();
+		JMenu currentMenu = new JMenu("Файл");
+
+		JMenuItem menuItem = new JMenuItem("Создать");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				newGraph();
+			}
+		});
+		currentMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Открыть");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openFile();
+
+			}
+		});
+		currentMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Закрыть");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				closeFile();
+
+			}
+		});
+		currentMenu.add(menuItem);
+
+		currentMenu.addSeparator();
+
+		menuItem = new JMenuItem("Выход");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		currentMenu.add(menuItem);
+
+		menuBar.add(currentMenu);
+		mainFrame.setJMenuBar(menuBar);
+		return menuBar;
+	}
+
+	public void newGraph() {
+		graphPanel = new PaintingPanel();
+		mainFrame.add(graphPanel);
+		mainFrame.pack();
+	}
+
+	private void openFile() {
+		// TODO
+	}
+
+	private void closeFile() {
+		// TODO
+	}
+	
+	
+
+	static public void main(String[] args) {
+		WinOfAplication f = new WinOfAplication();
+	}
 }

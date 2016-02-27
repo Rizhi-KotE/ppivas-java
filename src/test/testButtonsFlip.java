@@ -1,12 +1,6 @@
 package test;
-import java.awt.event.KeyListener;
-
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
-import javax.swing.text.PlainDocument;
-
-import controler.menubarListener.CreateListener;
-import view.WinOfAplication;
 
 public class testButtonsFlip {
 	public static void main(String [] args){
