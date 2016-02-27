@@ -11,9 +11,9 @@ import java.awt.Shape;
 import javax.swing.JComponent;
 import javax.swing.plaf.PanelUI;
 
-import model.Edge;
 import model.Graph;
-import model.Node;
+import view.grapheditor.elements.Edge;
+import view.grapheditor.elements.Node;
 
 public class GraphPanelUI extends PanelUI {
 	private PaintingPanel panel;

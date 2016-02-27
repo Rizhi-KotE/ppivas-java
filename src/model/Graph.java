@@ -8,6 +8,8 @@ import java.util.Observable;
 import java.util.Set;
 
 import Exception.LoopEdgeException;
+import view.grapheditor.elements.Edge;
+import view.grapheditor.elements.Node;
 
 public class Graph extends Observable {
 
