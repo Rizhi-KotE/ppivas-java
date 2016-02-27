@@ -1,5 +1,7 @@
 package view.grapheditor.elements;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -10,10 +12,14 @@ public class ShapedComponent extends JLabel {
 	Shape shape;
 
 	private ShapedComponent() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ShapedComponent(Shape s) {
+		super();
+		setMaximumSize(new Dimension(50,50));
+		setMinimumSize(new Dimension(50,50));
+		setVisible(true);
 		shape = s;
 	}
 
@@ -29,8 +35,10 @@ public class ShapedComponent extends JLabel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(Color.black);
 		if (shape != null) {
 			g2d.draw(shape);
 		}
+		super.paintComponent(g2d);
 	}
 }

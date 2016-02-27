@@ -10,6 +10,7 @@ import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.ComponentUI;
 
 import catchers.ReflectionCatcher;
+import view.grapheditor.PaintingPanel;
 
 public class GraphControlerFactory {
 	private Map<String, EventListener> controlers = null;
@@ -26,7 +27,6 @@ public class GraphControlerFactory {
 		if (factory == null) {
 			factory = new GraphControlerFactory();
 		}
-		
 		return factory;
 	}
 
@@ -36,7 +36,7 @@ public class GraphControlerFactory {
 		prop.setProperty("Arc_tool", "controler.graphEditor.ArcEditor");
 	}
 
-	public MouseInputListener getMouseInputListener(String s, ComponentUI ui) {
+	public MouseInputListener getMouseInputListener(String s, PaintingPanel ui) {
 		if (controlers == null) {
 			controlers = new HashMap<String, EventListener>();
 		}

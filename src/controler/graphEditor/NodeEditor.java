@@ -2,39 +2,38 @@ package controler.graphEditor;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
 import javax.swing.event.MouseInputListener;
 
-import view.grapheditor.GraphPanelUI;
+import view.grapheditor.PaintingPanel;
 
 class NodeEditor implements MouseInputListener {
-	GraphPanelUI ui;
+	PaintingPanel ui;
 
 	long lastClick;
 
 	boolean isChoose = false;
 
-	public NodeEditor(GraphPanelUI ui) {
+	public NodeEditor(PaintingPanel ui) {
 		this.ui = ui;
 	}
 
 	private Point2D oldP = null;
 
 	public void mouseClicked(MouseEvent e) {
-		long click = System.currentTimeMillis();
+		/*long click = System.currentTimeMillis();
 		int x = e.getX();
 		int y = e.getY();
 		ui.clearChoose();
-		if ((click - lastClick) < 400)
-			ui.addNode(x, y);
-		else {
+		if ((click - lastClick) < 400)*/
+			ui.addNode(e.getX(), e.getY());
+		/*else {
 			
 			isChoose = ui.choose(x, y);
 		}
-		lastClick = click;
+		lastClick = click;*/
 	}
 
 	public void mousePressed(MouseEvent e) {

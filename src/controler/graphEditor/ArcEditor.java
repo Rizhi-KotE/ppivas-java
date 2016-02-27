@@ -4,13 +4,13 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.event.MouseInputListener;
 
-import view.grapheditor.GraphPanelUI;
+import view.grapheditor.PaintingPanel;
 
 public class ArcEditor implements MouseInputListener{
 
-	GraphPanelUI ui = null;
+	PaintingPanel ui = null;
 	
-	public ArcEditor(GraphPanelUI ui) {
+	public ArcEditor(PaintingPanel ui) {
 		this.ui = ui;		
 	}
 	
