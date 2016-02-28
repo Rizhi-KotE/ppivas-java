@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
 
+import Exception.LoopEdgeException;
 import controler.graphEditor.GraphControlerFactory;
 import model.Graph;
 import view.grapheditor.elements.Edge;
@@ -42,24 +43,16 @@ public class PaintingPanel extends JPanel implements Observer {
 
 	private Graph graph;
 
-	private JToolBar toolBar;
-
-
 	public PaintingPanel() {
 		super();
-
 		graph = new Graph();
 		graph.addObserver(this);
-
 		setBackground(new Color(255, 255, 255));
-
 		setLayout(new BorderLayout());
 		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool", this);
 		addMouseListener(listener);
 		addMouseMotionListener((MouseMotionListener) listener);
-		// addNode(60, 60);
 		System.out.println(getLayout().getClass().getName());
-		
 		addContainerListener(new ContainerListener() {
 
 			@Override
@@ -73,10 +66,10 @@ public class PaintingPanel extends JPanel implements Observer {
 			}
 		});
 	}
-	
+
 	@Override
 	public Component add(Component comp) {
-		if(!(comp instanceof JLabel))
+		if (!(comp instanceof JLabel))
 			return null;
 		return super.add(comp);
 	}
@@ -115,42 +108,66 @@ public class PaintingPanel extends JPanel implements Observer {
 		addMouseMotionListener(listener);
 	}
 
-	
 	// ------------------------paint----------------------
 	// -----------elements-------------
 
 	private Shape currentShape;
 	private Node currentNode;
 	private Edge newEdge;
-	//---------------------node--------------------------
-	
-	public void setCurrentNode(Component c){
-		if(c.getName().equals("ShapedComponent")){
-			GraphElement el = ((ShapedComponent)c).getElement();
-			if(el.getName().equals("Node")){
-				currentNode = (Node)el;
+	// ---------------------node--------------------------
+
+	public void setCurrentNode(Component c) {
+		if (c.getName().equals("ShapedComponent")) {
+			GraphElement el = ((ShapedComponent) c).getElement();
+			if (el.getName().equals("Node")) {
+				currentNode = (Node) el;
 			}
 		}
 	}
 
-	//----------------------edge-------------------------
-	public void addEdge(){
-		if(currentNode != null)
-			newEdge = new Edge(currentNode,null);
-		ShapedComponent s = new ShapedComponent(newEdge);
-		newEdge.addObserver(s);
-		add(s);
-	}
-	public void setEdgePoint(int x, int y){
-		if(newEdge==null){
-			if(currentNode != null)
-			newEdge = new Edge(currentNode,null);
+	// ----------------------edge-------------------------
+	public void addEdge() {
+		if (currentNode != null) {
+			if (newEdge == null) {
+				newEdge = new Edge(null, null);
+				ShapedComponent s = new ShapedComponent(newEdge);
+				newEdge.addObserver(s);
+				add(s);
+			}
+
 		}
-		if(newEdge!=null){
-			newEdge.setLastPoint((double)x,(double)y);
+		if (newEdge != null) {
+			try {
+				newEdge.addNode(currentNode);
+			} catch (LoopEdgeException e) {
+				newEdge = null;
+				currentNode = null;
+				return;
+			}
+		}
+		if (newEdge != null) {
+			if (newEdge.isComplete())
+				newEdge = null;
+		}
+		currentNode = null;
+	}
+
+	public void setEdgePoint(int x, int y) {
+		if (currentNode != null) {
+			addEdge();
+		} else if (newEdge != null) {
+			newEdge.fixLastPoint();
 		}
 		revalidate();
 	}
+
+	public void setExtraEdgePoint(int x, int y) {
+		if (newEdge != null) {
+			newEdge.setLastPoint(x, y);
+			revalidate();
+		}
+	}
+
 	float scale = 1;
 
 	int nodeRadius = 20;
@@ -238,7 +255,6 @@ public class PaintingPanel extends JPanel implements Observer {
 		return getGraph().choose(rect);
 
 	}
-
 
 	public void clearHighlight() {
 		getGraph().clearHighlight();

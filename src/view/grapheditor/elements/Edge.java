@@ -20,12 +20,14 @@ public class Edge extends Observable implements GraphElement {
 	private boolean choosed;
 	private boolean highLight;
 	private int hash;
-	private List<Point2D> extraPoints;
+	private LinkedList<Point2D> extraPoints;
 	private Point2D lastPoint;
-
+	
+	private double radius = 2;
 	// --------------Constructors--------
 	private Edge() {
 		hash = Counter.getNextNum(this);
+		extraPoints = new LinkedList<Point2D>();
 	}
 
 	public Edge(Node n1, Node n2) {
@@ -43,6 +45,7 @@ public class Edge extends Observable implements GraphElement {
 				throw new LoopEdgeException();
 			}
 			node2 = n;
+			lastPoint = null;
 		}
 	}
 
@@ -140,7 +143,7 @@ public class Edge extends Observable implements GraphElement {
 			points.addLast(lastPoint);
 		}
 		if (node2 != null)
-			points.addLast(lastPoint);
+			points.addLast(node2.getPoint());
 		Iterator<Point2D> it = points.iterator();
 		Point2D first = null;
 		if (it.hasNext())
@@ -202,6 +205,16 @@ public class Edge extends Observable implements GraphElement {
 		lastPoint = new Point2D.Double(x, y);
 		setChanged();
 		notifyObservers();
+	}
+
+	public void fixLastPoint() {
+		if (lastPoint != null) {
+			extraPoints.addLast(lastPoint);
+		}
+	}
+
+	public boolean isComplete() {
+		return (node1 != null) && (node2 != null);
 	}
 
 }

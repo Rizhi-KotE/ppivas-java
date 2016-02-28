@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.MouseListener;
+import java.awt.geom.GeneralPath;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -65,6 +66,5 @@ public class ShapedComponent extends JLabel implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		repaint();
-		
 	}
 }

@@ -3,6 +3,9 @@ package controler.graphEditor;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
 import javax.swing.event.MouseInputListener;
 
 import view.grapheditor.PaintingPanel;
@@ -13,7 +16,7 @@ public class SCMouseListener implements MouseInputListener{
 		
 	}
 	
-	private void redirectEvent(Component c, MouseEvent e){
+	private MouseEvent redirectEvent(Component c, MouseEvent e){
 		int id = e.getID();
 		long when = e.getWhen();
 		int modifiers = e.getModifiers();
@@ -22,7 +25,7 @@ public class SCMouseListener implements MouseInputListener{
 		int clickCount = e.getClickCount();
 		boolean popupTrigger = e.isPopupTrigger();
 		MouseEvent f = new MouseEvent(c, id, when, modifiers, x, y, clickCount, popupTrigger);
-		c.getToolkit().getSystemEventQueue().postEvent(f);
+		return f;
 	}
 
 	@Override
@@ -32,14 +35,21 @@ public class SCMouseListener implements MouseInputListener{
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		//redirectEvent(e.getComponent().getParent(), e);
+		PaintingPanel parent = (PaintingPanel) e.getComponent().getParent();
+		MouseMotionListener m[] = parent.getMouseMotionListeners();
+		for(MouseMotionListener l :m){
+			l.mouseMoved(redirectEvent(parent, e));
+		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		PaintingPanel parent = (PaintingPanel) e.getComponent().getParent();
 		parent.setCurrentNode(e.getComponent());
-		redirectEvent(parent, e);
+		MouseListener m[] = parent.getMouseListeners();
+		for(MouseListener l :m){
+			l.mouseClicked(redirectEvent(parent, e));
+		}
 	}
 
 	@Override
