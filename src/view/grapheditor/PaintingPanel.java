@@ -206,26 +206,9 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	private void paintEdges(Graphics2D g2d) {
-		Edge edges[] = getGraph().getEdges();
-		for (Edge e : edges) {
-			Color cl = g2d.getColor();
-
-			if (e.isHighlight()) {
-				g2d.setColor(Color.YELLOW);
-			}
-			if (e.isChoosed()) {
-				g2d.setColor(Color.GREEN);
-			}
-
-			paintEdge(g2d, e);
-			g2d.setColor(cl);
-		}
+		
 	}
 
-	private void paintEdge(Graphics2D g2d, Edge e) {
-		Shape s = e.getShape(nodeRadius + 10, scale);
-		g2d.draw(s);
-	}
 	// --------------nodes------------------
 
 	public void addNode(float x, float y) {

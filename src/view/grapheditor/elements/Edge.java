@@ -1,7 +1,10 @@
 package view.grapheditor.elements;
 
+import java.awt.Point;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -22,8 +25,9 @@ public class Edge extends Observable implements GraphElement {
 	private int hash;
 	private LinkedList<Point2D> extraPoints;
 	private Point2D lastPoint;
-	
-	private double radius = 2;
+
+	private double radius = 50;
+
 	// --------------Constructors--------
 	private Edge() {
 		hash = Counter.getNextNum(this);
@@ -90,81 +94,106 @@ public class Edge extends Observable implements GraphElement {
 
 	}
 
-	public Shape getShape(float radius, float scale) {
-		LinkedList<Point2D> points = new LinkedList<Point2D>(extraPoints);
+	public Shape getShape() {
+		int size = 0;
+		if (extraPoints != null) {
+			size += extraPoints.size();
+		}
 		if (node1 != null)
-			points.addFirst(node1.getPoint());
+			size++;
 		if (lastPoint != null) {
-			points.addLast(lastPoint);
+			size++;
 		}
 		if (node2 != null)
-			points.addLast(lastPoint);
-		Iterator<Point2D> it = points.iterator();
-		Point2D first = null;
-		if (it.hasNext())
-			first = it.next();
-		GeneralPath s = new GeneralPath();
-		s.moveTo(first.getX(), first.getY());
-		Point2D second = null;
-		while (it.hasNext()) {
-			s.lineTo(second.getX(), second.getY());
+			size++;
+		if (size <= 1) {
+			return new Ellipse2D.Double(1, 1, 1, 1);
+		}
+		Point2D points[] = new Point2D[size];
+		int first = 0;
+		if (node1 != null)
+			points[first++] = node1.getPoint();
+		if (extraPoints != null) {
+			Iterator<Point2D> it = extraPoints.iterator();
+			while (it.hasNext()) {
+				points[first++] = it.next();
+			}
+		}
+		if (lastPoint != null) {
+			points[first++] = lastPoint;
+		}
+		if (node2 != null) {
+			points[first++] = node2.getPoint();
+		}
+		Point2D directVectors[] = new Point2D[points.length - 1];
+		first = 0;
+		int second = 1;
+		for (; first < directVectors.length; second++) {
+			directVectors[first] = new Point2D.Double(points[second].getX() - points[first].getX(),
+					points[second].getY() - points[first].getY());
 			first = second;
 		}
-		/*
-		 * Node n1 = null; Node n2 = null;
-		 * 
-		 * Point2D p = null; if (node1 != null) { n1 = node1; } if (n1 == null)
-		 * { n1 = node2; } else { n2 = node2; } if (extraPoints != null) {
-		 * Iterator<Point2D> it = extraPoints.iterator(); if (it.hasNext()) { p
-		 * = it.next(); Point2D start = calcRadiusPoint(n1.getPoint(), p,
-		 * radius); s.moveTo(start.getX(), start.getY()); } else { if (node2 !=
-		 * null) { Point2D start = calcRadiusPoint(n1.getPoint(), n2.getPoint(),
-		 * radius); Point2D end = calcRadiusPoint(n2.getPoint(), n1.getPoint(),
-		 * radius); s.moveTo(start.getX() * scale, start.getY() * scale);
-		 * s.lineTo(end.getX() * scale, end.getY() * scale); return s; } } while
-		 * (it.hasNext()) { p = it.next(); s.lineTo(p.getX() * scale, p.getY() *
-		 * scale); } } else { if (node2 != null) { Point2D start =
-		 * calcRadiusPoint(n1.getPoint(), n2.getPoint(), radius); Point2D end =
-		 * calcRadiusPoint(n2.getPoint(), n1.getPoint(), radius);
-		 * s.moveTo(start.getX() * scale, start.getY() * scale);
-		 * s.lineTo(end.getX() * scale, end.getY() * scale); return s; } }
-		 */
+		Point2D normalVectors[] = new Point2D[directVectors.length];
+		for (int i = 0; i < normalVectors.length; i++) {
+			normalVectors[i] = new Point2D.Double(1, -directVectors[i].getX() / directVectors[i].getY());
+		}
+		for (int i = 0; i < normalVectors.length; i++) {
+			normalVectors[i] = normalizeVector(normalVectors[i]);
+		}
+		directVectors[directVectors.length - 1] = normalizeVector(directVectors[directVectors.length - 1]);
+		directVectors[0] = normalizeVector(directVectors[0]);
+		Point2D upPoints[] = new Point2D[points.length * 2 - 1];
+		for (int i = 0; i < normalVectors.length; i++) {
+			upPoints[i * 2] = new Point2D.Double(points[i].getX() + normalVectors[i].getX() * radius,
+					points[i].getY() + normalVectors[i].getY() * radius);
+			upPoints[i * 2 + 1] = new Point2D.Double(points[i + 1].getX() + normalVectors[i].getX() * radius,
+					points[i + 1].getY() + normalVectors[i].getY() * radius);
+		}
+		upPoints[upPoints.length - 1] = new Point2D.Double(
+				points[points.length - 1].getX() + directVectors[directVectors.length - 1].getX() * radius,
+				points[points.length - 1].getY() + directVectors[directVectors.length - 1].getY() * radius);
+		Point2D downPoints[] = new Point2D[points.length * 2 - 1];
+		int dPI = 0;
+		for (int i = normalVectors.length - 1; i >= 0; i--) {
+			downPoints[dPI++] = new Point2D.Double(points[i+1].getX() - normalVectors[i].getX() * radius,
+					points[i+1].getY() - normalVectors[i].getY() * radius);
+			downPoints[dPI++] = new Point2D.Double(points[i].getX() - normalVectors[i].getX() * radius,
+					points[i].getY() - normalVectors[i].getY() * radius);
+		}
+		downPoints[dPI] = new Point2D.Double(points[0].getX() - directVectors[0].getX() * radius,
+				points[0].getY() - directVectors[0].getY() * radius);
+		GeneralPath s = new GeneralPath();
+		s.moveTo(upPoints[0].getX(), upPoints[0].getY());
+		for (int i = 1; i < upPoints.length - 1; i++) {
+			s.lineTo(upPoints[i].getX(), upPoints[i].getY());
+		}
+		s.lineTo(upPoints[upPoints.length - 1].getX(), upPoints[upPoints.length - 1].getY());
+		s.lineTo(downPoints[0].getX(), downPoints[0].getY());
+		// s.curveTo(upPoints[upPoints.length - 2].getX(),
+		// upPoints[upPoints.length - 2].getY(),
+		// upPoints[upPoints.length - 1].getX(), upPoints[upPoints.length -
+		// 1].getY(),
+		// downPoints[upPoints.length - 1].getX(), downPoints[upPoints.length -
+		// 1].getY());
+		int i = 0;
+		for (i = 1; i < downPoints.length - 1; i++) {
+			s.lineTo(downPoints[i].getX(), downPoints[i].getY());
+		}
+		s.lineTo(downPoints[i].getX(), downPoints[i].getY());
+		s.lineTo(upPoints[0].getX(), upPoints[0].getY());
+		// s.curveTo(downPoints[1].getX(), downPoints[1].getY(),
+		// downPoints[0].getX(), downPoints[0].getY(), upPoints[0].getX(),
+		// upPoints[0].getY());
+		// s.closePath();
 		return s;
 	}
 
-	public Shape getShape() {
-		LinkedList<Point2D> points = new LinkedList<Point2D>();
-		if (extraPoints != null) {
-			points.addAll(extraPoints);
-		}
-		if (node1 != null)
-			points.addFirst(node1.getPoint());
-		if (lastPoint != null) {
-			points.addLast(lastPoint);
-		}
-		if (node2 != null)
-			points.addLast(node2.getPoint());
-		Iterator<Point2D> it = points.iterator();
-		Point2D first = null;
-		if (it.hasNext())
-			first = it.next();
-		GeneralPath s = new GeneralPath();
-		s.moveTo(first.getX(), first.getY());
-		Point2D second = null;
-		while (it.hasNext()) {
-			second = it.next();
-			s.lineTo(second.getX(), second.getY());
-			first = second;
-		} /*
-			 * GeneralPath s = new GeneralPath(); Node n1 = null; Node n2 =
-			 * null; if (node1 != null) { n1 = node1; } if (n1 == null) { n1 =
-			 * node2; } else { n2 = node2; } s.moveTo(n1.getX(), n1.getY()); if
-			 * (extraPoints != null) { Iterator<Point2D> it =
-			 * extraPoints.iterator(); while (it.hasNext()) { Point2D p =
-			 * it.next(); s.lineTo(p.getX(), p.getY()); } } if (n2 != null) {
-			 * s.lineTo(n2.getX(), n2.getY()); }
-			 */
-		return s;
+	private Point2D normalizeVector(Point2D p) {
+		double x = p.getX();
+		double y = p.getY();
+		double l = Point.distance(0, 0, x, y);
+		p.setLocation(x / l, y / l);
+		return p;
 	}
 
 	private Point2D calcRadiusPoint(Point2D center, Point2D B, double radius) {
