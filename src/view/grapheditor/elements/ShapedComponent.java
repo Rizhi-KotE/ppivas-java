@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -43,6 +44,10 @@ public class ShapedComponent extends JLabel implements Observer{
 		boolean bl = shape != null;
 		if (bl) {
 			bl = shape.getShape().contains(x, y);
+		}
+		if(shape.getName().equals("Edge")){
+			Line2D l = (Line2D)shape.getShape();
+			bl = l.ptLineDist(x, y) < 10;
 		}
 		return bl;
 	}

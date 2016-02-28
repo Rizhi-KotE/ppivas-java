@@ -2,6 +2,7 @@ package view.grapheditor.elements;
 
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -133,29 +134,15 @@ public class Edge extends Observable implements GraphElement {
 	}
 
 	public Shape getShape() {
-		LinkedList<Point2D> points = new LinkedList<Point2D>();
-		if (extraPoints != null) {
-			points.addAll(extraPoints);
-		}
+		Point2D points[] = new Point2D[2];
+		points[1] = new Point2D.Double();
 		if (node1 != null)
-			points.addFirst(node1.getPoint());
+			points[0] = node1.getPoint();
 		if (lastPoint != null) {
-			points.addLast(lastPoint);
+			points[1]=lastPoint;
 		}
 		if (node2 != null)
-			points.addLast(node2.getPoint());
-		Iterator<Point2D> it = points.iterator();
-		Point2D first = null;
-		if (it.hasNext())
-			first = it.next();
-		GeneralPath s = new GeneralPath();
-		s.moveTo(first.getX(), first.getY());
-		Point2D second = null;
-		while (it.hasNext()) {
-			second = it.next();
-			s.lineTo(second.getX(), second.getY());
-			first = second;
-		} /*
+			points[1] = node2.getPoint(); /*
 			 * GeneralPath s = new GeneralPath(); Node n1 = null; Node n2 =
 			 * null; if (node1 != null) { n1 = node1; } if (n1 == null) { n1 =
 			 * node2; } else { n2 = node2; } s.moveTo(n1.getX(), n1.getY()); if
@@ -164,7 +151,7 @@ public class Edge extends Observable implements GraphElement {
 			 * it.next(); s.lineTo(p.getX(), p.getY()); } } if (n2 != null) {
 			 * s.lineTo(n2.getX(), n2.getY()); }
 			 */
-		return s;
+		return new Line2D.Double(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
 	}
 
 	private Point2D calcRadiusPoint(Point2D center, Point2D B, double radius) {
