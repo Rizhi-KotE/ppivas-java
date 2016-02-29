@@ -1,13 +1,18 @@
 package model;
 
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.Observable;
 
 import frm.Counter;
 
-public class Node implements Choosable {
+public class Node extends GraphElement {
+	private final String name = "Node";
 	// -----------------Fields-------------
 	private double x;
 	private double y;
+	private double radius;
 	private String idth;
 	private int hash;
 
@@ -16,7 +21,8 @@ public class Node implements Choosable {
 
 	// -------------------Constructors------
 	private Node() {
-		hash = Counter.getNextNum(this);
+		hash = Counter.getNextNum(GraphElement.class);
+		radius = 20;
 	}
 
 	public Node(String anId) {
@@ -35,6 +41,10 @@ public class Node implements Choosable {
 
 	public Point2D getPoint() {
 		return new Point2D.Double(x, y);
+	}
+
+	public Shape getShape() {
+		return new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
 	}
 
 	// ----------------Getters & Setters-------
@@ -66,6 +76,8 @@ public class Node implements Choosable {
 
 	public void setChoosed(boolean is) {
 		choosed = is;
+		setChanged();
+		notifyObservers();
 	}
 
 	public boolean isChoosed() {
@@ -89,5 +101,8 @@ public class Node implements Choosable {
 	public boolean equals(Object obj) {
 		boolean bl = obj instanceof Node;
 		return bl && (hashCode() == obj.hashCode());
+	}
+	public String getName(){
+		return name;
 	}
 }

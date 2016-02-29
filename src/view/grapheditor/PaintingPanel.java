@@ -1,40 +1,32 @@
 package view.grapheditor;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
 
 import Exception.LoopEdgeException;
 import controler.graphEditor.GraphControlerFactory;
+import model.Edge;
 import model.Graph;
-import view.grapheditor.elements.Edge;
-import view.grapheditor.elements.GraphElement;
-import view.grapheditor.elements.Node;
+import model.GraphElement;
+import model.Node;
 import view.grapheditor.elements.ShapedComponent;
 
 public class PaintingPanel extends JPanel implements Observer {
@@ -81,8 +73,7 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	public void setGraph(Graph graph) {
-		graph.deleteObserver(this);
-
+		this.graph.deleteObserver(this);
 		this.graph = graph;
 	}
 
@@ -130,6 +121,7 @@ public class PaintingPanel extends JPanel implements Observer {
 		if (currentNode != null) {
 			if (newEdge == null) {
 				newEdge = new Edge(null, null);
+				graph.addEdge(newEdge);
 				ShapedComponent s = new ShapedComponent(newEdge);
 				newEdge.addObserver(s);
 				add(s);
@@ -140,6 +132,7 @@ public class PaintingPanel extends JPanel implements Observer {
 			try {
 				newEdge.addNode(currentNode);
 			} catch (LoopEdgeException e) {
+				graph.deleteEdge(newEdge);
 				newEdge = null;
 				currentNode = null;
 				return;
@@ -206,30 +199,14 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	private void paintEdges(Graphics2D g2d) {
-		Edge edges[] = getGraph().getEdges();
-		for (Edge e : edges) {
-			Color cl = g2d.getColor();
 
-			if (e.isHighlight()) {
-				g2d.setColor(Color.YELLOW);
-			}
-			if (e.isChoosed()) {
-				g2d.setColor(Color.GREEN);
-			}
-
-			paintEdge(g2d, e);
-			g2d.setColor(cl);
-		}
 	}
 
-	private void paintEdge(Graphics2D g2d, Edge e) {
-		Shape s = e.getShape(nodeRadius + 10, scale);
-		g2d.draw(s);
-	}
 	// --------------nodes------------------
 
 	public void addNode(float x, float y) {
 		Node n = new Node(x, y);
+		graph.addNode(n);
 		ShapedComponent s = new ShapedComponent(n);
 		add(s);
 	}
@@ -246,14 +223,32 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 	// -------------------choose----------------
 
-	public boolean choose(float x, float y) {
-		return getGraph().choose(scale * (x), scale * (y));
+	private Set<ShapedComponent> choose;
+
+	public void choose(ShapedComponent E) {
+		if (choose == null) {
+			choose = new HashSet<ShapedComponent>();
+		}
+		E.setColor(Color.green);
+		E.setChoose(true);
+		choose.add(E);
 	}
 
 	public boolean choose(Rectangle rect) {
-		setCurrentShape(rect);
 		return getGraph().choose(rect);
+	}
 
+	public void clearChoose() {
+		if (choose == null) {
+			choose = new HashSet<ShapedComponent>();
+		}
+		Iterator<ShapedComponent> it = choose.iterator();
+		while (it.hasNext()) {
+			ShapedComponent s = it.next();
+			s.setChoose(false);
+			s.currentColor();
+		}
+		choose.clear();
 	}
 
 	public void clearHighlight() {

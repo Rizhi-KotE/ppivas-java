@@ -2,39 +2,51 @@ package controler.graphEditor;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
+import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
+import model.GraphElement;
 import view.grapheditor.PaintingPanel;
+import view.grapheditor.elements.ShapedComponent;
 
 class NodeEditor implements MouseInputListener {
-	PaintingPanel ui;
+	PaintingPanel panel;
 
 	long lastClick;
 
 	boolean isChoose = false;
 
-	public NodeEditor(PaintingPanel ui) {
-		this.ui = ui;
+	public NodeEditor(PaintingPanel panel) {
+		this.panel = panel;
 	}
 
-	private Point2D oldP = null;
-
 	public void mouseClicked(MouseEvent e) {
-		/*long click = System.currentTimeMillis();*/
-		int x = e.getX();
-		int y = e.getY();
-		/*ui.clearChoose();
-		if ((click - lastClick) < 400)*/
-			ui.addNode(e.getX(), e.getY());
-			
-		/*else {
-			
-			isChoose = ui.choose(x, y);
+		int count = e.getClickCount();
+		if (e.getSource().equals(panel)) {
+			if (count == 2) {
+				panel.addNode(e.getX(), e.getY());
+				return;
+			}
+			panel.clearChoose();
+		} else if (e.getSource() instanceof ShapedComponent) {
+			if (false) {
+
+			} else {
+				panel.clearChoose();
+				panel.choose((ShapedComponent) e.getComponent());
+			}
 		}
-		lastClick = click;*/
+
+		/*
+		 * else {
+		 * 
+		 * isChoose = panel.choose(x, y); } lastClick = click;
+		 */
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -43,8 +55,15 @@ class NodeEditor implements MouseInputListener {
 
 	public void mouseReleased(MouseEvent e) {
 		oldP = null;
-		ui.setCurrentShape(null);
-		isChoose = false;
+		if(choosePanel!=null){
+			JComponent c = (JComponent)e.getComponent();
+			c.remove(choosePanel);
+			choosePanel=null;
+			c.repaint();
+		}
+		if(chooseRectangle!=null){
+			chooseRectangle=null;
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -56,25 +75,58 @@ class NodeEditor implements MouseInputListener {
 
 	}
 
+	private Point2D oldP;
+	private ShapedComponent choosePanel;
+	private Rectangle2D chooseRectangle;
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		System.out.println("Node draged");
-		/*int x = e.getX();
+		int x = e.getX();
 		int y = e.getY();
 		if (oldP == null) {
 			oldP = new Point(x, y);
-			isChoose=ui.choose(x, y);
 		}
+		double w = Math.abs(oldP.getX() - x);
+		double h = Math.abs(oldP.getY() - y);
+		if (choosePanel == null) {
+			panel.clearChoose();
+			choosePanel = new ShapedComponent();
+			JComponent a = (JComponent) e.getComponent();
+			a.add(choosePanel);
+		}
+		if(chooseRectangle==null){
+			chooseRectangle = new Rectangle2D.Double(Math.min(oldP.getX(), x), Math.min(oldP.getY(), y), w, h);
+		}
+		else{
+			chooseRectangle.setRect(Math.min(oldP.getX(), x), Math.min(oldP.getY(), y), w, h);
+		}
+		choosePanel.setShape(new GraphElement() {
+
+			@Override
+			public Shape getShape() {
+				return chooseRectangle;
+			}
+
+			@Override
+			public String getName() {
+				return "rand";
+			}
+
+			@Override
+			public boolean isChoosed() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 		int oldX = (int) oldP.getX();
 		int oldY = (int) oldP.getY();
-		
+
 		if (isChoose) {
-			ui.dragChoosenElementOn(x - oldX, y - oldY);
+			panel.dragChoosenElementOn(x - oldX, y - oldY);
 			oldP.setLocation(x, y);
 		} else {
-			ui.clearChoose();
-			ui.choose(new Rectangle(Math.min(oldX, x), Math.min(oldY, y), Math.abs(oldX - x), Math.abs(oldY - y)));
-		}*/
+			panel.clearChoose();
+			panel.choose(new Rectangle(Math.min(oldX, x), Math.min(oldY, y), Math.abs(oldX - x), Math.abs(oldY - y)));
+		}
 	}
 
 	@Override

@@ -8,44 +8,48 @@ import java.util.Observable;
 import java.util.Set;
 
 import Exception.LoopEdgeException;
-import view.grapheditor.elements.Edge;
-import view.grapheditor.elements.Node;
 
 public class Graph extends Observable {
 
-	// private static final double UNIT_DISTANCE = 5;
-
 	private final String IDname = "Graph";
 
-	Set<Node> nodesLocation;
+	Set<Node> nodes;
 
 	Set<Node> choose;
 
 	Choosable highlight = null;
 
 	private Edge newEdge;
-
+	
 	private Set<Edge> edges;
 
 	public Graph() {
-		nodesLocation = new HashSet<Node>();
+		nodes = new HashSet<Node>();
 		choose = new HashSet<Node>();
+		edges = new HashSet<Edge>();
 	}
 
 	// ------------nodes-----------------
 	public void addNode(double x, double y) {
 		Node node = new Node(x, y);
-		nodesLocation.add(node);
+		nodes.add(node);
 		setChanged();
 		notifyObservers();
 	}
+	
+	public void addNode(Node n){
+		nodes.add(n);
+	}
 
+	public void removeNode(Node n){
+		nodes.remove(n);
+	}
 	public Node[] getNodes() {
 		Node n[] = null;
-		int size = nodesLocation.size();
+		int size = nodes.size();
 		if (size != 0) {
 			n = new Node[size];
-			Iterator<Node> it = nodesLocation.iterator();
+			Iterator<Node> it = nodes.iterator();
 			int i = 0;
 			while (it.hasNext()) {
 				n[i++] = it.next();
@@ -56,6 +60,12 @@ public class Graph extends Observable {
 
 	// --------------------Edges------------------
 
+	public void addEdge(Edge e){
+		edges.add(e);
+	}
+	public void deleteEdge(Edge e){
+		edges.remove(e);
+	}
 	public void createEdge(double x, double y) {
 		Choosable choose = chooseWhithoutPaint(x, y);
 		if (choose instanceof Node) {
@@ -123,7 +133,7 @@ public class Graph extends Observable {
 
 	// ---------------choose---------------
 	public boolean choose(double x, double y) {
-		Iterator<Node> it = nodesLocation.iterator();
+		Iterator<Node> it = nodes.iterator();
 		while (it.hasNext()) {
 			Node n = it.next();
 			if ((Math.abs(n.getX() - x) < 20) && (Math.abs(n.getY() - y) < 20)) {
@@ -138,7 +148,7 @@ public class Graph extends Observable {
 	}
 
 	public Choosable chooseWhithoutPaint(double x, double y) {
-		Iterator<Node> it = nodesLocation.iterator();
+		Iterator<Node> it = nodes.iterator();
 		while (it.hasNext()) {
 			Node n = it.next();
 			if ((Math.abs(n.getX() - x) < 20) && (Math.abs(n.getY() - y) < 20)) {
@@ -149,21 +159,18 @@ public class Graph extends Observable {
 	}
 
 	public boolean choose(Rectangle rect) {
-		double x = rect.getX();
-		double y = rect.getY();
-		double width = rect.getWidth();
-		double height = rect.getHeight();
-		Iterator<Node> it = nodesLocation.iterator();
+		Iterator<Node> it = nodes.iterator();
 		while (it.hasNext()) {
 			Node n = it.next();
-			double dx = n.getX();
-			double dy = n.getY();
-			if (((dx - x) < width) && ((dy - y) < height)) {
+			if(n.getShape().intersects(rect)){
 				n.setChoosed(true);
-				choose.add(n);
-				setChanged();
-				notifyObservers();
-				// return true;
+			}
+		}
+		Iterator<Edge> et = edges.iterator();
+		while (et.hasNext()) {
+			Edge n = et.next();
+			if(n.getShape().intersects(rect)){
+				n.setChoosed(true);
 			}
 		}
 		return false;
