@@ -10,8 +10,8 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
+import model.GraphElement;
 import view.grapheditor.PaintingPanel;
-import view.grapheditor.elements.GraphElement;
 import view.grapheditor.elements.ShapedComponent;
 
 class NodeEditor implements MouseInputListener {
@@ -55,8 +55,15 @@ class NodeEditor implements MouseInputListener {
 
 	public void mouseReleased(MouseEvent e) {
 		oldP = null;
-		panel.setCurrentShape(null);
-		isChoose = false;
+		if(choosePanel!=null){
+			JComponent c = (JComponent)e.getComponent();
+			c.remove(choosePanel);
+			choosePanel=null;
+			c.repaint();
+		}
+		if(chooseRectangle!=null){
+			chooseRectangle=null;
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -81,7 +88,8 @@ class NodeEditor implements MouseInputListener {
 		double w = Math.abs(oldP.getX() - x);
 		double h = Math.abs(oldP.getY() - y);
 		if (choosePanel == null) {
-			choosePanel = new ShapedComponent(null);
+			panel.clearChoose();
+			choosePanel = new ShapedComponent();
 			JComponent a = (JComponent) e.getComponent();
 			a.add(choosePanel);
 		}
@@ -100,7 +108,13 @@ class NodeEditor implements MouseInputListener {
 
 			@Override
 			public String getName() {
-				return null;
+				return "rand";
+			}
+
+			@Override
+			public boolean isChoosed() {
+				// TODO Auto-generated method stub
+				return false;
 			}
 		});
 		int oldX = (int) oldP.getX();

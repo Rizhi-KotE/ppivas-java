@@ -9,12 +9,15 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JLabel;
 
 import controler.graphEditor.GraphControlerFactory;
+import model.GraphElement;
+import view.grapheditor.PaintingPanel;
 
 public class ShapedComponent extends JLabel implements Observer {
 	private final String name = "ShapedComponent";
@@ -22,30 +25,30 @@ public class ShapedComponent extends JLabel implements Observer {
 	private Color color;
 	private boolean choose;
 
-	private ShapedComponent() {
+	public ShapedComponent() {
 		super();
 		addMouseListener(GraphControlerFactory.getInstance().getMouseInputListener("ShapedComponent"));
 		addMouseMotionListener(GraphControlerFactory.getInstance().getMouseInputListener("ShapedComponent"));
 		addComponentListener(new ComponentListener() {
-			
+
 			@Override
 			public void componentShown(ComponentEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void componentResized(ComponentEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void componentMoved(ComponentEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void componentHidden(ComponentEvent e) {
 				// TODO Auto-generated method stub
@@ -56,10 +59,15 @@ public class ShapedComponent extends JLabel implements Observer {
 
 	public ShapedComponent(GraphElement s) {
 		this();
+		s.addObserver(this);
 		shape = s;
 	}
-	
-	public void setShape(GraphElement s){
+
+	public void setShape(GraphElement s) {
+		if (shape != null) {
+			shape.deleteObserver(this);
+		}
+		s.addObserver(this);
 		shape = s;
 		repaint();
 	}
@@ -69,8 +77,8 @@ public class ShapedComponent extends JLabel implements Observer {
 	}
 
 	public void setColor(Color c) {
-			color = c;
-			repaint();
+		color = c;
+		repaint();
 	}
 
 	public void currentColor() {
@@ -85,7 +93,12 @@ public class ShapedComponent extends JLabel implements Observer {
 		boolean bl = shape != null;
 		if (bl) {
 			bl = shape.getShape().contains(x, y);
+			if (shape.getName().equals("Edge")) {
+				Line2D l = (Line2D) shape.getShape();
+				bl = l.ptLineDist(x, y) < 5;
+			}
 		}
+
 		return bl;
 	}
 
@@ -108,6 +121,16 @@ public class ShapedComponent extends JLabel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
+		if (getElement().isChoosed() == true) {
+			PaintingPanel p = (PaintingPanel) getParent();
+			p.choose(this);
+			return;
+		}
 		repaint();
+	}
+
+	@Override
+	public int hashCode() {
+		return getElement().hashCode();
 	}
 }

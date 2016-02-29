@@ -1,15 +1,21 @@
 package model;
 
+import java.awt.Point;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 
 import Exception.LoopEdgeException;
 import frm.Counter;
 
-public class Edge implements Choosable {
+public class Edge extends GraphElement {
+	private final String name = "Edge";
 	// ------------Fields------------------
 	private Node node1;
 	private Node node2;
@@ -17,11 +23,15 @@ public class Edge implements Choosable {
 	private boolean choosed;
 	private boolean highLight;
 	private int hash;
-	private List<Point2D> extraPoints;
+	private LinkedList<Point2D> extraPoints;
 	private Point2D lastPoint;
+
+	private double radius = 50;
+
 	// --------------Constructors--------
 	private Edge() {
-		hash = Counter.getNextNum(this.getClass());
+		hash = Counter.getNextNum(GraphElement.class);
+		extraPoints = new LinkedList<Point2D>();
 	}
 
 	public Edge(Node n1, Node n2) {
@@ -39,11 +49,13 @@ public class Edge implements Choosable {
 				throw new LoopEdgeException();
 			}
 			node2 = n;
+			lastPoint = null;
 		}
 	}
 
 	public void addPoint(Point2D p) {
-		extraPoints.add(p);
+		if (extraPoints != null)
+			extraPoints.add(p);
 	}
 	// ------------Seters & Getters-------
 
@@ -68,92 +80,43 @@ public class Edge implements Choosable {
 		return choosed;
 	}
 
-	@Override
 	public void setChoosed(boolean is) {
 		choosed = is;
+		setChanged();
+		notifyObservers();
 
 	}
 
-	@Override
 	public boolean isHighlight() {
 		return highLight;
 	}
 
-	@Override
 	public void setHighlight(boolean is) {
 		highLight = is;
 
 	}
 
-	public Shape getShape(float radius, float scale) {
-		GeneralPath s = new GeneralPath();
-		Node n1 = null;
-		Node n2 = null;
-
-		Point2D p = null;
-		if (node1 != null) {
-			n1 = node1;
-		}
-		if (n1 == null) {
-			n1 = node2;
-		} else {
-			n2 = node2;
-		}
-		if (extraPoints != null) {
-			Iterator<Point2D> it = extraPoints.iterator();
-			if (it.hasNext()) {
-				p = it.next();
-				Point2D start = calcRadiusPoint(n1.getPoint(), p, radius);
-				s.moveTo(start.getX(), start.getY());
-			} else {
-				if (node2 != null) {
-					Point2D start = calcRadiusPoint(n1.getPoint(), n2.getPoint(), radius);
-					Point2D end = calcRadiusPoint(n2.getPoint(), n1.getPoint(), radius);
-					s.moveTo(start.getX() * scale, start.getY() * scale);
-					s.lineTo(end.getX() * scale, end.getY() * scale);
-					return s;
-				}
-			}
-			while (it.hasNext()) {
-				p = it.next();
-				s.lineTo(p.getX() * scale, p.getY() * scale);
-			}
-		} else {
-			if (node2 != null) {
-				Point2D start = calcRadiusPoint(n1.getPoint(), n2.getPoint(), radius);
-				Point2D end = calcRadiusPoint(n2.getPoint(), n1.getPoint(), radius);
-				s.moveTo(start.getX() * scale, start.getY() * scale);
-				s.lineTo(end.getX() * scale, end.getY() * scale);
-				return s;
-			}
-		}
-		return s;
-	}
-	
 	public Shape getShape() {
-		GeneralPath s = new GeneralPath();
-		Node n1 = null;
-		Node n2 = null;
+		Point2D points[] = new Point2D[2];
 		if (node1 != null) {
-			n1 = node1;
+			points[0] = node1.getPoint();
+			points[1] = node1.getPoint();
 		}
-		if (n1 == null) {
-			n1 = node2;
-		} else {
-			n2 = node2;
+		if (lastPoint != null) {
+			points[1] = lastPoint;
 		}
-		s.moveTo(n1.getX(), n1.getY());
-		if (extraPoints != null) {
-			Iterator<Point2D> it = extraPoints.iterator();
-			while (it.hasNext()) {
-				Point2D p = it.next();
-				s.lineTo(p.getX(), p.getY());
-			}
+		if (node2 != null) {
+			points[1] = node2.getPoint();
 		}
-		if (n2 != null) {
-			s.lineTo(n2.getX(), n2.getY());
-		}
-		return s;
+		return new Line2D.Double(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
+	}
+
+	private Point2D normalizeVector(Point2D p) {
+		double x = p.getX();
+		double y = p.getY();
+		double l = Point.distance(0, 0, x, y);
+		p.setLocation(x / l, y / l);
+		return p;
 	}
 
 	private Point2D calcRadiusPoint(Point2D center, Point2D B, double radius) {
@@ -184,7 +147,26 @@ public class Edge implements Choosable {
 		boolean bl = obj instanceof Edge;
 		return bl && (hashCode() == obj.hashCode());
 	}
-	
-	
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setLastPoint(double x, double y) {
+		lastPoint = new Point2D.Double(x, y);
+		setChanged();
+		notifyObservers();
+	}
+
+	public void fixLastPoint() {
+		if (lastPoint != null) {
+			extraPoints.addLast(lastPoint);
+		}
+	}
+
+	public boolean isComplete() {
+		return (node1 != null) && (node2 != null);
+	}
 
 }
