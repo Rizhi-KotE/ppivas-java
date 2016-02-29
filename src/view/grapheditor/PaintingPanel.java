@@ -18,8 +18,11 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -206,7 +209,7 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	private void paintEdges(Graphics2D g2d) {
-		
+
 	}
 
 	// --------------nodes------------------
@@ -229,14 +232,33 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 	// -------------------choose----------------
 
-	public boolean choose(float x, float y) {
-		return getGraph().choose(scale * (x), scale * (y));
+	private Set<ShapedComponent> choose;
+
+	public void choose(ShapedComponent E) {
+		if (choose != null) {
+			choose = new HashSet<ShapedComponent>();
+		}
+		E.setColor(Color.green);
+		E.setChoose(true);
+		choose.add(E);
 	}
 
 	public boolean choose(Rectangle rect) {
-		setCurrentShape(rect);
 		return getGraph().choose(rect);
 
+	}
+
+	public void clearChoose() {
+		if (choose == null) {
+			choose = new HashSet<ShapedComponent>();
+		}
+		Iterator<ShapedComponent> it = choose.iterator();
+		while (it.hasNext()) {
+			ShapedComponent s = it.next();
+			s.setChoose(false);
+			s.currentColor();
+		}
+		choose.clear();
 	}
 
 	public void clearHighlight() {

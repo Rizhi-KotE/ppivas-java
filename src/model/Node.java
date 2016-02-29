@@ -16,7 +16,7 @@ public class Node implements Choosable {
 
 	// -------------------Constructors------
 	private Node() {
-		hash = Counter.getNextNum(this);
+		hash = Counter.getNextNum(this.getClass());
 	}
 
 	public Node(String anId) {

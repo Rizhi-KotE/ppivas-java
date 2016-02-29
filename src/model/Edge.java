@@ -21,7 +21,7 @@ public class Edge implements Choosable {
 	private Point2D lastPoint;
 	// --------------Constructors--------
 	private Edge() {
-		hash = Counter.getNextNum(this);
+		hash = Counter.getNextNum(this.getClass());
 	}
 
 	public Edge(Node n1, Node n2) {

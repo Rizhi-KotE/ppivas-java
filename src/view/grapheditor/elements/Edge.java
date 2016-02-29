@@ -30,7 +30,7 @@ public class Edge extends Observable implements GraphElement {
 
 	// --------------Constructors--------
 	private Edge() {
-		hash = Counter.getNextNum(this);
+		hash = Counter.getNextNum(GraphElement.class);
 		extraPoints = new LinkedList<Point2D>();
 	}
 

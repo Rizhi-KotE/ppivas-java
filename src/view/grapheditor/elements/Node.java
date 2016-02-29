@@ -21,7 +21,7 @@ public class Node implements GraphElement {
 
 	// -------------------Constructors------
 	private Node() {
-		hash = Counter.getNextNum(this);
+		hash = Counter.getNextNum(GraphElement.class);
 		radius = 20;
 	}
 

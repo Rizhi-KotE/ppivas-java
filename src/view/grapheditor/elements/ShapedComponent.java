@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
 import java.util.Observable;
@@ -14,15 +16,42 @@ import javax.swing.JLabel;
 
 import controler.graphEditor.GraphControlerFactory;
 
-public class ShapedComponent extends JLabel implements Observer{
+public class ShapedComponent extends JLabel implements Observer {
 	private final String name = "ShapedComponent";
 	private GraphElement shape;
 	private Color color;
+	private boolean choose;
 
 	private ShapedComponent() {
 		super();
 		addMouseListener(GraphControlerFactory.getInstance().getMouseInputListener("ShapedComponent"));
 		addMouseMotionListener(GraphControlerFactory.getInstance().getMouseInputListener("ShapedComponent"));
+		addComponentListener(new ComponentListener() {
+			
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("hidden");
+			}
+		});
 	}
 
 	public ShapedComponent(GraphElement s) {
@@ -30,12 +59,25 @@ public class ShapedComponent extends JLabel implements Observer{
 		shape = s;
 	}
 	
-	public void setColor(Color c){
-		color = c;
+	public void setShape(GraphElement s){
+		shape = s;
+		repaint();
 	}
-	
-	public void currentColor(){
-		color = Color.BLACK;
+
+	public void setChoose(boolean is) {
+		choose = is;
+	}
+
+	public void setColor(Color c) {
+			color = c;
+			repaint();
+	}
+
+	public void currentColor() {
+		if (choose == false) {
+			color = Color.BLACK;
+			repaint();
+		}
 	}
 
 	@Override
@@ -55,11 +97,12 @@ public class ShapedComponent extends JLabel implements Observer{
 			g2d.draw(shape.getShape());
 		}
 	}
-	
-	public GraphElement getElement(){
+
+	public GraphElement getElement() {
 		return shape;
 	}
-	public String getName(){
+
+	public String getName() {
 		return name;
 	}
 
