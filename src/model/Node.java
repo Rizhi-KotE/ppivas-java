@@ -105,4 +105,9 @@ public class Node extends GraphElement {
 	public String getName(){
 		return name;
 	}
+	
+	@Override
+	public boolean contains(int x, int y) {
+		return getShape().contains(x, y);
+	}
 }

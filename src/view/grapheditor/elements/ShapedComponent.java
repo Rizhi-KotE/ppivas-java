@@ -1,9 +1,11 @@
 package view.grapheditor.elements;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -90,25 +92,15 @@ public class ShapedComponent extends JLabel implements Observer {
 
 	@Override
 	public boolean contains(int x, int y) {
-		boolean bl = shape != null;
-		if (bl) {
-			bl = shape.getShape().contains(x, y);
-			if (shape.getName().equals("Edge")) {
-				Line2D l = (Line2D) shape.getShape();
-				bl = l.ptLineDist(x, y) < 5;
-			}
-			if (shape.getName().equals("Edge")) {
-				Line2D l = (Line2D) shape.getShape();
-				bl = l.ptLineDist(x, y) < 10;
-			}
-		}
-		return bl;
+		return shape.contains(x, y);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
+		g2d.setStroke(new BasicStroke(5));
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (shape != null) {
 			g2d.draw(shape.getShape());
 		}

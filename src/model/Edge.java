@@ -26,7 +26,7 @@ public class Edge extends GraphElement {
 	private LinkedList<Point2D> extraPoints;
 	private Point2D lastPoint;
 
-	private double radius = 50;
+	private double radius = 5;
 
 	// --------------Constructors--------
 	private Edge() {
@@ -167,6 +167,12 @@ public class Edge extends GraphElement {
 
 	public boolean isComplete() {
 		return (node1 != null) && (node2 != null);
+	}
+	
+	@Override
+	public boolean contains(int x, int y) {
+		Line2D l = (Line2D)getShape();
+		return l.ptLineDist(x,y)<radius;
 	}
 
 }

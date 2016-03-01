@@ -9,4 +9,6 @@ abstract public class GraphElement extends Observable {
 	abstract public String getName();
 
 	abstract public boolean isChoosed();
+	
+	abstract public boolean contains(int x, int y); 
 }

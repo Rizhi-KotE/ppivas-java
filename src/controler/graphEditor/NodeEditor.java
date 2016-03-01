@@ -116,6 +116,11 @@ class NodeEditor implements MouseInputListener {
 				// TODO Auto-generated method stub
 				return false;
 			}
+
+			@Override
+			public boolean contains(int x, int y) {
+				return false;
+			}
 		});
 		int oldX = (int) oldP.getX();
 		int oldY = (int) oldP.getY();
