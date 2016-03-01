@@ -126,7 +126,7 @@ class NodeEditor implements MouseInputListener {
 		int oldY = (int) oldP.getY();
 
 		if (isChoose) {
-			panel.dragChoosenElementOn(x - oldX, y - oldY);
+			//panel.dragChoosenElementOn(x - oldX, y - oldY);
 			oldP.setLocation(x, y);
 		} else {
 			panel.clearChoose();
@@ -136,8 +136,7 @@ class NodeEditor implements MouseInputListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
+
 	}
 
 }

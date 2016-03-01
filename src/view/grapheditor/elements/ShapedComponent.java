@@ -2,16 +2,13 @@ package view.grapheditor.elements;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.MouseListener;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -22,6 +19,11 @@ import model.GraphElement;
 import view.grapheditor.PaintingPanel;
 
 public class ShapedComponent extends JLabel implements Observer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6388626636136514844L;
+
 	private final String name = "ShapedComponent";
 	private GraphElement shape;
 	private Color color;
@@ -102,8 +104,18 @@ public class ShapedComponent extends JLabel implements Observer {
 		g2d.setStroke(new BasicStroke(5));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (shape != null) {
-			g2d.draw(shape.getShape());
+			Shape s = shape.getShape();
+			g2d.draw(s);
+			Rectangle2D rect = s.getBounds2D();
+			paintContent(g2d, (float) (rect.getX() + rect.getWidth() / 2),
+					(float) (rect.getY() + rect.getHeight() / 2));
 		}
+	}
+
+	private void paintContent(Graphics2D g2d, float x, float y) {
+		String s = shape.getContent();
+		if (s != null)
+			g2d.drawString(s, x, y);
 	}
 
 	public GraphElement getElement() {
@@ -127,5 +139,12 @@ public class ShapedComponent extends JLabel implements Observer {
 	@Override
 	public int hashCode() {
 		return getElement().hashCode();
+	}
+	
+	//////////////////////////////////
+	public void setContent(String s){
+		if(shape!=null){
+			shape.setContent(s);
+		}
 	}
 }

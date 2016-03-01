@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.event.MouseInputListener;
-import javax.swing.plaf.ComponentUI;
 
 import catchers.ReflectionCatcher;
 import view.grapheditor.PaintingPanel;

@@ -1,15 +1,9 @@
 package model;
 
-import java.awt.Point;
 import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
 
 import Exception.LoopEdgeException;
 import frm.Counter;
@@ -109,31 +103,6 @@ public class Edge extends GraphElement {
 			points[1] = node2.getPoint();
 		}
 		return new Line2D.Double(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
-	}
-
-	private Point2D normalizeVector(Point2D p) {
-		double x = p.getX();
-		double y = p.getY();
-		double l = Point.distance(0, 0, x, y);
-		p.setLocation(x / l, y / l);
-		return p;
-	}
-
-	private Point2D calcRadiusPoint(Point2D center, Point2D B, double radius) {
-		double x1 = center.getX();
-		double x2 = B.getX();
-		double y1 = center.getY();
-		double y2 = B.getY();
-
-		double ABLen = Math.pow(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2), 0.5);
-		double coef = radius / ABLen;
-
-		double x12 = x2 - x1;
-		double y12 = y2 - y1;
-
-		double x3 = x1 + coef * x12;
-		double y3 = y1 + coef * y12;
-		return new Point2D.Double(x3, y3);
 	}
 
 	// --------------For sets--------------

@@ -102,7 +102,6 @@ public class PaintingPanel extends JPanel implements Observer {
 	// ------------------------paint----------------------
 	// -----------elements-------------
 
-	private Shape currentShape;
 	private Node currentNode;
 	private Edge newEdge;
 	// ---------------------node--------------------------
@@ -161,49 +160,6 @@ public class PaintingPanel extends JPanel implements Observer {
 		}
 	}
 
-	float scale = 1;
-
-	int nodeRadius = 20;
-	// -------paint---------------
-
-	private void paintCurrentShape(Graphics2D g2d) {
-		if (currentShape != null) {
-			g2d.setColor(new Color(125, 0, 0));
-			g2d.draw(currentShape);
-		}
-	}
-
-	private void paintNodes(Graphics2D g2d) {
-		Node nodes[] = getGraph().getNodes();
-
-		if (nodes != null)
-			for (Node n : nodes) {
-
-				Point node = new Point((int) n.getX(), (int) n.getY());
-				Color cl = g2d.getColor();
-
-				if (n.isHighlight()) {
-					g2d.setColor(Color.YELLOW);
-				}
-				if (n.isChoosed()) {
-					g2d.setColor(Color.GREEN);
-				}
-
-				paintNode(g2d, node);
-				g2d.setColor(cl);
-			}
-	}
-
-	private void paintNode(Graphics2D g2d, Point s) {
-		g2d.drawOval(s.x - nodeRadius, s.y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
-	}
-
-	private void paintEdges(Graphics2D g2d) {
-
-	}
-
-	// --------------nodes------------------
-
 	public void addNode(float x, float y) {
 		Node n = new Node(x, y);
 		graph.addNode(n);
@@ -218,9 +174,6 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	// -------------------Drag------------------
-	public void dragChoosenElementOn(float x, float y) {
-		getGraph().dragChoosenElementOn(x * scale, y * scale);
-	}
 	// -------------------choose----------------
 
 	private Set<ShapedComponent> choose;
@@ -253,10 +206,5 @@ public class PaintingPanel extends JPanel implements Observer {
 
 	public void clearHighlight() {
 		getGraph().clearHighlight();
-	}
-
-	public void setCurrentShape(Shape currentShape) {
-		this.currentShape = currentShape;
-		repaint();
 	}
 }
