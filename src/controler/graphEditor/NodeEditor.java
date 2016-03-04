@@ -10,9 +10,8 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
-import model.GraphElement;
 import view.grapheditor.PaintingPanel;
-import view.grapheditor.elements.ShapedComponent;
+import view.grapheditor.elements.*;
 
 class NodeEditor implements MouseInputListener {
 	PaintingPanel panel;
@@ -99,7 +98,7 @@ class NodeEditor implements MouseInputListener {
 		else{
 			chooseRectangle.setRect(Math.min(oldP.getX(), x), Math.min(oldP.getY(), y), w, h);
 		}
-		choosePanel.setShape(new GraphElement() {
+		choosePanel.setShape(new ViewGraphElement() {
 
 			@Override
 			public Shape getShape() {

@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.event.MouseInputListener;
 
 import view.grapheditor.PaintingPanel;
@@ -35,7 +36,7 @@ public class SCMouseListener implements MouseInputListener {
 		}
 	}
 
-	JMenu menu;
+	JPopupMenu menu;
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		switch (e.getButton()){
@@ -50,7 +51,7 @@ public class SCMouseListener implements MouseInputListener {
 		}
 		case MouseEvent.BUTTON3:{
 			ShapedComponent s = (ShapedComponent)e.getComponent();
-			//menu = new JMenu();
+			menu = new JPopupMenu();
 			JButton item = new JButton("I");
 			item.addActionListener(new ActionListener() {
 				
@@ -60,8 +61,8 @@ public class SCMouseListener implements MouseInputListener {
 					s.setContent("Back");			
 				}
 			});
-			//menu.add(item);
-			s.getParent().add(item);
+			menu.add(item);
+			s.getParent().add(menu);
 			s.getParent().revalidate();
 		}
 		}
@@ -80,12 +81,12 @@ public class SCMouseListener implements MouseInputListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		ShapedComponent c = (ShapedComponent) e.getComponent();
-		c.setColor(Color.YELLOW);
+		c.getElement().setColor(Color.YELLOW);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		ShapedComponent c = (ShapedComponent) e.getComponent();
-		c.currentColor();
+		c.getElement().currentColor();
 	}
 }

@@ -83,7 +83,7 @@ public class XMLMenuLoader {
 			String text = attr.getValue("text");
 
 			JMenuItem item = new JMenuItem();
-			udjustProperties(item, attr);
+			adjustProperties(item, attr);
 
 			menuStorage.put(name, item);
 			menus.getFirst().add(item);
@@ -93,7 +93,7 @@ public class XMLMenuLoader {
 			JMenu menu = new JMenu();
 			String name = attr.getValue("name");
 
-			udjustProperties(menu, attr);
+			adjustProperties(menu, attr);
 			menuStorage.put(name, menu);
 
 			if (menus.size() != 0) {
@@ -104,7 +104,7 @@ public class XMLMenuLoader {
 			menus.addFirst(menu);
 		}
 
-		public void udjustProperties(JMenuItem menuItem, Attributes attrs) {
+		public void adjustProperties(JMenuItem menuItem, Attributes attrs) {
 			String text = attrs.getValue("text");
 			menuItem.setText(text);
 
