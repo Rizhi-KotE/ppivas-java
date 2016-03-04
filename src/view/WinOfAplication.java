@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -117,6 +118,7 @@ class WinOfAplication {
 		toolBar.add(but2);
 		return toolBar;
 	}
+
 	public void newGraph() {
 		graphPanel = new PaintingPanel();
 		mainFrame.add(graphPanel);
@@ -132,8 +134,6 @@ class WinOfAplication {
 	private void closeFile() {
 		// TODO
 	}
-	
-	
 
 	static public void main(String[] args) {
 		WinOfAplication f = new WinOfAplication();

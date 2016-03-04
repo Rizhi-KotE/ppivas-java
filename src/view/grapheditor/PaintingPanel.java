@@ -3,48 +3,85 @@ package view.grapheditor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 
-import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.event.MouseInputListener;
 
-import Exception.LoopEdgeException;
 import controler.graphEditor.GraphControlerFactory;
-import model.Edge;
-import model.Graph;
-import model.GraphElement;
-import model.Node;
 import view.grapheditor.elements.ShapedComponent;
 
 public class PaintingPanel extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
 
-	private Graph graph;
+	private ViewGraph viewGraph;
+
+	JPopupMenu loadMenuBar() {
+		JPopupMenu currentMenu = new JPopupMenu("Файл");
+
+		JMenuItem menuItem = new JMenuItem("Создать");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		currentMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Открыть");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+		currentMenu.add(menuItem);
+
+		menuItem = new JMenuItem("Закрыть");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+		currentMenu.add(menuItem);
+
+		currentMenu.addSeparator();
+
+		menuItem = new JMenuItem("Выход");
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		currentMenu.add(menuItem);
+		return currentMenu;
+	}
 
 	public PaintingPanel() {
 		super();
-		graph = new Graph();
-		graph.addObserver(this);
+		viewGraph = new ViewGraph(this);
+		viewGraph.addObserver(this);
 		setBackground(new Color(255, 255, 255));
 		setLayout(new BorderLayout());
 		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool", this);
 		addMouseListener(listener);
 		addMouseMotionListener((MouseMotionListener) listener);
-		System.out.println(getLayout().getClass().getName());
 		addContainerListener(new ContainerListener() {
 
 			@Override
@@ -57,31 +94,26 @@ public class PaintingPanel extends JPanel implements Observer {
 				revalidate();
 			}
 		});
-	}
-
-	@Override
-	public Component add(Component comp) {
-		if (!(comp instanceof JLabel))
-			return null;
-		return super.add(comp);
+		System.out.println(getLayout().getClass().getName());
+		setComponentPopupMenu(loadMenuBar());
 	}
 
 	// ------Observer-----------
 
-	public Graph getGraph() {
-		return graph;
+	public ViewGraph getGraph() {
+		return viewGraph;
 	}
 
-	public void setGraph(Graph graph) {
-		this.graph.deleteObserver(this);
-		this.graph = graph;
+	public void setGraph(ViewGraph viewGraph) {
+		this.viewGraph.deleteObserver(this);
+		this.viewGraph = viewGraph;
 	}
 
 	public void update(Observable o, Object arg) {
-		if (graph == null) {
+		if (viewGraph == null) {
 			if (o.getClass().getName().equals("model.Graph"))
 				;
-			setGraph((Graph) o);
+			setGraph((ViewGraph) o);
 		}
 		repaint();
 	}
@@ -100,138 +132,33 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	// ------------------------paint----------------------
-	// -----------elements-------------
-
-	private Shape currentShape;
-	private Node currentNode;
-	private Edge newEdge;
 	// ---------------------node--------------------------
 
-	public void setCurrentNode(Component c) {
-		if (c.getName().equals("ShapedComponent")) {
-			GraphElement el = ((ShapedComponent) c).getElement();
-			if (el.getName().equals("Node")) {
-				currentNode = (Node) el;
-			}
-		}
+	public void setCurrentNode(Component component) {
+		viewGraph.setCurrentNode(component);
+	}
+
+	public void addNode(double x, double y) {
+		getGraph().addNode(x, y);
 	}
 
 	// ----------------------edge-------------------------
 	public void addEdge() {
-		if (currentNode != null) {
-			if (newEdge == null) {
-				newEdge = new Edge(null, null);
-				graph.addEdge(newEdge);
-				ShapedComponent s = new ShapedComponent(newEdge);
-				newEdge.addObserver(s);
-				add(s);
-			}
-
-		}
-		if (newEdge != null) {
-			try {
-				newEdge.addNode(currentNode);
-			} catch (LoopEdgeException e) {
-				graph.deleteEdge(newEdge);
-				newEdge = null;
-				currentNode = null;
-				return;
-			}
-		}
-		if (newEdge != null) {
-			if (newEdge.isComplete())
-				newEdge = null;
-		}
-		currentNode = null;
+		getGraph().addEdge();
 	}
 
 	public void setEdgePoint(int x, int y) {
-		if (currentNode != null) {
-			addEdge();
-		} else if (newEdge != null) {
-			newEdge.fixLastPoint();
-		}
-		revalidate();
+		getGraph().setEdgePoint(x, y);
 	}
 
 	public void setExtraEdgePoint(int x, int y) {
-		if (newEdge != null) {
-			newEdge.setLastPoint(x, y);
-			revalidate();
-		}
+		getGraph().setExtraEdgePoint(x, y);
 	}
-
-	float scale = 1;
-
-	int nodeRadius = 20;
-	// -------paint---------------
-
-	private void paintCurrentShape(Graphics2D g2d) {
-		if (currentShape != null) {
-			g2d.setColor(new Color(125, 0, 0));
-			g2d.draw(currentShape);
-		}
-	}
-
-	private void paintNodes(Graphics2D g2d) {
-		Node nodes[] = getGraph().getNodes();
-
-		if (nodes != null)
-			for (Node n : nodes) {
-
-				Point node = new Point((int) n.getX(), (int) n.getY());
-				Color cl = g2d.getColor();
-
-				if (n.isHighlight()) {
-					g2d.setColor(Color.YELLOW);
-				}
-				if (n.isChoosed()) {
-					g2d.setColor(Color.GREEN);
-				}
-
-				paintNode(g2d, node);
-				g2d.setColor(cl);
-			}
-	}
-
-	private void paintNode(Graphics2D g2d, Point s) {
-		g2d.drawOval(s.x - nodeRadius, s.y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
-	}
-
-	private void paintEdges(Graphics2D g2d) {
-
-	}
-
-	// --------------nodes------------------
-
-	public void addNode(float x, float y) {
-		Node n = new Node(x, y);
-		graph.addNode(n);
-		ShapedComponent s = new ShapedComponent(n);
-		add(s);
-	}
-
-	// ----------------Edge------------------
-
-	public void createEdge(double x, double y) {
-		getGraph().createEdge(x, y);
-	}
-
 	// -------------------Drag------------------
-	public void dragChoosenElementOn(float x, float y) {
-		getGraph().dragChoosenElementOn(x * scale, y * scale);
-	}
 	// -------------------choose----------------
 
-	private Set<ShapedComponent> choose;
-
 	public void choose(ShapedComponent E) {
-		if (choose == null) {
-			choose = new HashSet<ShapedComponent>();
-		}
-		E.setColor(Color.green);
-		E.setChoose(true);
-		choose.add(E);
+		getGraph().choose(E);
 	}
 
 	public boolean choose(Rectangle rect) {
@@ -239,24 +166,7 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	public void clearChoose() {
-		if (choose == null) {
-			choose = new HashSet<ShapedComponent>();
-		}
-		Iterator<ShapedComponent> it = choose.iterator();
-		while (it.hasNext()) {
-			ShapedComponent s = it.next();
-			s.setChoose(false);
-			s.currentColor();
-		}
-		choose.clear();
+		getGraph().clearChoose();
 	}
 
-	public void clearHighlight() {
-		getGraph().clearHighlight();
-	}
-
-	public void setCurrentShape(Shape currentShape) {
-		this.currentShape = currentShape;
-		repaint();
-	}
 }

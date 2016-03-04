@@ -1,31 +1,30 @@
 package view.grapheditor.elements;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.MouseListener;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JLabel;
 
 import controler.graphEditor.GraphControlerFactory;
-import model.GraphElement;
 import view.grapheditor.PaintingPanel;
 
 public class ShapedComponent extends JLabel implements Observer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6388626636136514844L;
+
 	private final String name = "ShapedComponent";
-	private GraphElement shape;
-	private Color color;
-	private boolean choose;
+	private ViewGraphElement shape;
+
 
 	public ShapedComponent() {
 		super();
@@ -59,36 +58,22 @@ public class ShapedComponent extends JLabel implements Observer {
 		});
 	}
 
-	public ShapedComponent(GraphElement s) {
+	public ShapedComponent(ViewGraphElement s) {
 		this();
 		s.addObserver(this);
 		shape = s;
 	}
 
-	public void setShape(GraphElement s) {
+	public void setShape(ViewGraphElement viewGraphElement) {
 		if (shape != null) {
 			shape.deleteObserver(this);
 		}
-		s.addObserver(this);
-		shape = s;
+		viewGraphElement.addObserver(this);
+		shape = viewGraphElement;
 		repaint();
 	}
 
-	public void setChoose(boolean is) {
-		choose = is;
-	}
-
-	public void setColor(Color c) {
-		color = c;
-		repaint();
-	}
-
-	public void currentColor() {
-		if (choose == false) {
-			color = Color.BLACK;
-			repaint();
-		}
-	}
+	
 
 	@Override
 	public boolean contains(int x, int y) {
@@ -98,15 +83,25 @@ public class ShapedComponent extends JLabel implements Observer {
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(color);
+		g2d.setColor(shape.getColor());
 		g2d.setStroke(new BasicStroke(5));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (shape != null) {
-			g2d.draw(shape.getShape());
+			Shape s = shape.getShape();
+			g2d.draw(s);
+			Rectangle2D rect = s.getBounds2D();
+			paintContent(g2d, (float) (rect.getX() + rect.getWidth() / 2),
+					(float) (rect.getY() + rect.getHeight() / 2));
 		}
 	}
 
-	public GraphElement getElement() {
+	private void paintContent(Graphics2D g2d, float x, float y) {
+		String s = shape.getContent();
+		if (s != null)
+			g2d.drawString(s, x, y);
+	}
+
+	public ViewGraphElement getElement() {
 		return shape;
 	}
 
@@ -119,7 +114,6 @@ public class ShapedComponent extends JLabel implements Observer {
 		if (getElement().isChoosed() == true) {
 			PaintingPanel p = (PaintingPanel) getParent();
 			p.choose(this);
-			return;
 		}
 		repaint();
 	}
@@ -127,5 +121,12 @@ public class ShapedComponent extends JLabel implements Observer {
 	@Override
 	public int hashCode() {
 		return getElement().hashCode();
+	}
+	
+	//////////////////////////////////
+	public void setContent(String s){
+		if(shape!=null){
+			shape.setContent(s);
+		}
 	}
 }
