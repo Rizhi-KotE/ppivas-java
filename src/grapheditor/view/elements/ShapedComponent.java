@@ -1,4 +1,4 @@
-package view.grapheditor.elements;
+package grapheditor.view.elements;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics;
@@ -13,8 +13,8 @@ import java.util.Observer;
 
 import javax.swing.JLabel;
 
-import controler.graphEditor.GraphControlerFactory;
-import view.grapheditor.PaintingPanel;
+import grapheditor.controler.mouse.GraphControlerFactory;
+import grapheditor.view.main.PaintingPanel;
 
 public class ShapedComponent extends JLabel implements Observer {
 	/**

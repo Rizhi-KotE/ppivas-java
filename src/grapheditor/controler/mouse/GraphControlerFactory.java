@@ -1,4 +1,4 @@
-package controler.graphEditor;
+package grapheditor.controler.mouse;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.EventListener;
@@ -9,7 +9,7 @@ import java.util.Properties;
 import javax.swing.event.MouseInputListener;
 
 import catchers.ReflectionCatcher;
-import view.grapheditor.PaintingPanel;
+import grapheditor.view.main.PaintingPanel;
 
 public class GraphControlerFactory {
 	private Map<String, EventListener> controlers = null;
@@ -31,9 +31,9 @@ public class GraphControlerFactory {
 
 	private void createProperty() {
 		prop = new Properties();
-		prop.setProperty("Node_tool", "controler.graphEditor.NodeEditor");
-		prop.setProperty("Arc_tool", "controler.graphEditor.ArcEditor");
-		prop.setProperty("ShapedComponent", "controler.graphEditor.SCMouseListener");
+		prop.setProperty("Node_tool", "grapheditor.controler.mouse.NodeEditor");
+		prop.setProperty("Arc_tool", "grapheditor.controler.mouse.ArcEditor");
+		prop.setProperty("ShapedComponent", "grapheditor.controler.mouse.SCMouseListener");
 	}
 
 	public MouseInputListener getMouseInputListener(String s, PaintingPanel ui) {

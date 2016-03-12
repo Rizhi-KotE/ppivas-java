@@ -1,4 +1,4 @@
-package view.grapheditor;
+package grapheditor.view.main;
 
 import java.awt.Component;
 import java.awt.Rectangle;
@@ -9,11 +9,11 @@ import java.util.Observable;
 import java.util.Set;
 
 import Exception.LoopEdgeException;
-import model.Graph;
-import view.grapheditor.elements.ShapedComponent;
-import view.grapheditor.elements.ViewEdge;
-import view.grapheditor.elements.ViewGraphElement;
-import view.grapheditor.elements.ViewNode;
+import grapheditor.model.main.Graph;
+import grapheditor.view.elements.ShapedComponent;
+import grapheditor.view.elements.ViewEdge;
+import grapheditor.view.elements.ViewGraphElement;
+import grapheditor.view.elements.ViewNode;
 
 public class ViewGraph extends Observable {
 
@@ -140,11 +140,11 @@ public class ViewGraph extends Observable {
 	public void setExtraEdgePoint(int x, int y) {
 		if (newEdge != null) {
 			newEdge.setLastPoint(x, y);
-			panel.revalidate();
+			//panel.revalidate();
 		}
 	}
 
-	public void setEdgePoint(int x, int y) {
+	public void fixEdgePoint() {
 		if (currentNode != null) {
 			addEdge();
 		} else if (newEdge != null) {

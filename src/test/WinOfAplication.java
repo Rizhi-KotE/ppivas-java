@@ -1,4 +1,4 @@
-package view;
+package test;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,8 +15,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
 
-import controler.graphEditor.GraphControlerFactory;
-import view.grapheditor.PaintingPanel;
+import grapheditor.controler.mouse.GraphControlerFactory;
+import grapheditor.view.main.PaintingPanel;
 
 class WinOfAplication {
 
