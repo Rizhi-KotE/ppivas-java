@@ -1,4 +1,4 @@
-package view.grapheditor;
+package grapheditor.view.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,8 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MouseInputListener;
 
-import controler.graphEditor.GraphControlerFactory;
-import view.grapheditor.elements.ShapedComponent;
+import grapheditor.controler.mouse.GraphControlerFactory;
+import grapheditor.view.elements.ShapedComponent;
 
 public class PaintingPanel extends JPanel implements Observer {
 
@@ -38,7 +38,6 @@ public class PaintingPanel extends JPanel implements Observer {
 			}
 		});
 		currentMenu.add(menuItem);
-
 		menuItem = new JMenuItem("Открыть");
 		menuItem.addActionListener(new ActionListener() {
 
@@ -48,7 +47,6 @@ public class PaintingPanel extends JPanel implements Observer {
 			}
 		});
 		currentMenu.add(menuItem);
-
 		menuItem = new JMenuItem("Закрыть");
 		menuItem.addActionListener(new ActionListener() {
 
@@ -58,9 +56,7 @@ public class PaintingPanel extends JPanel implements Observer {
 			}
 		});
 		currentMenu.add(menuItem);
-
 		currentMenu.addSeparator();
-
 		menuItem = new JMenuItem("Выход");
 		menuItem.addActionListener(new ActionListener() {
 
@@ -147,8 +143,8 @@ public class PaintingPanel extends JPanel implements Observer {
 		getGraph().addEdge();
 	}
 
-	public void setEdgePoint(int x, int y) {
-		getGraph().setEdgePoint(x, y);
+	public void fixEdgePoint() {
+		getGraph().fixEdgePoint();
 	}
 
 	public void setExtraEdgePoint(int x, int y) {

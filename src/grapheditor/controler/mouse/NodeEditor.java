@@ -1,4 +1,4 @@
-package controler.graphEditor;
+package grapheditor.controler.mouse;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -10,8 +10,9 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
-import view.grapheditor.PaintingPanel;
-import view.grapheditor.elements.*;
+import grapheditor.view.elements.ShapedComponent;
+import grapheditor.view.elements.ViewGraphElement;
+import grapheditor.view.main.PaintingPanel;
 
 class NodeEditor implements MouseInputListener {
 	PaintingPanel panel;

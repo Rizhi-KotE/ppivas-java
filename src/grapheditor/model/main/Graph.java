@@ -1,9 +1,11 @@
-package model;
+package grapheditor.model.main;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
-import view.grapheditor.ViewGraph;
+import grapheditor.model.elements.Edge;
+import grapheditor.model.elements.Node;
+import grapheditor.view.main.ViewGraph;
 
 public class Graph {
 	Collection<Node> nodes;

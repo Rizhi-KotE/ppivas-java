@@ -1,4 +1,4 @@
-package view.grapheditor.elements;
+package grapheditor.view.elements;
 
 import java.awt.Color;
 import java.awt.Shape;
