@@ -25,7 +25,6 @@ public class ShapedComponent extends JLabel implements Observer {
 	private final String name = "ShapedComponent";
 	private ViewGraphElement shape;
 
-
 	public ShapedComponent() {
 		super();
 		addMouseListener(GraphControlerFactory.getInstance().getMouseInputListener("ShapedComponent"));
@@ -73,8 +72,6 @@ public class ShapedComponent extends JLabel implements Observer {
 		repaint();
 	}
 
-	
-
 	@Override
 	public boolean contains(int x, int y) {
 		return shape.contains(x, y);
@@ -113,7 +110,19 @@ public class ShapedComponent extends JLabel implements Observer {
 	public void update(Observable o, Object arg) {
 		if (getElement().isChoosed() == true) {
 			PaintingPanel p = (PaintingPanel) getParent();
+			if (p == null) {
+				return;
+			}
 			p.choose(this);
+		}
+		if (getElement().isDeleted() == true) {
+			PaintingPanel p = (PaintingPanel) getParent();
+			if (p == null) {
+				return;
+			}
+			p.remove(this);
+			p.revalidate();
+			return;
 		}
 		repaint();
 	}
@@ -122,10 +131,10 @@ public class ShapedComponent extends JLabel implements Observer {
 	public int hashCode() {
 		return getElement().hashCode();
 	}
-	
+
 	//////////////////////////////////
-	public void setContent(String s){
-		if(shape!=null){
+	public void setContent(String s) {
+		if (shape != null) {
 			shape.setContent(s);
 		}
 	}

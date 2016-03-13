@@ -43,11 +43,15 @@ public class ViewEdge extends ViewGraphElement {
 			node2 = n;
 			lastPoint = null;
 		}
+		setChanged();
+		notifyObservers();
 	}
 
 	public void addPoint(Point2D p) {
 		if (extraPoints != null)
 			extraPoints.add(p);
+		setChanged();
+		notifyObservers();
 	}
 	// ------------Seters & Getters-------
 
@@ -96,7 +100,7 @@ public class ViewEdge extends ViewGraphElement {
 	}
 
 	@Override
-	public String getName() {
+	public String getType() {
 		return name;
 	}
 
@@ -110,6 +114,9 @@ public class ViewEdge extends ViewGraphElement {
 		if (lastPoint != null) {
 			extraPoints.addLast(lastPoint);
 		}
+
+		setChanged();
+		notifyObservers();
 	}
 
 	public boolean isComplete() {

@@ -90,7 +90,7 @@ public class ViewNode extends ViewGraphElement {
 		boolean bl = obj instanceof ViewNode;
 		return bl && (hashCode() == obj.hashCode());
 	}
-	public String getName(){
+	public String getType(){
 		return name;
 	}
 	
