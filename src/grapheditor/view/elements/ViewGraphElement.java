@@ -9,10 +9,23 @@ abstract public class ViewGraphElement extends Observable {
 
 	private Color color;
 	protected boolean choose;
+	protected boolean isDeleted;
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+		if(isDeleted){
+			setChanged();
+			notifyObservers();
+		}
+	}
 
 	public abstract Shape getShape();
 
-	public abstract String getName();
+	public abstract String getType();
 
 	public boolean isChoosed() {
 		return choose;

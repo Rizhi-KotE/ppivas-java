@@ -59,7 +59,7 @@ public class PaintingPanel extends JPanel implements Observer {
 
 			@Override
 			public void componentRemoved(ContainerEvent e) {
-				revalidate();
+				repaint();
 			}
 
 			@Override
@@ -192,7 +192,7 @@ public class PaintingPanel extends JPanel implements Observer {
 	}
 
 	public void delete() {
-		// TODO
+		viewGraph.delete();
 	}
 
 }

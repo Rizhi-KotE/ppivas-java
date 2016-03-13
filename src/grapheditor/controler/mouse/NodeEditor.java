@@ -114,7 +114,7 @@ class NodeEditor implements MouseInputListener {
 			}
 
 			@Override
-			public String getName() {
+			public String getType() {
 				return "rand";
 			}
 
