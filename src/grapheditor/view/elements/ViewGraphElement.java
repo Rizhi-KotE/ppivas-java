@@ -33,7 +33,9 @@ abstract public class ViewGraphElement extends Observable {
 	public void setChoosed(boolean is) {
 		choose = is;
 		if (is) {
-			setColor(Color.green);
+			color = Color.green;
+			setChanged();
+			notifyObservers();
 		} else {
 			currentColor();
 		}
@@ -44,9 +46,11 @@ abstract public class ViewGraphElement extends Observable {
 	}
 
 	public void setColor(Color c) {
-		color = c;
-		setChanged();
-		notifyObservers();
+		if (choose == false) {
+			color = c;
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	public void currentColor() {
