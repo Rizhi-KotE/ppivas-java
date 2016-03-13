@@ -3,6 +3,9 @@ package grapheditor.view.main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +13,7 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
+import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -20,6 +23,8 @@ import javax.swing.Action;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
 import javax.swing.event.MouseInputListener;
 
 import grapheditor.controler.action.CopyAction;
@@ -31,7 +36,7 @@ import grapheditor.controler.mouse.GraphControlerFactory;
 import grapheditor.view.elements.ShapedComponent;
 import grapheditor.view.menu.GraphPopupMenu;
 
-public class PaintingPanel extends JPanel implements Observer {
+public class PaintingPanel extends JPanel implements Observer, Scrollable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,6 +55,7 @@ public class PaintingPanel extends JPanel implements Observer {
 		super();
 		viewGraph = new ViewGraph(this);
 		viewGraph.addObserver(this);
+		setPreferredSize(new Dimension(5000, 5000));
 		setBackground(new Color(255, 255, 255));
 		setLayout(new BorderLayout());
 		MouseListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool", this);
@@ -194,5 +200,30 @@ public class PaintingPanel extends JPanel implements Observer {
 	public void delete() {
 		viewGraph.delete();
 	}
+	// --------------------scroll---------------
 
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return getSize();
+	}
+
+	@Override
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 10;
+	}
+
+	@Override
+	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 10;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportWidth() {
+		return false;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		return false;
+	}
 }

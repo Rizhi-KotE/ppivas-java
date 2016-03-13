@@ -15,6 +15,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
 
@@ -127,7 +128,8 @@ class WinOfAplication {
 
 	public void newGraph() {
 		graphPanel = new PaintingPanel();
-		mainFrame.add(graphPanel);
+		JScrollPane scrolPane = new JScrollPane(graphPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		mainFrame.add(scrolPane);
 		toolBar = createToolBar();
 		mainFrame.add(toolBar, BorderLayout.NORTH);
 		mainFrame.pack();
