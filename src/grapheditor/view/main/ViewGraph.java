@@ -103,7 +103,7 @@ public class ViewGraph extends Observable {
 		if (currentNode != null) {
 			if (newEdge == null) {
 				newEdge = new ViewEdge(null, null);
-		
+
 				ShapedComponent s = new ShapedComponent(newEdge);
 				newEdge.addObserver(s);
 				panel.add(s);
@@ -140,7 +140,7 @@ public class ViewGraph extends Observable {
 	public void setExtraEdgePoint(int x, int y) {
 		if (newEdge != null) {
 			newEdge.setLastPoint(x, y);
-			//panel.revalidate();
+			// panel.revalidate();
 		}
 	}
 
@@ -157,33 +157,49 @@ public class ViewGraph extends Observable {
 
 	Set<ViewGraphElement> choose;
 
+	private boolean pressButton = false;
+
+	private void choose(ViewGraphElement e, boolean b) {
+		if (b) {
+			e.setChoosed(b);
+			choose.add(e);
+		} else {
+			e.setChoosed(b);
+			choose.remove(e);
+		}
+		if (choose.size() == 1) {
+			panel.getActionEvent("IdentifierAction").setEnabled(true);
+		} else {
+			panel.getActionEvent("IdentifierAction").setEnabled(false);
+		}
+	}
+
 	public boolean choose(Rectangle rect) {
+		pressButton = true;
 		Iterator<ViewNode> it = nodes.iterator();
 		while (it.hasNext()) {
 			ViewNode n = it.next();
 			if (n.getShape().intersects(rect)) {
-				n.setChoosed(true);
-				choose.add(n);
+				choose(n, true);
 			}
 		}
 		Iterator<ViewEdge> et = edges.iterator();
 		while (et.hasNext()) {
 			ViewEdge n = et.next();
 			if (n.getShape().intersects(rect)) {
-				n.setChoosed(true);
-				choose.add(n);
+				choose(n, true);
 			}
 		}
+		pressButton = false;
 		return false;
 	}
 
 	public void choose(ShapedComponent E) {
-		if (choose == null) {
-			choose = new HashSet<ViewGraphElement>();
+		if (!pressButton) {
+			clearChoose();
 		}
 		if (E.getElement().isChoosed() == false) {
-			E.getElement().setChoosed(true);
-			choose.add(E.getElement());
+			choose(E.getElement(), true);
 		}
 	}
 
@@ -191,12 +207,10 @@ public class ViewGraph extends Observable {
 		if (choose == null) {
 			choose = new HashSet<ViewGraphElement>();
 		}
-		Iterator<ViewGraphElement> it = choose.iterator();
-		while (it.hasNext()) {
-			ViewGraphElement s = it.next();
-			s.setChoosed(false);
+		Object[] it = choose.toArray();
+		for (Object s : it) {
+			choose((ViewGraphElement) s, false);
 		}
-		choose.clear();
 	}
 
 	// ----------------Drag----------------
@@ -222,5 +236,14 @@ public class ViewGraph extends Observable {
 
 	public void setGraph(Graph graph) {
 		this.graph = graph;
+	}
+	// -----------names-----------------
+
+	public void addName(String s) {
+		Iterator<ViewGraphElement> it = choose.iterator();
+		while (it.hasNext()) {
+			ViewGraphElement e = it.next();
+			e.setContent(s);
+		}
 	}
 }

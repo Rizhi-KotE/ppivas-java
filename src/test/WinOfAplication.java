@@ -6,15 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
 
+import grapheditor.controler.action.IdentifierAction;
 import grapheditor.controler.mouse.GraphControlerFactory;
 import grapheditor.view.main.PaintingPanel;
 
@@ -88,6 +92,8 @@ class WinOfAplication {
 		currentMenu.add(menuItem);
 
 		menuBar.add(currentMenu);
+		JMenu menu = new JMenu("Правка");
+		menuBar.add(menu);
 		mainFrame.setJMenuBar(menuBar);
 		return menuBar;
 	}
@@ -125,6 +131,13 @@ class WinOfAplication {
 		toolBar = createToolBar();
 		mainFrame.add(toolBar, BorderLayout.NORTH);
 		mainFrame.pack();
+		JMenu menu = menuBar.getMenu(1);
+		menu.add(new JMenuItem(graphPanel.getActionEvent("CopyAction")));
+		menu.add(new JMenuItem(graphPanel.getActionEvent("PasteAction")));
+		menu.add(new JMenuItem(graphPanel.getActionEvent("CutAction")));
+		menu.add(new JMenuItem(graphPanel.getActionEvent("DeleteAction")));
+		menuBar.add(menu);
+		menuBar.revalidate();
 	}
 
 	private void openFile() {
