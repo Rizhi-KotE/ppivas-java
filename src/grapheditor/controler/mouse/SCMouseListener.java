@@ -14,7 +14,11 @@ public class SCMouseListener implements MouseInputListener {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// redirectEvent(e.getComponent().getParent(), e);
+		PaintingPanel parent = (PaintingPanel) e.getComponent().getParent();
+		MouseMotionListener m[] = parent.getMouseMotionListeners();
+		for (MouseMotionListener l : m) {
+			l.mouseDragged(e);
+		}
 	}
 
 	@Override

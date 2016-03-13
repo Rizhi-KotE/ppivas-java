@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 public class Nfaf extends JPanel {
 	public Nfaf() {
@@ -15,16 +18,15 @@ public class Nfaf extends JPanel {
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		super.paintComponents(g);
+	public void paintComponent(Graphics g) {
+		// super.paintComponent(g);
 		if (image == null) {
 			image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-		} else {
+			// } else {
 			image.createGraphics().setColor(Color.black);
 			image.createGraphics().fillOval(50, 50, 50, 50);
 		}
 		g.drawImage(image, 0, 0, null);
-		g.drawLine(50, 50, 68, 68);
 	}
 
 	private BufferedImage image;

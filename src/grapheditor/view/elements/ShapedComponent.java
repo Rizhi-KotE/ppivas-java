@@ -113,7 +113,7 @@ public class ShapedComponent extends JLabel implements Observer {
 			if (p == null) {
 				return;
 			}
-			p.choose(this);
+			//p.choose(this);
 		}
 		if (getElement().isDeleted() == true) {
 			PaintingPanel p = (PaintingPanel) getParent();

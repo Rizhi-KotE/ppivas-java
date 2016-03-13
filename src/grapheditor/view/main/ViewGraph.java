@@ -2,6 +2,7 @@ package grapheditor.view.main;
 
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.event.ContainerEvent;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Observable;
 import java.util.Set;
 
 import Exception.LoopEdgeException;
+import frm.Clipboard;
 import grapheditor.model.main.Graph;
 import grapheditor.view.elements.ShapedComponent;
 import grapheditor.view.elements.ViewEdge;
@@ -43,15 +45,15 @@ public class ViewGraph extends Observable {
 
 	public void addNode(double x, double y) {
 		ViewNode n = new ViewNode(x, y);
-		ShapedComponent s = new ShapedComponent(n);
-		panel.add(s);
-		n.addObserver(s);
 		addNode(n);
 	}
 
 	public void addNode(ViewNode n) {
-		// TODO
+		ShapedComponent s = new ShapedComponent(n);
+		n.addObserver(s);
+		panel.add(s);
 		nodes.add(n);
+		panel.validate();
 	}
 
 	public void setCurrentNode(Component component) {
@@ -64,8 +66,8 @@ public class ViewGraph extends Observable {
 	}
 
 	public void removeNode(ViewNode n) {
-		// TODO
 		nodes.remove(n);
+		choose.remove(n);
 	}
 
 	// --------------------Edges------------------
@@ -78,7 +80,6 @@ public class ViewGraph extends Observable {
 				ShapedComponent s = new ShapedComponent(newEdge);
 				newEdge.addObserver(s);
 				panel.add(s);
-				addEdge(newEdge);
 			}
 
 		}
@@ -87,52 +88,34 @@ public class ViewGraph extends Observable {
 				newEdge.addNode(currentNode);
 			} catch (LoopEdgeException e) {
 				deleteEdge(newEdge);
-				newEdge = null;
+				newEdge.setDeleted(true);
 				currentNode = null;
 				return;
 			}
 		}
 		if (newEdge != null) {
-			if (newEdge.isComplete())
+			if (newEdge.isComplete()) {
+				completeEdge(newEdge);
 				newEdge = null;
+			}
 		}
 		currentNode = null;
 	}
 
 	public void addEdge(ViewEdge e) {
-		if (currentNode != null) {
-			if (newEdge == null) {
-				newEdge = new ViewEdge(null, null);
+		if (e.isComplete()) {
+			ShapedComponent s = new ShapedComponent(e);
+			e.addObserver(s);
+			panel.add(s);
+			edges.add(e);
 
-				ShapedComponent s = new ShapedComponent(newEdge);
-				newEdge.addObserver(s);
-				panel.add(s);
-			}
-			completeEdge(newEdge);
+			panel.validate();
 		}
-		if (newEdge != null) {
-			try {
-				newEdge.addNode(currentNode);
-			} catch (LoopEdgeException e1) {
-				deleteEdge(newEdge);
-				newEdge = null;
-				currentNode = null;
-				return;
-			}
-		}
-		if (newEdge != null) {
-			if (newEdge.isComplete())
-				newEdge = null;
-		}
-		currentNode = null;
 	}
 
 	private void completeEdge(ViewEdge e) {
 		edges.add(e);
-
 	}
-
-
 
 	public void setExtraEdgePoint(int x, int y) {
 		if (newEdge != null) {
@@ -164,16 +147,7 @@ public class ViewGraph extends Observable {
 			e.setChoosed(b);
 			choose.remove(e);
 		}
-		if (choose.size() == 1) {
-			panel.getActionEvent("IdentifierAction").setEnabled(true);
-		} else {
-			panel.getActionEvent("IdentifierAction").setEnabled(false);
-		}
-		if(choose.size()>0){
-			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(true);
-		}else{
-			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(false);
-		}
+		revalidateActions();
 	}
 
 	public boolean choose(Rectangle rect) {
@@ -213,6 +187,7 @@ public class ViewGraph extends Observable {
 		for (Object s : it) {
 			choose((ViewGraphElement) s, false);
 		}
+		choose.clear();
 	}
 
 	// ----------------Drag----------------
@@ -222,8 +197,6 @@ public class ViewGraph extends Observable {
 			ViewGraphElement n = it.next();
 			n.drag(dx, dy);
 		}
-		setChanged();
-		notifyObservers();
 	}
 
 	public String getIDName() {
@@ -248,35 +221,84 @@ public class ViewGraph extends Observable {
 			e.setContent(s);
 		}
 	}
-	
-	//-----------------------delete-------
-	public void delete(){
-		Object[] el =  choose.toArray();
-		for(Object a:el){
-			if(a.getClass().getName()==ViewNode.class.getName()){
+
+	// -----------------------delete-------
+	public void delete() {
+		Object[] el = choose.toArray();
+		for (Object a : el) {
+			if (a.getClass().getName() == ViewNode.class.getName()) {
 				ViewNode n = (ViewNode) a;
 				deleteNode(n);
 				n.setDeleted(true);
 			}
-			if(a.getClass().getName()==ViewEdge.class.getName()){
+			if (a.getClass().getName() == ViewEdge.class.getName()) {
 				ViewEdge n = (ViewEdge) a;
 				deleteEdge(n);
 				n.setDeleted(true);
 			}
-		
+
 		}
+		revalidateActions();
 		choose.clear();
 	}
-	
+
+	private void revalidateActions() {
+		if (choose.size() == 1) {
+			panel.getActionEvent("IdentifierAction").setEnabled(true);
+		} else {
+			panel.getActionEvent("IdentifierAction").setEnabled(false);
+		}
+		if (choose.size() > 0) {
+			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(true);
+			panel.getActionEvent(PaintingPanel.COPY_ACTION).setEnabled(true);
+		} else {
+			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(false);
+			panel.getActionEvent(PaintingPanel.COPY_ACTION).setEnabled(false);
+
+		}
+		if (Clipboard.getInstance().isEmpty()) {
+			panel.getActionEvent(PaintingPanel.PASTE_ACTION).setEnabled(true);
+		} else {
+			panel.getActionEvent(PaintingPanel.PASTE_ACTION).setEnabled(false);
+		}
+	}
+
 	private void deleteNode(ViewNode a) {
 		nodes.remove(a);
-		
+
 	}
 
 	public void deleteEdge(ViewEdge e) {
 		// TODO
 		edges.remove(e);
 	}
-	
-	
+
+	// -------------------corrections-------
+	public void copy() {
+		Clipboard.getInstance().addToClipboard(choose);
+		revalidateActions();
+	}
+
+	public void paste() {
+		Clipboard.Graph g = Clipboard.getInstance().pasteFromClipboard();
+		for (ViewNode e : g.getNodes()) {
+			addNode(e);
+		}
+		for (ViewEdge e : g.getEdges()) {
+			addEdge(e);
+		}
+	}
+
+	public void cut() {
+		revalidateActions();
+	}
+
+	public void changeListener() {
+		clearChoose();
+		currentNode = null;
+		if (newEdge != null) {
+			newEdge.setDeleted(true);
+			newEdge = null;
+		}
+	}
 }

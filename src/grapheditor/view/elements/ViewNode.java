@@ -11,7 +11,7 @@ public class ViewNode extends ViewGraphElement {
 	// -----------------Fields-------------
 	private double x;
 	private double y;
-	private double radius;
+	private double radius = 20;
 	private String idth;
 	private int hash;
 
@@ -19,10 +19,13 @@ public class ViewNode extends ViewGraphElement {
 
 	// -------------------Constructors------
 	private ViewNode() {
-		hash = Counter.getNextNum(ViewGraphElement.class);
-		radius = 20;
+		super();
 	}
 
+	public ViewNode(ViewNode n){
+		x = n.x;
+		y = n.y;
+	}
 	public ViewNode(String anId) {
 		this();
 		setIdth(anId);
@@ -80,15 +83,51 @@ public class ViewNode extends ViewGraphElement {
 		this.highlight = highlight;
 	}
 
-	// -----------------For sets------------------------
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
 	public int hashCode() {
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
-		boolean bl = obj instanceof ViewNode;
-		return bl && (hashCode() == obj.hashCode());
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ViewNode)) {
+			return false;
+		}
+		ViewNode other = (ViewNode) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y)) {
+			return false;
+		}
+		return true;
 	}
 	public String getType(){
 		return name;
@@ -97,5 +136,12 @@ public class ViewNode extends ViewGraphElement {
 	@Override
 	public boolean contains(int x, int y) {
 		return getShape().contains(x, y);
+	}
+	@Override
+	public void drag(double dx, double dy) {
+		x+=dx;
+		y+=dy;
+		setChanged();
+		notifyObservers();
 	}
 }

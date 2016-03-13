@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.Scrollable;
 import javax.swing.event.MouseInputListener;
 
+import frm.Clipboard;
 import grapheditor.controler.action.CopyAction;
 import grapheditor.controler.action.CutAction;
 import grapheditor.controler.action.DeleteAction;
@@ -107,15 +108,25 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 
 	public void changeMouseListener(MouseInputListener listener) {
 		MouseListener[] l1 = getMouseListeners();
+		boolean b = false;
 		for (MouseListener i : l1) {
-			removeMouseListener(i);
+			if (!i.equals(listener)) {
+				removeMouseListener(i);
+				b |= true;
+			}
 		}
 		MouseMotionListener[] l2 = getMouseMotionListeners();
 		for (MouseMotionListener i : l2) {
-			removeMouseMotionListener(i);
+			if (!i.equals(listener)) {
+				removeMouseMotionListener(i);
+				b |= true;
+			}
 		}
-		addMouseListener(listener);
-		addMouseMotionListener(listener);
+		if (b) {
+			addMouseListener(listener);
+			addMouseMotionListener(listener);
+			viewGraph.changeListener();
+		}
 	}
 
 	// ------------------------paint----------------------
@@ -142,6 +153,10 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 		getGraph().setExtraEdgePoint(x, y);
 	}
 	// -------------------Drag------------------
+
+	public void drag(double dx, double dy) {
+		viewGraph.dragChoosenElementOn(dx, dy);
+	}
 	// -------------------choose----------------
 
 	public void choose(ShapedComponent E) {
@@ -186,11 +201,12 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 
 	// -------------------corrections-------
 	public void copy() {
-		// TODO
+		viewGraph.copy();
+
 	}
 
 	public void paste() {
-		// TODO
+		viewGraph.paste();
 	}
 
 	public void cut() {
