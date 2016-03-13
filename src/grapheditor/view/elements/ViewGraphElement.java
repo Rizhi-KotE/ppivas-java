@@ -26,6 +26,8 @@ abstract public class ViewGraphElement extends Observable {
 
 	public void setContent(String s) {
 		content = s;
+		setChanged();
+		notifyObservers();
 	}
 
 	public void setChoosed(boolean is) {

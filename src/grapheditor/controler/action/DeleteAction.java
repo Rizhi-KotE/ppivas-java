@@ -5,27 +5,25 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import grapheditor.view.main.PaintingPanel;
 
-public class IdentifierAction extends AbstractAction {
+public class DeleteAction extends AbstractAction {
 
 	private PaintingPanel panel;
 
-	private IdentifierAction() {
+	private DeleteAction() {
 		super();
-		putValue(AbstractAction.NAME, "Identifier");
-		putValue(AbstractAction.MNEMONIC_KEY, new Integer('I'));
+		putValue(AbstractAction.NAME, "Delete");
+		putValue(AbstractAction.MNEMONIC_KEY, new Integer('D'));
 		//putValue(ACCELERATOR_KEY, KeyStroke.get);
 		setEnabled(false);
 	}
 
-	public IdentifierAction(PaintingPanel p) {
+	public DeleteAction(PaintingPanel p) {
 		this();
 		panel = p;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String s = new String();
-		s = JOptionPane.showInputDialog("Identifier");
-		panel.setContent(s);
+		panel.delete();
 	}
 }

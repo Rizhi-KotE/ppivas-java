@@ -13,6 +13,7 @@ import javax.swing.event.MouseInputListener;
 import grapheditor.view.elements.ShapedComponent;
 import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.main.PaintingPanel;
+import grapheditor.view.menu.GraphPopupMenu;
 
 class NodeEditor implements MouseInputListener {
 	PaintingPanel panel;
@@ -26,27 +27,32 @@ class NodeEditor implements MouseInputListener {
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		int count = e.getClickCount();
-		if (e.getSource().equals(panel)) {
-			if (count == 2) {
-				panel.addNode(e.getX(), e.getY());
-				return;
-			}
-			panel.clearChoose();
-		} else if (e.getSource() instanceof ShapedComponent) {
-			if (false) {
-
-			} else {
+		switch (e.getButton()) {
+		case MouseEvent.BUTTON1: {
+			int count = e.getClickCount();
+			if (e.getSource().equals(panel)) {
+				if (count == 2) {
+					panel.addNode(e.getX(), e.getY());
+					return;
+				}
 				panel.clearChoose();
+			} else if (e.getSource() instanceof ShapedComponent) {
 				panel.choose((ShapedComponent) e.getComponent());
 			}
+			break;
 		}
-
-		/*
-		 * else {
-		 * 
-		 * isChoose = panel.choose(x, y); } lastClick = click;
-		 */
+		case MouseEvent.BUTTON3: {
+			int type = GraphPopupMenu.COPY_PASTE;
+			if (e.getSource() instanceof ShapedComponent) {
+				panel.choose((ShapedComponent) e.getComponent());
+				type |= GraphPopupMenu.NODE_OPERATION;
+			}
+			panel.getPopupMenu().show(panel, e.getX(), e.getY(), type);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -55,14 +61,14 @@ class NodeEditor implements MouseInputListener {
 
 	public void mouseReleased(MouseEvent e) {
 		oldP = null;
-		if(choosePanel!=null){
-			JComponent c = (JComponent)e.getComponent();
+		if (choosePanel != null) {
+			JComponent c = (JComponent) e.getComponent();
 			c.remove(choosePanel);
-			choosePanel=null;
+			choosePanel = null;
 			c.repaint();
 		}
-		if(chooseRectangle!=null){
-			chooseRectangle=null;
+		if (chooseRectangle != null) {
+			chooseRectangle = null;
 		}
 	}
 
@@ -78,6 +84,7 @@ class NodeEditor implements MouseInputListener {
 	private Point2D oldP;
 	private ShapedComponent choosePanel;
 	private Rectangle2D chooseRectangle;
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		int x = e.getX();
@@ -93,10 +100,9 @@ class NodeEditor implements MouseInputListener {
 			JComponent a = (JComponent) e.getComponent();
 			a.add(choosePanel);
 		}
-		if(chooseRectangle==null){
+		if (chooseRectangle == null) {
 			chooseRectangle = new Rectangle2D.Double(Math.min(oldP.getX(), x), Math.min(oldP.getY(), y), w, h);
-		}
-		else{
+		} else {
 			chooseRectangle.setRect(Math.min(oldP.getX(), x), Math.min(oldP.getY(), y), w, h);
 		}
 		choosePanel.setShape(new ViewGraphElement() {
@@ -126,7 +132,6 @@ class NodeEditor implements MouseInputListener {
 		int oldY = (int) oldP.getY();
 
 		if (isChoose) {
-			//panel.dragChoosenElementOn(x - oldX, y - oldY);
 			oldP.setLocation(x, y);
 		} else {
 			panel.clearChoose();
