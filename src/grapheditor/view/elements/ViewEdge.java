@@ -87,16 +87,55 @@ public class ViewEdge extends ViewGraphElement {
 		return new Line2D.Double(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
 	}
 
-	// --------------For sets--------------
 	@Override
 	public int hashCode() {
-		return hash;
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((extraPoints == null) ? 0 : extraPoints.hashCode());
+		result = prime * result + hash;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((node1 == null) ? 0 : node1.hashCode());
+		result = prime * result + ((node2 == null) ? 0 : node2.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(radius);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		boolean bl = obj instanceof ViewEdge;
-		return bl && (hashCode() == obj.hashCode());
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ViewEdge other = (ViewEdge) obj;
+		if (extraPoints == null) {
+			if (other.extraPoints != null)
+				return false;
+		} else if (!extraPoints.equals(other.extraPoints))
+			return false;
+		if (hash != other.hash)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (node1 == null) {
+			if (other.node1 != null)
+				return false;
+		} else if (!node1.equals(other.node1))
+			return false;
+		if (node2 == null) {
+			if (other.node2 != null)
+				return false;
+		} else if (!node2.equals(other.node2))
+			return false;
+		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius))
+			return false;
+		return true;
 	}
 
 	@Override
