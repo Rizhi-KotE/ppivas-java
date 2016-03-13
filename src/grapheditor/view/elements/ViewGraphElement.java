@@ -7,9 +7,17 @@ import java.util.Observable;
 abstract public class ViewGraphElement extends Observable {
 	private String content;
 
-	private Color color;
+	private Color color = Color.BLACK;
 	protected boolean choose;
 	protected boolean isDeleted;
+
+	public ViewGraphElement() {
+		super();
+	}
+
+	public ViewGraphElement(ViewGraphElement s) {
+		content = s.content;
+	}
 
 	public boolean isDeleted() {
 		return isDeleted;
@@ -17,7 +25,7 @@ abstract public class ViewGraphElement extends Observable {
 
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
-		if(isDeleted){
+		if (isDeleted) {
 			setChanged();
 			notifyObservers();
 		}
@@ -44,13 +52,15 @@ abstract public class ViewGraphElement extends Observable {
 	}
 
 	public void setChoosed(boolean is) {
-		choose = is;
-		if (is) {
-			color = Color.green;
-			setChanged();
-			notifyObservers();
-		} else {
-			currentColor();
+		if (choose != is) {
+			choose = is;
+			if (is) {
+				color = Color.green;
+				setChanged();
+				notifyObservers();
+			} else {
+				currentColor();
+			}
 		}
 	}
 
@@ -75,7 +85,5 @@ abstract public class ViewGraphElement extends Observable {
 	}
 
 	// -------------------------------drag--------------
-	public void drag(double dx, double dy) {
-		// TODO
-	}
+	public abstract void drag(double dx, double dy);
 }
