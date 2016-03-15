@@ -13,6 +13,7 @@ abstract public class ViewGraphElement extends Observable {
 
 	public ViewGraphElement() {
 		super();
+		
 	}
 
 	public ViewGraphElement(ViewGraphElement s) {

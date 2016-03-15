@@ -80,7 +80,7 @@ class NodeEditor implements MouseInputListener {
 	}
 
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		oldP = null;
 
 	}
 
@@ -93,7 +93,7 @@ class NodeEditor implements MouseInputListener {
 	public void mouseDragged(MouseEvent e) {
 		if (rectChoose == false) {
 			if (e.getComponent().getClass().equals(ShapedComponent.class)) {
-				if(oldP==null){
+				if (oldP == null) {
 					oldP = new Point2D.Double(e.getX(), e.getY());
 				}
 				panel.drag(e.getX() - oldP.getX(), e.getY() - oldP.getY());
@@ -145,7 +145,7 @@ class NodeEditor implements MouseInputListener {
 
 			public void drag(double dx, double dy) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		int oldX = (int) oldP.getX();

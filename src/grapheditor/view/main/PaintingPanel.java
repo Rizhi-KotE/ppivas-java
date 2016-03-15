@@ -242,4 +242,13 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 	public boolean getScrollableTracksViewportHeight() {
 		return false;
 	}
+	
+	//-----------------------------save/open------------------------------
+	public void open(String s){
+		viewGraph.open(s);
+	}
+	
+	public void save(String s){
+		viewGraph.save(s);
+	}
 }

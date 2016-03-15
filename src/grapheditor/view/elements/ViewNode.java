@@ -20,9 +20,11 @@ public class ViewNode extends ViewGraphElement {
 	// -------------------Constructors------
 	private ViewNode() {
 		super();
+		hash = Counter.getNextNum(ViewNode.class);
 	}
 
 	public ViewNode(ViewNode n){
+		this();
 		x = n.x;
 		y = n.y;
 	}
@@ -90,11 +92,12 @@ public class ViewNode extends ViewGraphElement {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + hash;
+		result = prime * result + (highlight ? 1231 : 1237);
+		result = prime * result + ((idth == null) ? 0 : idth.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		long temp;
-		temp = Double.doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(y);
+		temp = Double.doubleToLongBits(radius);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
@@ -114,6 +117,19 @@ public class ViewNode extends ViewGraphElement {
 			return false;
 		}
 		ViewNode other = (ViewNode) obj;
+		if (hash != other.hash) {
+			return false;
+		}
+		if (highlight != other.highlight) {
+			return false;
+		}
+		if (idth == null) {
+			if (other.idth != null) {
+				return false;
+			}
+		} else if (!idth.equals(other.idth)) {
+			return false;
+		}
 		if (name == null) {
 			if (other.name != null) {
 				return false;
@@ -121,10 +137,7 @@ public class ViewNode extends ViewGraphElement {
 		} else if (!name.equals(other.name)) {
 			return false;
 		}
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x)) {
-			return false;
-		}
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y)) {
+		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius)) {
 			return false;
 		}
 		return true;

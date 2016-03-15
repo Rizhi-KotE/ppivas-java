@@ -10,11 +10,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
@@ -69,12 +71,12 @@ class WinOfAplication {
 		});
 		currentMenu.add(menuItem);
 
-		menuItem = new JMenuItem("Закрыть");
+		menuItem = new JMenuItem("Сохранить как");
 		menuItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				closeFile();
+				saveFile();
 
 			}
 		});
@@ -133,6 +135,8 @@ class WinOfAplication {
 		toolBar = createToolBar();
 		mainFrame.add(toolBar, BorderLayout.NORTH);
 		mainFrame.pack();
+		JMenu m = menuBar.getMenu(0);
+		m.getItem(0).setEnabled(false);
 		JMenu menu = menuBar.getMenu(1);
 		menu.add(new JMenuItem(graphPanel.getActionEvent("CopyAction")));
 		menu.add(new JMenuItem(graphPanel.getActionEvent("PasteAction")));
@@ -143,11 +147,17 @@ class WinOfAplication {
 	}
 
 	private void openFile() {
-		// TODO
+		JFileChooser chooser = new JFileChooser();
+		chooser.showOpenDialog(mainFrame);
+		String file = chooser.getSelectedFile().getPath();
+		graphPanel.open(file);
 	}
 
-	private void closeFile() {
-		// TODO
+	private void saveFile() {
+		JFileChooser chooser = new JFileChooser();
+		chooser.showSaveDialog(mainFrame);
+		String file = chooser.getSelectedFile().getPath();
+		graphPanel.save(file);
 	}
 
 	static public void main(String[] args) {

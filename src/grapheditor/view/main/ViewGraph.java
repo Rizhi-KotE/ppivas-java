@@ -3,6 +3,7 @@ package grapheditor.view.main;
 import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.ContainerEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,7 +11,9 @@ import java.util.Observable;
 import java.util.Set;
 
 import Exception.LoopEdgeException;
+import frm.ClipGraph;
 import frm.Clipboard;
+import frm.SaveGraph;
 import grapheditor.model.main.Graph;
 import grapheditor.view.elements.ShapedComponent;
 import grapheditor.view.elements.ViewEdge;
@@ -46,6 +49,7 @@ public class ViewGraph extends Observable {
 	public void addNode(double x, double y) {
 		ViewNode n = new ViewNode(x, y);
 		addNode(n);
+
 	}
 
 	public void addNode(ViewNode n) {
@@ -54,6 +58,7 @@ public class ViewGraph extends Observable {
 		panel.add(s);
 		nodes.add(n);
 		panel.validate();
+		graph.addNode(n);
 	}
 
 	public void setCurrentNode(Component component) {
@@ -110,11 +115,13 @@ public class ViewGraph extends Observable {
 			edges.add(e);
 
 			panel.validate();
+			graph.addEdge(e);
 		}
 	}
 
 	private void completeEdge(ViewEdge e) {
 		edges.add(e);
+		graph.addEdge(e);
 	}
 
 	public void setExtraEdgePoint(int x, int y) {
@@ -229,7 +236,7 @@ public class ViewGraph extends Observable {
 			if (a.getClass().getName() == ViewNode.class.getName()) {
 				ViewNode n = (ViewNode) a;
 				deleteNode(n);
-				n.setDeleted(true);
+
 			}
 			if (a.getClass().getName() == ViewEdge.class.getName()) {
 				ViewEdge n = (ViewEdge) a;
@@ -264,13 +271,20 @@ public class ViewGraph extends Observable {
 	}
 
 	private void deleteNode(ViewNode a) {
+		Iterator<ViewEdge> it = graph.incidentEdgeIterator(a);
+		while (it.hasNext()) {
+			ViewEdge e = it.next();
+			deleteEdge(e);
+		}
+		graph.deleteNode(a);
 		nodes.remove(a);
+		a.setDeleted(true);
 
 	}
 
 	public void deleteEdge(ViewEdge e) {
-		// TODO
 		edges.remove(e);
+		e.setDeleted(true);
 	}
 
 	// -------------------corrections-------
@@ -280,7 +294,11 @@ public class ViewGraph extends Observable {
 	}
 
 	public void paste() {
-		Clipboard.Graph g = Clipboard.getInstance().pasteFromClipboard();
+		ClipGraph g = Clipboard.getInstance().pasteFromClipboard();
+		paste(g);
+	}
+	
+	public void paste(ClipGraph g) {
 		for (ViewNode e : g.getNodes()) {
 			addNode(e);
 		}
@@ -300,5 +318,21 @@ public class ViewGraph extends Observable {
 			newEdge.setDeleted(true);
 			newEdge = null;
 		}
+	}
+
+	// -----------------------------------save-open----------
+	public void save(String s){
+		SaveGraph save = new SaveGraph();
+		Collection<ViewGraphElement> elements = new ArrayList<ViewGraphElement>(nodes);
+		elements.addAll(edges);
+		save.save(s, elements);
+	}
+	
+	public void open(String s){
+		SaveGraph open = new SaveGraph();
+		Collection<ViewGraphElement> elements = new ArrayList<ViewGraphElement>(nodes);
+		elements.addAll(edges);
+		ClipGraph graph = open.loadGraph(s);
+		paste(graph);
 	}
 }
