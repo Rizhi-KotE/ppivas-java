@@ -171,6 +171,8 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 		getGraph().clearChoose();
 	}
 
+	// ---------------------actions---------------
+
 	public void putActionEvent(String s, Action a) {
 		actionEvents.put(s, a);
 	}
@@ -242,13 +244,13 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 	public boolean getScrollableTracksViewportHeight() {
 		return false;
 	}
-	
-	//-----------------------------save/open------------------------------
-	public void open(String s){
+
+	// -----------------------------save/open------------------------------
+	public void open(String s) {
 		viewGraph.open(s);
 	}
-	
-	public void save(String s){
+
+	public void save(String s) {
 		viewGraph.save(s);
 	}
 }

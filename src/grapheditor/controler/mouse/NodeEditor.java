@@ -72,7 +72,7 @@ class NodeEditor implements MouseInputListener {
 			chooseRectangle = null;
 		}
 		oldP = null;
-		rectChoose = false;
+		isRectChoose = false;
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -80,28 +80,30 @@ class NodeEditor implements MouseInputListener {
 	}
 
 	public void mouseExited(MouseEvent e) {
-		oldP = null;
 
 	}
 
 	private Point2D oldP;
 	private ShapedComponent choosePanel;
 	private Rectangle2D chooseRectangle;
-	private boolean rectChoose = false;
+	private boolean isRectChoose = false;
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (rectChoose == false) {
+		if (isRectChoose == false) {
 			if (e.getComponent().getClass().equals(ShapedComponent.class)) {
 				if (oldP == null) {
 					oldP = new Point2D.Double(e.getX(), e.getY());
 				}
 				panel.drag(e.getX() - oldP.getX(), e.getY() - oldP.getY());
 				oldP = new Point2D.Double(e.getX(), e.getY());
+
 				return;
+			} else {
+				isRectChoose = true;
 			}
 		}
-		rectChoose = true;
+
 		int x = e.getX();
 		int y = e.getY();
 		if (oldP == null) {
