@@ -10,7 +10,7 @@ import java.util.Observer;
 import Exception.LoopEdgeException;
 import frm.Counter;
 
-public class ViewEdge extends ViewGraphElement implements Observer{
+public class ViewEdge extends ViewGraphElement implements Observer {
 	private final String name = "Edge";
 	// ------------Fields------------------
 	private ViewNode node1;
@@ -33,9 +33,10 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 		node1 = n1;
 		node2 = n2;
 	}
-	
-	public ViewEdge(ViewEdge e){
-		this();
+
+	public ViewEdge(ViewEdge e) {
+		super(e);
+		hash = Counter.getNextNum(ViewGraphElement.class);
 		node1 = e.node1;
 		node2 = e.node2;
 		extraPoints = new LinkedList<Point2D>(e.extraPoints);
@@ -170,11 +171,11 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 	public boolean isComplete() {
 		return (node1 != null) && (node2 != null);
 	}
-	
+
 	@Override
 	public boolean contains(int x, int y) {
-		Line2D l = (Line2D)getShape();
-		return l.ptLineDist(x,y)<radius;
+		Line2D l = (Line2D) getShape();
+		return l.ptLineDist(x, y) < radius;
 	}
 
 	@Override
@@ -184,7 +185,7 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 	}
 
 	public void drag(double dx, double dy) {
-		
+
 	}
 
 }

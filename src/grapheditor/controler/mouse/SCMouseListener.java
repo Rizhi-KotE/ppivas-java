@@ -50,7 +50,11 @@ public class SCMouseListener implements MouseInputListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// redirectEvent(e.getComponent().getParent(), e);
+		PaintingPanel parent = (PaintingPanel) e.getComponent().getParent();
+		MouseListener m[] = parent.getMouseListeners();
+		for (MouseListener l : m) {
+			l.mouseReleased(e);
+		}
 	}
 
 	@Override

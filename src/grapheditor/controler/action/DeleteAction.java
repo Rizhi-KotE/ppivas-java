@@ -1,12 +1,17 @@
 package grapheditor.controler.action;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
+
 import grapheditor.view.main.PaintingPanel;
 
 public class DeleteAction extends AbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5720082392659214007L;
 	private PaintingPanel panel;
 
 	private DeleteAction() {

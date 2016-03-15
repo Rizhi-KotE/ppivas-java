@@ -2,7 +2,6 @@ package grapheditor.view.main;
 
 import java.awt.Component;
 import java.awt.Rectangle;
-import java.awt.event.ContainerEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;

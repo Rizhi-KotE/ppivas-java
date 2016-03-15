@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,25 +30,23 @@ public class ClipGraph {
 		ViewNode n2 = n.getNode2();
 		edges.add(new ViewEdge(nodes.get(n1.hashCode()), nodes.get(n2.hashCode())));
 	}
-	
+
 	public void addEdge(Integer n1, Integer n2) {
 		edges.add(new ViewEdge(nodes.get(n1), nodes.get(n2)));
 	}
 
+	public ViewNode getNode(int n) {
+		return nodes.get(n);
+	}
+
 	public Collection<ViewEdge> getEdges() {
-		ArrayList<ViewEdge> l = new ArrayList<ViewEdge>();
-		for (ViewEdge e : edges) {
-			l.add(new ViewEdge(e));
-		}
-		return l;
+
+		return new ArrayList<>(edges);
 	}
 
 	public Collection<ViewNode> getNodes() {
-		ArrayList<ViewNode> l = new ArrayList<ViewNode>();
-		for (ViewNode e : nodes.values()) {
-			l.add(new ViewNode(e));
-		}
-		return l;
+
+		return new ArrayList<>(nodes.values());
 	}
 
 	public boolean isEmpty() {

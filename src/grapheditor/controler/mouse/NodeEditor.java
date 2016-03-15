@@ -71,7 +71,6 @@ class NodeEditor implements MouseInputListener {
 		if (chooseRectangle != null) {
 			chooseRectangle = null;
 		}
-		oldP = null;
 		isRectChoose = false;
 	}
 

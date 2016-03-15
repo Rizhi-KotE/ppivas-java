@@ -24,7 +24,8 @@ public class ViewNode extends ViewGraphElement {
 	}
 
 	public ViewNode(ViewNode n){
-		this();
+		super(n);
+		hash = Counter.getNextNum(ViewNode.class);
 		x = n.x;
 		y = n.y;
 	}

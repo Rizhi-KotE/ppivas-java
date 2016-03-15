@@ -17,6 +17,7 @@ abstract public class ViewGraphElement extends Observable {
 	}
 
 	public ViewGraphElement(ViewGraphElement s) {
+		this();
 		content = s.content;
 	}
 

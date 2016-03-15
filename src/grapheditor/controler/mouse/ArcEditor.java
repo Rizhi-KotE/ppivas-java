@@ -16,8 +16,6 @@ public class ArcEditor implements MouseInputListener{
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
 		panel.fixEdgePoint();;
 	}
 
