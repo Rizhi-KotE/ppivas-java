@@ -24,7 +24,7 @@ public class SimpleNode implements ViewGraphElementRepresent {
 
 	@Override
 	public boolean contains(double x, double y) {
-		Ellipse2D elipse = new Ellipse2D.Double(x, y, radius * 2, radius * 2);
+		Ellipse2D elipse = new Ellipse2D.Double(node.getX() - radius, node.getY() - radius, radius * 2, radius * 2);
 		return elipse.contains(x, y);
 	}
 
@@ -35,9 +35,9 @@ public class SimpleNode implements ViewGraphElementRepresent {
 		int x =(int) node.getX();
 		int y = (int) node.getY();
 		g2d.setColor(Color.white);
-		g2d.fillOval(x, y, radius * 2, radius * 2);
+		g2d.fillOval(x - radius, y - radius, radius * 2, radius * 2);
 		g2d.setColor(node.getColor());
-		g2d.drawOval(x, y, radius * 2, radius * 2);
+		g2d.drawOval(x - radius, y - radius, radius * 2, radius * 2);
 		
 	}
 
