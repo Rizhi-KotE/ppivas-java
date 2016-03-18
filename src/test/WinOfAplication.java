@@ -125,6 +125,18 @@ class WinOfAplication {
 			}
 		});
 		toolBar.add(but2);
+		
+		JButton but3 = new JButton("Алгоритм");
+		but3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
+						graphPanel);
+				graphPanel.changeMouseListener(listener);
+			}
+		});
+		toolBar.add(but3);
 		return toolBar;
 	}
 

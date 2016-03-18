@@ -28,25 +28,23 @@ import grapheditor.controler.mouse.GraphControlerFactory;
 import grapheditor.view.elements.ShapedComponent;
 import grapheditor.view.menu.GraphPopupMenu;
 
-public class PaintingPanel extends JPanel implements Observer, Scrollable {
+public class PaintingPanel extends JPanel implements Scrollable {
 
 	private static final long serialVersionUID = 1L;
-
-	private ViewGraph viewGraph;
-
-	private Map<String, Action> actionEvents;
 
 	public static final String IDENTIFIER = "IdentifierAction";
 	public static final String COPY_ACTION = "CopyAction";
 	public static final String PASTE_ACTION = "PasteAction";
 	public static final String CUT_ACTION = "CutAction";
 	public static final String DELETE_ACTION = "DeleteAction";
+	private ViewGraph viewGraph;
+	private Map<String, Action> actionEvents;
 
-	// -------------initialization-------
+	private GraphPopupMenu popupMenu;
+
 	public PaintingPanel() {
 		super();
 		viewGraph = new ViewGraph(this);
-		viewGraph.addObserver(this);
 		setPreferredSize(new Dimension(5000, 5000));
 		setBackground(new Color(255, 255, 255));
 		setLayout(new BorderLayout());
@@ -56,45 +54,24 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 		addContainerListener(new ContainerListener() {
 
 			@Override
-			public void componentRemoved(ContainerEvent e) {
-				repaint();
+			public void componentAdded(ContainerEvent e) {
+				revalidate();
 			}
 
 			@Override
-			public void componentAdded(ContainerEvent e) {
-				revalidate();
+			public void componentRemoved(ContainerEvent e) {
+				repaint();
 			}
 		});
 		initializationEvents();
 	}
 
-	private void initializationEvents() {
-		actionEvents = new HashMap<String, Action>();
-		actionEvents.put(IDENTIFIER, new IdentifierAction(this));
-		actionEvents.put(COPY_ACTION, new CopyAction(this));
-		actionEvents.put(PASTE_ACTION, new PasteAction(this));
-		actionEvents.put(CUT_ACTION, new CutAction(this));
-		actionEvents.put(DELETE_ACTION, new DeleteAction(this));
+	public void addEdge() {
+		getGraph().addEdge();
 	}
 
-	// ------Observer-----------
-
-	public ViewGraph getGraph() {
-		return viewGraph;
-	}
-
-	public void setGraph(ViewGraph viewGraph) {
-		this.viewGraph.deleteObserver(this);
-		this.viewGraph = viewGraph;
-	}
-
-	public void update(Observable o, Object arg) {
-		if (viewGraph == null) {
-			if (o.getClass().getName().equals("model.Graph"))
-				;
-			setGraph((ViewGraph) o);
-		}
-		repaint();
+	public void addNode(double x, double y) {
+		getGraph().addNode(x, y);
 	}
 
 	public void changeMouseListener(MouseInputListener listener) {
@@ -120,86 +97,21 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 		}
 	}
 
-	// ------------------------paint----------------------
-	// ---------------------node--------------------------
-
-	public void setCurrentNode(Component component) {
-		viewGraph.setCurrentNode(component);
+	public boolean choose(Rectangle rect) {
+		return getGraph().choose(rect);
 	}
-
-	public void addNode(double x, double y) {
-		getGraph().addNode(x, y);
-	}
-
-	// ----------------------edge-------------------------
-	public void addEdge() {
-		getGraph().addEdge();
-	}
-
-	public void fixEdgePoint() {
-		getGraph().fixEdgePoint();
-	}
-
-	public void setExtraEdgePoint(int x, int y) {
-		getGraph().setExtraEdgePoint(x, y);
-	}
-	// -------------------Drag------------------
-
-	public void drag(double dx, double dy) {
-		viewGraph.dragChoosenElementOn(dx, dy);
-	}
-	// -------------------choose----------------
 
 	public void choose(ShapedComponent E) {
 		getGraph().choose(E);
-	}
-
-	public boolean choose(Rectangle rect) {
-		return getGraph().choose(rect);
 	}
 
 	public void clearChoose() {
 		getGraph().clearChoose();
 	}
 
-	// ---------------------actions---------------
-
-	public void putActionEvent(String s, Action a) {
-		actionEvents.put(s, a);
-	}
-
-	public Action getActionEvent(String s) {
-		return actionEvents.get(s);
-	}
-
-	// -------------------content---------
-
-	public void setContent(String s) {
-		viewGraph.addName(s);
-	}
-
-	// --------------------popupMenu--------
-	private GraphPopupMenu popupMenu;
-
-	public GraphPopupMenu getPopupMenu() {
-		if (popupMenu == null) {
-			setPopupMenu(new GraphPopupMenu(this));
-		}
-		return popupMenu;
-	}
-
-	public void setPopupMenu(GraphPopupMenu popupMenu) {
-		this.popupMenu = popupMenu;
-	}
-
-	// -------------------corrections-------
 	public void copy() {
 		viewGraph.copy();
 
-	}
-
-	public void paste() {
-		viewGraph.paste();
 	}
 
 	public void cut() {
@@ -209,16 +121,33 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 	public void delete() {
 		viewGraph.delete();
 	}
-	// --------------------scroll---------------
+
+	public void drag(double dx, double dy) {
+		viewGraph.dragChoosenElementOn(dx, dy);
+	}
+
+	public void fixEdgePoint() {
+		getGraph().fixEdgePoint();
+	}
+
+	public Action getActionEvent(String s) {
+		return actionEvents.get(s);
+	}
+
+	public ViewGraph getGraph() {
+		return viewGraph;
+	}
+
+	public GraphPopupMenu getPopupMenu() {
+		if (popupMenu == null) {
+			setPopupMenu(new GraphPopupMenu(this));
+		}
+		return popupMenu;
+	}
 
 	@Override
 	public Dimension getPreferredScrollableViewportSize() {
 		return getSize();
-	}
-
-	@Override
-	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-		return 10;
 	}
 
 	@Override
@@ -227,21 +156,63 @@ public class PaintingPanel extends JPanel implements Observer, Scrollable {
 	}
 
 	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		return false;
+	}
+
+	@Override
 	public boolean getScrollableTracksViewportWidth() {
 		return false;
 	}
 
 	@Override
-	public boolean getScrollableTracksViewportHeight() {
-		return false;
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 10;
 	}
 
-	// -----------------------------save/open------------------------------
+	private void initializationEvents() {
+		actionEvents = new HashMap<String, Action>();
+		actionEvents.put(IDENTIFIER, new IdentifierAction(this));
+		actionEvents.put(COPY_ACTION, new CopyAction(this));
+		actionEvents.put(PASTE_ACTION, new PasteAction(this));
+		actionEvents.put(CUT_ACTION, new CutAction(this));
+		actionEvents.put(DELETE_ACTION, new DeleteAction(this));
+	}
+
 	public void open(String s) {
 		viewGraph.open(s);
 	}
 
+	public void paste() {
+		viewGraph.paste();
+	}
+
+	public void putActionEvent(String s, Action a) {
+		actionEvents.put(s, a);
+	}
+
 	public void save(String s) {
 		viewGraph.save(s);
+	}
+
+	public void setContent(String s) {
+		viewGraph.addName(s);
+	}
+
+	public void setCurrentNode(Component component) {
+		viewGraph.setCurrentNode(component);
+	}
+
+	public void setExtraEdgePoint(int x, int y) {
+		getGraph().setExtraEdgePoint(x, y);
+	}
+
+	public void setGraph(ViewGraph graph) {
+		removeAll();
+		viewGraph = graph;
+	}
+
+	public void setPopupMenu(GraphPopupMenu popupMenu) {
+		this.popupMenu = popupMenu;
 	}
 }

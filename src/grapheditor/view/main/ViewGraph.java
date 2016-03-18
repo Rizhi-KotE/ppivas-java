@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Set;
 
+import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
+
 import Exception.LoopEdgeException;
 import frm.ClipGraph;
 import frm.Clipboard;
@@ -29,6 +31,14 @@ public class ViewGraph extends Observable {
 	private Set<ViewEdge> edges;
 	private Collection<ViewNode> nodes;
 
+	private ViewNode currentNode;
+
+	private ViewEdge newEdge;
+
+	Set<ViewGraphElement> choose;
+
+	private boolean pressButton = false;
+
 	private ViewGraph() {
 		nodes = new HashSet<ViewNode>();
 		choose = new HashSet<ViewGraphElement>();
@@ -41,49 +51,19 @@ public class ViewGraph extends Observable {
 		panel = p;
 	}
 
-	private ViewNode currentNode;
-
-	// ---------------------node--------------------------
-
-	public void addNode(double x, double y) {
-		ViewNode n = new ViewNode(x, y);
-		addNode(n);
-
+	public void setPanel(PaintingPanel p) {
+		panel = p;
 	}
 
-	public void addNode(ViewNode n) {
-		ShapedComponent s = new ShapedComponent(n);
-		n.addObserver(s);
-		panel.add(s);
-		nodes.add(n);
-		panel.validate();
-		graph.addNode(n);
-	}
+	public void connectViewToPanel() {
 
-	public void setCurrentNode(Component component) {
-		if (component.getName().equals("ShapedComponent")) {
-			ViewGraphElement el = ((ShapedComponent) component).getElement();
-			if (el.getType().equals("Node")) {
-				currentNode = (ViewNode) el;
-			}
-		}
 	}
-
-	public void removeNode(ViewNode n) {
-		nodes.remove(n);
-		choose.remove(n);
-	}
-
-	// --------------------Edges------------------
-	private ViewEdge newEdge;
 
 	public void addEdge() {
 		if (currentNode != null) {
 			if (newEdge == null) {
 				newEdge = new ViewEdge(null, null);
-				ShapedComponent s = new ShapedComponent(newEdge);
-				newEdge.addObserver(s);
-				panel.add(s);
+				addShapedComponentToPanel(newEdge);
 			}
 
 		}
@@ -106,54 +86,48 @@ public class ViewGraph extends Observable {
 		currentNode = null;
 	}
 
+	private void addShapedComponentToPanel(ViewGraphElement element) {
+		if (element != null) {
+			ShapedComponent s = new ShapedComponent(element);
+			element.addObserver(s);
+			panel.add(s);
+		}
+	}
+
 	public void addEdge(ViewEdge e) {
 		if (e.isComplete()) {
-			ShapedComponent s = new ShapedComponent(e);
-			e.addObserver(s);
-			panel.add(s);
-			edges.add(e);
-
-			panel.validate();
-			graph.addEdge(e);
+			addShapedComponentToPanel(e);
 		}
 	}
 
-	private void completeEdge(ViewEdge e) {
-		edges.add(e);
-		graph.addEdge(e);
+	public void addName(String s) {
+		Iterator<ViewGraphElement> it = choose.iterator();
+		while (it.hasNext()) {
+			ViewGraphElement e = it.next();
+			e.setContent(s);
+		}
 	}
 
-	public void setExtraEdgePoint(int x, int y) {
+	public void addNode(double x, double y) {
+		ViewNode n = new ViewNode(x, y);
+		addNode(n);
+
+	}
+
+	public void addNode(ViewNode n) {
+		addShapedComponentToPanel(n);
+		nodes.add(n);
+		panel.validate();
+		graph.addNode(n);
+	}
+
+	public void changeListener() {
+		clearChoose();
+		currentNode = null;
 		if (newEdge != null) {
-			newEdge.setLastPoint(x, y);
-			// panel.revalidate();
+			newEdge.setDeleted(true);
+			newEdge = null;
 		}
-	}
-
-	public void fixEdgePoint() {
-		if (currentNode != null) {
-			addEdge();
-		} else if (newEdge != null) {
-			newEdge.fixLastPoint();
-		}
-		panel.revalidate();
-	}
-
-	// ---------------choose---------------
-
-	Set<ViewGraphElement> choose;
-
-	private boolean pressButton = false;
-
-	private void choose(ViewGraphElement e, boolean b) {
-		if (b) {
-			e.setChoosed(b);
-			choose.add(e);
-		} else {
-			e.setChoosed(b);
-			choose.remove(e);
-		}
-		revalidateActions();
 	}
 
 	public boolean choose(Rectangle rect) {
@@ -185,6 +159,17 @@ public class ViewGraph extends Observable {
 		}
 	}
 
+	private void choose(ViewGraphElement e, boolean b) {
+		if (b) {
+			e.setChoosed(b);
+			choose.add(e);
+		} else {
+			e.setChoosed(b);
+			choose.remove(e);
+		}
+		revalidateActions();
+	}
+
 	public void clearChoose() {
 		if (choose == null) {
 			choose = new HashSet<ViewGraphElement>();
@@ -196,39 +181,20 @@ public class ViewGraph extends Observable {
 		choose.clear();
 	}
 
-	// ----------------Drag----------------
-	public void dragChoosenElementOn(double dx, double dy) {
-		Iterator<ViewGraphElement> it = choose.iterator();
-		while (it.hasNext()) {
-			ViewGraphElement n = it.next();
-			n.drag(dx, dy);
-		}
+	private void completeEdge(ViewEdge e) {
+		edges.add(e);
+		graph.addEdge(e);
 	}
 
-	public String getIDName() {
-		return IDname;
+	public void copy() {
+		Clipboard.getInstance().addToClipboard(choose);
+		revalidateActions();
 	}
 
-	// -----------elements-------------
-
-	public Graph getGraph() {
-		return graph;
+	public void cut() {
+		revalidateActions();
 	}
 
-	public void setGraph(Graph graph) {
-		this.graph = graph;
-	}
-	// -----------names-----------------
-
-	public void addName(String s) {
-		Iterator<ViewGraphElement> it = choose.iterator();
-		while (it.hasNext()) {
-			ViewGraphElement e = it.next();
-			e.setContent(s);
-		}
-	}
-
-	// -----------------------delete-------
 	public void delete() {
 		Object[] el = choose.toArray();
 		for (Object a : el) {
@@ -246,6 +212,75 @@ public class ViewGraph extends Observable {
 		}
 		revalidateActions();
 		choose.clear();
+	}
+
+	public void deleteEdge(ViewEdge e) {
+		edges.remove(e);
+		e.setDeleted(true);
+	}
+
+	private void deleteNode(ViewNode a) {
+		Iterator<ViewEdge> it = graph.incidentEdgeIterator(a);
+		while (it.hasNext()) {
+			ViewEdge e = it.next();
+			deleteEdge(e);
+		}
+		graph.deleteNode(a);
+		nodes.remove(a);
+		a.setDeleted(true);
+
+	}
+
+	public void dragChoosenElementOn(double dx, double dy) {
+		Iterator<ViewGraphElement> it = choose.iterator();
+		while (it.hasNext()) {
+			ViewGraphElement n = it.next();
+			n.drag(dx, dy);
+		}
+	}
+
+	public void fixEdgePoint() {
+		if (currentNode != null) {
+			addEdge();
+		} else if (newEdge != null) {
+			newEdge.fixLastPoint();
+		}
+		panel.revalidate();
+	}
+
+	public Graph getGraph() {
+		return graph;
+	}
+
+	public String getIDName() {
+		return IDname;
+	}
+
+	public void open(String s) {
+		SaveGraph open = new SaveGraph();
+		Collection<ViewGraphElement> elements = new ArrayList<ViewGraphElement>(nodes);
+		elements.addAll(edges);
+		ClipGraph graph = open.loadGraph(s);
+		paste(graph);
+	}
+
+	public void paste() {
+		ClipGraph g = Clipboard.getInstance().pasteFromClipboard();
+		paste(g);
+	}
+
+	public void paste(ClipGraph g) {
+		for (ViewNode e : g.getNodes()) {
+			addNode(e);
+		}
+		for (ViewEdge e : g.getEdges()) {
+			addEdge(e);
+		}
+	}
+
+	public void removeNode(ViewNode n) {
+		nodes.remove(n);
+		choose.remove(n);
 	}
 
 	private void revalidateActions() {
@@ -269,69 +304,30 @@ public class ViewGraph extends Observable {
 		}
 	}
 
-	private void deleteNode(ViewNode a) {
-		Iterator<ViewEdge> it = graph.incidentEdgeIterator(a);
-		while (it.hasNext()) {
-			ViewEdge e = it.next();
-			deleteEdge(e);
-		}
-		graph.deleteNode(a);
-		nodes.remove(a);
-		a.setDeleted(true);
-
-	}
-
-	public void deleteEdge(ViewEdge e) {
-		edges.remove(e);
-		e.setDeleted(true);
-	}
-
-	// -------------------corrections-------
-	public void copy() {
-		Clipboard.getInstance().addToClipboard(choose);
-		revalidateActions();
-	}
-
-	public void paste() {
-		ClipGraph g = Clipboard.getInstance().pasteFromClipboard();
-		paste(g);
-	}
-	
-	public void paste(ClipGraph g) {
-		for (ViewNode e : g.getNodes()) {
-			addNode(e);
-		}
-		for (ViewEdge e : g.getEdges()) {
-			addEdge(e);
-		}
-	}
-
-	public void cut() {
-		revalidateActions();
-	}
-
-	public void changeListener() {
-		clearChoose();
-		currentNode = null;
-		if (newEdge != null) {
-			newEdge.setDeleted(true);
-			newEdge = null;
-		}
-	}
-
-	// -----------------------------------save-open----------
-	public void save(String s){
+	public void save(String s) {
 		SaveGraph save = new SaveGraph();
 		Collection<ViewGraphElement> elements = new ArrayList<ViewGraphElement>(nodes);
 		elements.addAll(edges);
 		save.save(s, elements);
 	}
-	
-	public void open(String s){
-		SaveGraph open = new SaveGraph();
-		Collection<ViewGraphElement> elements = new ArrayList<ViewGraphElement>(nodes);
-		elements.addAll(edges);
-		ClipGraph graph = open.loadGraph(s);
-		paste(graph);
+
+	public void setCurrentNode(Component component) {
+		if (component.getName().equals("ShapedComponent")) {
+			ViewGraphElement el = ((ShapedComponent) component).getElement();
+			if (el.getType().equals("Node")) {
+				currentNode = (ViewNode) el;
+			}
+		}
+	}
+
+	public void setExtraEdgePoint(int x, int y) {
+		if (newEdge != null) {
+			newEdge.setLastPoint(x, y);
+			// panel.revalidate();
+		}
+	}
+
+	public void setGraph(Graph graph) {
+		this.graph = graph;
 	}
 }

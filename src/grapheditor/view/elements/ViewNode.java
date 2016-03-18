@@ -1,9 +1,11 @@
 package grapheditor.view.elements;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-
+import grapheditor.view.represent.*;
 import frm.Counter;
 
 public class ViewNode extends ViewGraphElement {
@@ -14,6 +16,7 @@ public class ViewNode extends ViewGraphElement {
 	private double radius = 20;
 	private String idth;
 	private int hash;
+	private ViewGraphElementRepresent represent;
 
 	private boolean highlight;
 
@@ -21,14 +24,16 @@ public class ViewNode extends ViewGraphElement {
 	private ViewNode() {
 		super();
 		hash = Counter.getNextNum(ViewNode.class);
+		represent = new SimpleNode(this);
 	}
 
-	public ViewNode(ViewNode n){
-		super(n);
-		hash = Counter.getNextNum(ViewNode.class);
-		x = n.x;
-		y = n.y;
+	@Override
+	protected ViewNode clone() throws CloneNotSupportedException {
+		ViewNode clone = (ViewNode) super.clone();
+		clone.hash = Counter.getNextNum(ViewNode.class);
+		return clone;
 	}
+
 	public ViewNode(String anId) {
 		this();
 		setIdth(anId);
@@ -86,7 +91,9 @@ public class ViewNode extends ViewGraphElement {
 		this.highlight = highlight;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -103,7 +110,9 @@ public class ViewNode extends ViewGraphElement {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -143,19 +152,26 @@ public class ViewNode extends ViewGraphElement {
 		}
 		return true;
 	}
-	public String getType(){
+
+	public String getType() {
 		return name;
 	}
-	
-	@Override
-	public boolean contains(int x, int y) {
-		return getShape().contains(x, y);
-	}
+
 	@Override
 	public void drag(double dx, double dy) {
-		x+=dx;
-		y+=dy;
+		x += dx;
+		y += dy;
 		setChanged();
 		notifyObservers();
+	}
+
+	@Override
+	public boolean contains(double x, double y) {
+		return represent.contains(x, y);
+	}
+
+	@Override
+	public void paintYourSelf(Graphics2D g2d) {
+		represent.paintYourSelf(g2d);
 	}
 }

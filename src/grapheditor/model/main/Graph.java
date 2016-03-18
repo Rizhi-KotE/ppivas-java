@@ -13,6 +13,8 @@ import grapheditor.view.elements.ViewNode;
 import grapheditor.view.main.ViewGraph;
 
 public class Graph {
+	
+	
 	Collection<ViewNode> nodes;
 	Collection<ViewEdge> edges;
 	// -------------------------неориентированный граф----------------
@@ -82,5 +84,9 @@ public class Graph {
 			return it.next();
 		}
 
+	}
+	
+	public static void Algo(ViewNode start, ViewNode end){
+		
 	}
 }
