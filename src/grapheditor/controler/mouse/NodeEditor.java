@@ -1,5 +1,7 @@
 package grapheditor.controler.mouse;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -15,6 +17,8 @@ import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.main.PaintingPanel;
 
 import grapheditor.view.menu.GraphPopupMenu;
+import grapheditor.view.represent.RectangleRepresent;
+import grapheditor.view.represent.ViewGraphElementRepresent;
 
 class NodeEditor implements MouseInputListener {
 	PaintingPanel panel;
@@ -71,7 +75,6 @@ class NodeEditor implements MouseInputListener {
 		if (chooseRectangle != null) {
 			chooseRectangle = null;
 		}
-		oldP = null;
 		isRectChoose = false;
 	}
 
@@ -124,6 +127,8 @@ class NodeEditor implements MouseInputListener {
 		}
 		choosePanel.setShape(new ViewGraphElement() {
 
+			ViewGraphElementRepresent represent = new RectangleRepresent(this);
+
 			@Override
 			public Shape getShape() {
 				return chooseRectangle;
@@ -136,18 +141,21 @@ class NodeEditor implements MouseInputListener {
 
 			@Override
 			public boolean isChoosed() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean contains(int x, int y) {
 				return false;
 			}
 
 			public void drag(double dx, double dy) {
-				// TODO Auto-generated method stub
 
+			}
+
+			@Override
+			public boolean contains(double x, double y) {
+				return represent.contains(x, y);
+			}
+
+			@Override
+			public void paintYourSelf(Graphics2D g2d) {
+				represent.paintYourSelf(g2d);
 			}
 		});
 		int oldX = (int) oldP.getX();

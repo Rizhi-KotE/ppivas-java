@@ -12,6 +12,14 @@ import catchers.ReflectionCatcher;
 import grapheditor.view.main.PaintingPanel;
 
 public class GraphControlerFactory {
+	public static final String ALGO_LISTENER = "algo_listener";
+
+	public static final String SHAPED_COMPONENT = "ShapedComponent";
+
+	public static final String ARC_TOOL = "Arc_tool";
+
+	public static final String NODE_TOOL = "Node_tool";
+
 	private Map<String, EventListener> controlers = null;
 
 	private static GraphControlerFactory factory = null;
@@ -31,16 +39,14 @@ public class GraphControlerFactory {
 
 	private void createProperty() {
 		prop = new Properties();
-		prop.setProperty("Node_tool", "grapheditor.controler.mouse.NodeEditor");
-		prop.setProperty("Arc_tool", "grapheditor.controler.mouse.ArcEditor");
-		prop.setProperty("ShapedComponent", "grapheditor.controler.mouse.SCMouseListener");
+		prop.setProperty(NODE_TOOL, "grapheditor.controler.mouse.NodeEditor");
+		prop.setProperty(ARC_TOOL, "grapheditor.controler.mouse.ArcEditor");
+		prop.setProperty(SHAPED_COMPONENT, "grapheditor.controler.mouse.SCMouseListener");
+		prop.setProperty(ALGO_LISTENER, "grapheditor.controler.mouse.AlgoMouseListener");
 	}
 
 	public MouseInputListener getMouseInputListener(String s, PaintingPanel ui) {
-		if (controlers == null) {
-			controlers = new HashMap<String, EventListener>();
-		}
-		MouseInputListener listener = (MouseInputListener) controlers.get(s);
+		MouseInputListener listener = null;
 		if (listener == null) {
 			if (prop == null) {
 				createProperty();
@@ -60,17 +66,11 @@ public class GraphControlerFactory {
 					e.printStackTrace();
 				}
 			
-			if(listener != null){
-				controlers.put(s, listener);
-			}
 		}
 		return listener;
 	}
 	public MouseInputListener getMouseInputListener(String s) {
-		if (controlers == null) {
-			controlers = new HashMap<String, EventListener>();
-		}
-		MouseInputListener listener = (MouseInputListener) controlers.get(s);
+		MouseInputListener listener = null;
 		if (listener == null) {
 			if (prop == null) {
 				createProperty();
@@ -89,10 +89,6 @@ public class GraphControlerFactory {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			
-			if(listener != null){
-				controlers.put(s, listener);
-			}
 		}
 		return listener;
 	}

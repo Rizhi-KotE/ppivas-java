@@ -8,15 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -32,16 +23,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import frm.XMLMenuLoader.XMLParser;
 import grapheditor.view.elements.ViewEdge;
 import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.elements.ViewNode;
 
 public class SaveGraph {
 
+	private static final String ROOT_ELEM_TAG = "root";
 	private static Document doc;
 
 	private static Document newDoc() {
@@ -60,7 +50,7 @@ public class SaveGraph {
 	public void save(String file, Collection<ViewGraphElement> elements) {
 
 		doc = newDoc();
-		Element root = doc.createElement("root");
+		Element root = doc.createElement(ROOT_ELEM_TAG);
 		doc.appendChild(root);
 
 		Element nodes = doc.createElement("nodes");
@@ -174,10 +164,13 @@ public class SaveGraph {
 
 			private void parseEdge(Attributes attr) {
 				String content = attr.getValue("Content");
-				int hash = Integer.parseInt(attr.getValue("Hash"));
 				int n1 = Integer.parseInt(attr.getValue("Node1"));
 				int n2 = Integer.parseInt(attr.getValue("Node2"));
-				clipGraph.addEdge(n1, n2);
+				ViewNode node1 = clipGraph.getNode(n1);
+				ViewNode node2 = clipGraph.getNode(n2);
+				ViewEdge edge = new ViewEdge(node1, node2);
+				edge.setContent(content);
+				clipGraph.addEdge(edge);
 			}
 
 			private void parseNode(Attributes attr) {
@@ -185,7 +178,9 @@ public class SaveGraph {
 				int hash = Integer.parseInt(attr.getValue("Hash"));
 				double x = Double.parseDouble(attr.getValue("X"));
 				double y = Double.parseDouble(attr.getValue("Y"));
-				clipGraph.addNode(hash, new ViewNode(x, y));
+				ViewNode node = new ViewNode(x,y);
+				node.setContent(content);
+				clipGraph.addNode(hash, node);
 			}
 
 		}

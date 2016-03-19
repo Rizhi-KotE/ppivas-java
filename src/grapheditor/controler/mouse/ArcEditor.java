@@ -16,8 +16,6 @@ public class ArcEditor implements MouseInputListener{
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
 		panel.fixEdgePoint();;
 	}
 
@@ -47,8 +45,8 @@ public class ArcEditor implements MouseInputListener{
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		panel.fixEdgePoint();
+		panel.setExtraEdgePoint(e.getX(),e.getY());
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package grapheditor.view.elements;
 
+import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -9,23 +10,27 @@ import java.util.Observer;
 
 import Exception.LoopEdgeException;
 import frm.Counter;
+import grapheditor.view.represent.SimpleEdge;
+import grapheditor.view.represent.ViewEdgeRepresent;
 
-public class ViewEdge extends ViewGraphElement implements Observer{
+public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
+	private LinkedList<Point2D> extraPoints;
+	private int hash;
+	private Point2D lastPoint;
+
 	private final String name = "Edge";
-	// ------------Fields------------------
+
 	private ViewNode node1;
 	private ViewNode node2;
 
-	private int hash;
-	private LinkedList<Point2D> extraPoints;
-	private Point2D lastPoint;
-
 	private double radius = 5;
+	
+	ViewEdgeRepresent represent;
 
-	// --------------Constructors--------
 	private ViewEdge() {
 		hash = Counter.getNextNum(ViewGraphElement.class);
 		extraPoints = new LinkedList<Point2D>();
+		represent = new SimpleEdge(this);
 	}
 
 	public ViewEdge(ViewNode n1, ViewNode n2) {
@@ -36,12 +41,13 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 	
 	public ViewEdge(ViewEdge e){
 		super(e);
+		hash = Counter.getNextNum(ViewGraphElement.class);
 		node1 = e.node1;
 		node2 = e.node2;
 		extraPoints = new LinkedList<Point2D>(e.extraPoints);
+		represent = new SimpleEdge(this);
 	}
 
-	// ----------------Methods------------
 	public void addNode(ViewNode n) throws LoopEdgeException {
 		if (node1 == null) {
 			node1 = n;
@@ -62,53 +68,15 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 		setChanged();
 		notifyObservers();
 	}
-	// ------------Seters & Getters-------
-
-	public ViewNode getNode1() {
-		return node1;
-	}
-
-	public void setNode1(ViewNode node1) {
-		this.node1 = node1;
-	}
-
-	public ViewNode getNode2() {
-		return node2;
-	}
-
-	public void setNode2(ViewNode node2) {
-		this.node2 = node2;
-	}
-
-	// ---------------Choosed------------
-	public Shape getShape() {
-		Point2D points[] = new Point2D[2];
-		if (node1 != null) {
-			points[0] = node1.getPoint();
-			points[1] = node1.getPoint();
-		}
-		if (lastPoint != null) {
-			points[1] = lastPoint;
-		}
-		if (node2 != null) {
-			points[1] = node2.getPoint();
-		}
-		return new Line2D.Double(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
-	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((extraPoints == null) ? 0 : extraPoints.hashCode());
-		result = prime * result + hash;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((node1 == null) ? 0 : node1.hashCode());
-		result = prime * result + ((node2 == null) ? 0 : node2.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(radius);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+	public boolean contains(double x, double y) {
+		Line2D l = (Line2D) getShape();
+		return l.ptLineDist(x, y) < radius;
+	}
+
+	public void drag(double dx, double dy) {
+
 	}
 
 	@Override
@@ -147,17 +115,6 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 		return true;
 	}
 
-	@Override
-	public String getType() {
-		return name;
-	}
-
-	public void setLastPoint(double x, double y) {
-		lastPoint = new Point2D.Double(x, y);
-		setChanged();
-		notifyObservers();
-	}
-
 	public void fixLastPoint() {
 		if (lastPoint != null) {
 			extraPoints.addLast(lastPoint);
@@ -167,14 +124,65 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 		notifyObservers();
 	}
 
+	public ViewNode getNode1() {
+		return node1;
+	}
+
+	public ViewNode getNode2() {
+		return node2;
+	}
+
+	public Shape getShape() {
+		Point2D points[] = new Point2D[2];
+		if (node1 != null) {
+			points[0] = node1.getPoint();
+			points[1] = node1.getPoint();
+		}
+		if (lastPoint != null) {
+			points[1] = lastPoint;
+		}
+		if (node2 != null) {
+			points[1] = node2.getPoint();
+		}
+		return new Line2D.Double(points[0].getX(), points[0].getY(), points[1].getX(), points[1].getY());
+	}
+
+	@Override
+	public String getType() {
+		return name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((extraPoints == null) ? 0 : extraPoints.hashCode());
+		result = prime * result + hash;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((node1 == null) ? 0 : node1.hashCode());
+		result = prime * result + ((node2 == null) ? 0 : node2.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(radius);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
 	public boolean isComplete() {
 		return (node1 != null) && (node2 != null);
 	}
-	
-	@Override
-	public boolean contains(int x, int y) {
-		Line2D l = (Line2D)getShape();
-		return l.ptLineDist(x,y)<radius;
+
+	public void setLastPoint(double x, double y) {
+		lastPoint = new Point2D.Double(x, y);
+		setChanged();
+		notifyObservers();
+	}
+
+	public void setNode1(ViewNode node1) {
+		this.node1 = node1;
+	}
+
+	public void setNode2(ViewNode node2) {
+		this.node2 = node2;
 	}
 
 	@Override
@@ -183,8 +191,18 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 		notifyObservers();
 	}
 
-	public void drag(double dx, double dy) {
+	@Override
+	public ViewEdge clone() throws CloneNotSupportedException {
+		ViewEdge clone = (ViewEdge) super.clone();
 		
+		//clone.hash = Counter.getNextNum(ViewEdge.class);
+		clone.node1 = node1;
+		clone.node2 = node2;
+		return clone;
 	}
 
+	@Override
+	public void paintYourSelf(Graphics2D g2d) {
+		represent.paintYourSelf(g2d);
+	}
 }

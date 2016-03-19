@@ -1,12 +1,17 @@
 package grapheditor.controler.action;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
+
 import grapheditor.view.main.PaintingPanel;
 
 public class CopyAction extends AbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6885620313037850096L;
 	private PaintingPanel panel;
 
 	private CopyAction() {

@@ -7,6 +7,10 @@ import grapheditor.view.main.PaintingPanel;
 
 public class IdentifierAction extends AbstractAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4488916415187971948L;
 	private PaintingPanel panel;
 
 	private IdentifierAction() {
