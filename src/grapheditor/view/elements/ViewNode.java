@@ -24,7 +24,7 @@ public class ViewNode extends ViewGraphElement {
 	}
 
 	public ViewNode(ViewNode n){
-		this();
+		super(n);
 		x = n.x;
 		y = n.y;
 	}

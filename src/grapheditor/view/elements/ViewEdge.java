@@ -35,7 +35,7 @@ public class ViewEdge extends ViewGraphElement implements Observer{
 	}
 	
 	public ViewEdge(ViewEdge e){
-		this();
+		super(e);
 		node1 = e.node1;
 		node2 = e.node2;
 		extraPoints = new LinkedList<Point2D>(e.extraPoints);
