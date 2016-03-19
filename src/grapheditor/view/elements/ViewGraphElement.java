@@ -4,53 +4,48 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.util.Observable;
 
-abstract public class ViewGraphElement extends Observable {
-	private String content;
-
-	private Color color = Color.BLACK;
+abstract public class ViewGraphElement extends Observable implements SelfPainted, SelfContained, Choousable, Cloneable {
 	protected boolean choose;
+	private Color color = Color.BLACK;
+	private String content;
 	protected boolean isDeleted;
 
-	public ViewGraphElement() {
-		super();
-		
+	@Override
+	protected ViewGraphElement clone() throws CloneNotSupportedException {
+		ViewGraphElement clone = (ViewGraphElement) super.clone();
+		clone.content = new String(content);
+		return clone;
 	}
 
-	public ViewGraphElement(ViewGraphElement s) {
-		this();
-		content = s.content;
-	}
-
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-		if (isDeleted) {
+	public void currentColor() {
+		if (choose == false) {
+			color = Color.BLACK;
 			setChanged();
 			notifyObservers();
 		}
+	}
+
+	public abstract void drag(double dx, double dy);
+
+	public Color getColor() {
+		return color;
+	}
+
+	public String getContent() {
+		return content;
 	}
 
 	public abstract Shape getShape();
 
 	public abstract String getType();
 
+	@Override
 	public boolean isChoosed() {
 		return choose;
 	}
 
-	abstract public boolean contains(int x, int y);
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String s) {
-		content = s;
-		setChanged();
-		notifyObservers();
+	public boolean isDeleted() {
+		return isDeleted;
 	}
 
 	public void setChoosed(boolean is) {
@@ -66,10 +61,6 @@ abstract public class ViewGraphElement extends Observable {
 		}
 	}
 
-	public Color getColor() {
-		return color;
-	}
-
 	public void setColor(Color c) {
 		if (choose == false) {
 			color = c;
@@ -78,14 +69,17 @@ abstract public class ViewGraphElement extends Observable {
 		}
 	}
 
-	public void currentColor() {
-		if (choose == false) {
-			color = Color.BLACK;
+	public void setContent(String s) {
+		content = s;
+		setChanged();
+		notifyObservers();
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+		if (isDeleted) {
 			setChanged();
 			notifyObservers();
 		}
 	}
-
-	// -------------------------------drag--------------
-	public abstract void drag(double dx, double dy);
 }
