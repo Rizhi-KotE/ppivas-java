@@ -1,7 +1,6 @@
 package grapheditor.view.elements;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
@@ -12,6 +11,8 @@ import java.util.Observer;
 
 import Exception.LoopEdgeException;
 import frm.Counter;
+import grapheditor.view.represent.SimpleEdge;
+import grapheditor.view.represent.ViewEdgeRepresent;
 
 public class ViewEdge extends ViewGraphElement implements Observer {
 	private LinkedList<Point2D> extraPoints;
@@ -19,15 +20,18 @@ public class ViewEdge extends ViewGraphElement implements Observer {
 	private Point2D lastPoint;
 
 	private final String name = "Edge";
-	// ------------Fields------------------
+
 	private ViewNode node1;
 	private ViewNode node2;
 
 	private double radius = 5;
+	
+	ViewEdgeRepresent represent;
 
 	private ViewEdge() {
 		hash = Counter.getNextNum(ViewGraphElement.class);
 		extraPoints = new LinkedList<Point2D>();
+		represent = new SimpleEdge(this);
 	}
 
 	public ViewEdge(ViewNode n1, ViewNode n2) {
@@ -190,8 +194,7 @@ public class ViewEdge extends ViewGraphElement implements Observer {
 
 	@Override
 	public void paintYourSelf(Graphics2D g2d) {
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.draw(getShape());
+		represent.paintYourSelf(g2d);
 	}
 
 }

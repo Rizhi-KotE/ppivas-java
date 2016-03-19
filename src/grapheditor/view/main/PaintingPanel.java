@@ -207,8 +207,20 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		getGraph().setExtraEdgePoint(x, y);
 	}
 
-	public void setGraph(ViewGraph graph) {
+	
+	public void disconnectGraph(){
 		removeAll();
+		viewGraph.setPanel(null);
+		viewGraph = null;
+	}
+	
+	public void connectGraph(ViewGraph newGraph){
+		newGraph.setPanel(this);
+		viewGraph = newGraph;
+		viewGraph.connectViewToPanel();
+	}
+	public void setGraph(ViewGraph graph) {
+		
 		viewGraph = graph;
 	}
 

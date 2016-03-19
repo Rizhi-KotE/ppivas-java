@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
 import grapheditor.view.elements.ViewGraphElement;
 
@@ -29,7 +30,12 @@ public class RectangleRepresent implements ViewGraphElementRepresent {
 
 	@Override
 	public boolean contains(double x, double y) {
-		return element.getShape().contains(x, y);
+		return getShape().contains(x, y);
+	}
+
+	@Override
+	public Rectangle2D getShape() {
+		return (Rectangle2D)element.getShape();
 	}
 
 }

@@ -46,10 +46,7 @@ public class GraphControlerFactory {
 	}
 
 	public MouseInputListener getMouseInputListener(String s, PaintingPanel ui) {
-		if (controlers == null) {
-			controlers = new HashMap<String, EventListener>();
-		}
-		MouseInputListener listener = (MouseInputListener) controlers.get(s);
+		MouseInputListener listener = null;
 		if (listener == null) {
 			if (prop == null) {
 				createProperty();
@@ -69,17 +66,11 @@ public class GraphControlerFactory {
 					e.printStackTrace();
 				}
 			
-			if(listener != null){
-				controlers.put(s, listener);
-			}
 		}
 		return listener;
 	}
 	public MouseInputListener getMouseInputListener(String s) {
-		if (controlers == null) {
-			controlers = new HashMap<String, EventListener>();
-		}
-		MouseInputListener listener = (MouseInputListener) controlers.get(s);
+		MouseInputListener listener = null;
 		if (listener == null) {
 			if (prop == null) {
 				createProperty();
@@ -98,10 +89,6 @@ public class GraphControlerFactory {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			
-			if(listener != null){
-				controlers.put(s, listener);
-			}
 		}
 		return listener;
 	}

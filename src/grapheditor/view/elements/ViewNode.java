@@ -13,10 +13,10 @@ public class ViewNode extends ViewGraphElement {
 	// -----------------Fields-------------
 	private double x;
 	private double y;
-	private double radius = 20;
 	private String idth;
 	private int hash;
-	private ViewGraphElementRepresent represent;
+	private ViewNodeRepresent represent;
+	private double radius = 20;
 
 	private boolean highlight;
 
@@ -50,10 +50,6 @@ public class ViewNode extends ViewGraphElement {
 
 	public Point2D getPoint() {
 		return new Point2D.Double(x, y);
-	}
-
-	public Shape getShape() {
-		return new Ellipse2D.Double(x - radius, y - radius, 2 * radius, 2 * radius);
 	}
 
 	// ----------------Getters & Setters-------
@@ -173,5 +169,10 @@ public class ViewNode extends ViewGraphElement {
 	@Override
 	public void paintYourSelf(Graphics2D g2d) {
 		represent.paintYourSelf(g2d);
+	}
+
+	@Override
+	public Shape getShape() {
+		return represent.getShape();
 	}
 }
