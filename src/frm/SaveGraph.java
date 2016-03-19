@@ -169,7 +169,11 @@ public class SaveGraph {
 				ViewNode node1 = clipGraph.getNode(n1);
 				ViewNode node2 = clipGraph.getNode(n2);
 				ViewEdge edge = new ViewEdge(node1, node2);
-				edge.setContent(content);
+				try {
+					edge.setContent(content);
+				} catch (NumberFormatException e) {
+					
+				}
 				clipGraph.addEdge(edge);
 			}
 

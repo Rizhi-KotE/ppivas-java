@@ -156,6 +156,11 @@ class NodeEditor implements MouseInputListener {
 			public void paintYourSelf(Graphics2D g2d) {
 				represent.paintYourSelf(g2d);
 			}
+
+			@Override
+			public void calcContentPoint() {
+			
+			}
 		});
 		int oldX = (int) oldP.getX();
 		int oldY = (int) oldP.getY();
