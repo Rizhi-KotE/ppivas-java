@@ -1,7 +1,7 @@
 package grapheditor.controler.mouse;
 
 import java.awt.Color;
-
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -12,9 +12,15 @@ import grapheditor.view.main.PaintingPanel;
 
 public class SCMouseListener implements MouseInputListener {
 
+	Component lastComp;
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		PaintingPanel parent = (PaintingPanel) e.getComponent().getParent();
+		if (!e.getComponent().equals(lastComp)) {
+			parent.setCurrentNode(e.getComponent());
+			lastComp = e.getComponent();
+		}
 		MouseMotionListener m[] = parent.getMouseMotionListeners();
 		for (MouseMotionListener l : m) {
 			l.mouseDragged(e);
@@ -50,7 +56,11 @@ public class SCMouseListener implements MouseInputListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// redirectEvent(e.getComponent().getParent(), e);
+		PaintingPanel parent = (PaintingPanel) e.getComponent().getParent();
+		MouseListener m[] = parent.getMouseListeners();
+		for (MouseListener l : m) {
+			l.mouseReleased(e);
+		}
 	}
 
 	@Override

@@ -84,11 +84,7 @@ public class ShapedComponent extends JLabel implements Observer {
 		g2d.setStroke(new BasicStroke(5));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (shape != null) {
-			Shape s = shape.getShape();
-			g2d.draw(s);
-			Rectangle2D rect = s.getBounds2D();
-			paintContent(g2d, (float) (rect.getX() + rect.getWidth() / 2),
-					(float) (rect.getY() + rect.getHeight() / 2));
+			shape.paintYourSelf(g2d);
 		}
 	}
 

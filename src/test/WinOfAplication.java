@@ -1,34 +1,58 @@
 package test;
 
 import java.awt.BorderLayout;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.event.MouseInputListener;
 
-import grapheditor.controler.action.IdentifierAction;
 import grapheditor.controler.mouse.GraphControlerFactory;
 import grapheditor.view.main.PaintingPanel;
 
 class WinOfAplication {
 
+	class TabPanel extends JPanel{
+		PaintingPanel paintingPanel;
+		JToolBar toolBar;
+		
+		public TabPanel(PaintingPanel panel) {
+			super(new BorderLayout());
+			paintingPanel = panel;
+			toolBar = createToolBar(paintingPanel);
+			JScrollPane scrolPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			add(scrolPane);
+			add(toolBar,BorderLayout.WEST);
+		}
+
+		/**
+		 * @return the paintingPanel
+		 */
+		public PaintingPanel getPaintingPanel() {
+			return paintingPanel;
+		}
+	}
+	static public void main(String[] args) {
+		WinOfAplication f = new WinOfAplication();
+	}
 	private JFrame mainFrame;
+
 	private JMenuBar menuBar;
-	private PaintingPanel graphPanel;
-	private JToolBar toolBar;
+
+	private JTabbedPane tabbedPane;
 
 	public WinOfAplication() {
 		mainFrame = loadFrame();
@@ -36,8 +60,59 @@ class WinOfAplication {
 		mainFrame.pack();
 	}
 
+	private PaintingPanel createGraph() {
+		PaintingPanel mainPaitingPanel = newGraph();
+		if (tabbedPane == null) {
+			tabbedPane = newTabbedPane();
+			mainFrame.add(tabbedPane);
+		}
+		TabPanel panel = new TabPanel(mainPaitingPanel);
+		tabbedPane.addTab(mainPaitingPanel.getGraph().getIDName(), panel);
+		tabbedPane.setSelectedComponent(panel);
+		return mainPaitingPanel;
+	}
+
+	private JToolBar createToolBar(PaintingPanel graphPanel) {
+		JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
+		JButton but1 = new JButton(new ImageIcon("image/tool-select.png"));
+		but1.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool",
+						graphPanel);
+				graphPanel.changeMouseListener(listener);
+			}
+		});
+		toolBar.add(but1);
+
+		JButton but2 = new JButton(new ImageIcon("image/tool-pair.png"));
+		but2.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
+						graphPanel);
+				graphPanel.changeMouseListener(listener);
+			}
+		});
+		toolBar.add(but2);
+
+		JButton but3 = new JButton("Алгоритм");
+		but3.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
+						graphPanel);
+				graphPanel.changeMouseListener(listener);
+			}
+		});
+		toolBar.add(but3);
+		return toolBar;
+	}
+
 	private JFrame loadFrame() {
 		JFrame frame = new JFrame();
+		frame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		frame.setPreferredSize(new Dimension(640, 360));
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +128,7 @@ class WinOfAplication {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				newGraph();
+				createGraph();
 			}
 		});
 		currentMenu.add(menuItem);
@@ -69,12 +144,12 @@ class WinOfAplication {
 		});
 		currentMenu.add(menuItem);
 
-		menuItem = new JMenuItem("Закрыть");
+		menuItem = new JMenuItem("Сохранить как");
 		menuItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				closeFile();
+				saveFile();
 
 			}
 		});
@@ -99,40 +174,8 @@ class WinOfAplication {
 		return menuBar;
 	}
 
-	private JToolBar createToolBar() {
-		JToolBar toolBar = new JToolBar();
-
-		JButton but1 = new JButton(new ImageIcon("image/tool-select.png"));
-		but1.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool",
-						graphPanel);
-				graphPanel.changeMouseListener(listener);
-			}
-		});
-		toolBar.add(but1);
-
-		JButton but2 = new JButton(new ImageIcon("image/tool-pair.png"));
-		but2.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
-						graphPanel);
-				graphPanel.changeMouseListener(listener);
-			}
-		});
-		toolBar.add(but2);
-		return toolBar;
-	}
-
-	public void newGraph() {
-		graphPanel = new PaintingPanel();
-		JScrollPane scrolPane = new JScrollPane(graphPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		mainFrame.add(scrolPane);
-		toolBar = createToolBar();
-		mainFrame.add(toolBar, BorderLayout.NORTH);
-		mainFrame.pack();
+	public PaintingPanel newGraph() {
+		PaintingPanel graphPanel = new PaintingPanel();
 		JMenu menu = menuBar.getMenu(1);
 		menu.add(new JMenuItem(graphPanel.getActionEvent("CopyAction")));
 		menu.add(new JMenuItem(graphPanel.getActionEvent("PasteAction")));
@@ -140,17 +183,29 @@ class WinOfAplication {
 		menu.add(new JMenuItem(graphPanel.getActionEvent("DeleteAction")));
 		menuBar.add(menu);
 		menuBar.revalidate();
+		return graphPanel;
 	}
 
+	private JTabbedPane newTabbedPane() {
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.NORTH, JTabbedPane.SCROLL_TAB_LAYOUT);
+		return tabbedPane;
+	}
+	
 	private void openFile() {
-		// TODO
+		JFileChooser chooser = new JFileChooser();
+		chooser.showOpenDialog(mainFrame);
+		String file = chooser.getSelectedFile().getPath();
+			PaintingPanel graphPanel = createGraph();
+		if (file != null) {
+			graphPanel.open(file);
+			graphPanel.revalidate();
+		}
 	}
-
-	private void closeFile() {
-		// TODO
-	}
-
-	static public void main(String[] args) {
-		WinOfAplication f = new WinOfAplication();
+	private void saveFile() {
+		JFileChooser chooser = new JFileChooser();
+		chooser.showSaveDialog(mainFrame);
+		String file = chooser.getSelectedFile().getPath();
+		TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+		panel.getPaintingPanel().save(file);
 	}
 }

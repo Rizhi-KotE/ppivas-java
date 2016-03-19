@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Counter {
-	private static Map<Class,Integer> counters;
+	private static Map<Class<?>, Integer> counters;
 	public static int getNextNum(Class<?> o){
 		if(counters == null){
-			counters = new HashMap<Class, Integer>();
+			counters = new HashMap<Class<?>, Integer>();
 		}
 		Integer i = counters.get(o);
 		if(i == null){
