@@ -98,6 +98,8 @@ public class ViewGraph extends Observable {
 	public void addEdge(ViewEdge e) {
 		if (e.isComplete()) {
 			addShapedComponentToPanel(e);
+			e.getNode1().addObserver(e);
+			e.getNode2().addObserver(e);
 			edges.add(e);
 			panel.validate();
 			graph.addEdge(e);
@@ -186,6 +188,8 @@ public class ViewGraph extends Observable {
 	}
 
 	private void completeEdge(ViewEdge e) {
+		e.getNode1().addObserver(e);
+		e.getNode2().addObserver(e);
 		edges.add(e);
 		graph.addEdge(e);
 	}
@@ -220,6 +224,9 @@ public class ViewGraph extends Observable {
 
 	public void deleteEdge(ViewEdge e) {
 		edges.remove(e);
+		graph.addEdge(e);
+		e.getNode1().deleteObserver(e);
+		e.getNode2().deleteObserver(e);
 		e.setDeleted(true);
 	}
 

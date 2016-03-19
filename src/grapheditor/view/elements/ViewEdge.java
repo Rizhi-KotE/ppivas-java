@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -24,7 +25,7 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	private ViewNode node2;
 
 	private double radius = 5;
-	
+
 	ViewEdgeRepresent represent;
 
 	private ViewEdge() {
@@ -38,12 +39,21 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 		node1 = n1;
 		node2 = n2;
 	}
-	
-	public ViewEdge(ViewEdge e){
+
+	public ViewEdge(ViewEdge e) {
 		super(e);
 		hash = Counter.getNextNum(ViewGraphElement.class);
 		node1 = e.node1;
 		node2 = e.node2;
+		extraPoints = new LinkedList<Point2D>(e.extraPoints);
+		represent = new SimpleEdge(this);
+	}
+	
+	public ViewEdge(ViewEdge e,ViewNode n1, ViewNode n2) {
+		super(e);
+		hash = Counter.getNextNum(ViewGraphElement.class);
+		node1 = n1;
+		node2 = n2;
 		extraPoints = new LinkedList<Point2D>(e.extraPoints);
 		represent = new SimpleEdge(this);
 	}
@@ -76,7 +86,7 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	}
 
 	public void drag(double dx, double dy) {
-
+		calcContentPoint();
 	}
 
 	@Override
@@ -187,6 +197,7 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 
 	@Override
 	public void update(Observable o, Object arg) {
+		calcContentPoint();
 		setChanged();
 		notifyObservers();
 	}
@@ -194,8 +205,8 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	@Override
 	public ViewEdge clone() throws CloneNotSupportedException {
 		ViewEdge clone = (ViewEdge) super.clone();
-		
-		//clone.hash = Counter.getNextNum(ViewEdge.class);
+
+		// clone.hash = Counter.getNextNum(ViewEdge.class);
 		clone.node1 = node1;
 		clone.node2 = node2;
 		return clone;
@@ -204,5 +215,30 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	@Override
 	public void paintYourSelf(Graphics2D g2d) {
 		represent.paintYourSelf(g2d);
+	}
+
+	@Override
+	public void setContent(String s) throws NumberFormatException {
+		Integer.parseInt(s);
+		calcContentPoint();
+		super.setContent(s);
+	}
+
+	@Override
+	public void calcContentPoint() {
+		Rectangle2D bounds = null;
+		if ((node1 != null) && (node2 != null)) {
+			double x1 = node1.getX();
+			double y1 = node1.getY();
+			double x2 = node2.getX();
+			double y2 = node2.getY();
+			bounds = new Rectangle2D.Double(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+		}
+		if (bounds != null) {
+			int x = (int) (bounds.getX() + bounds.getWidth() / 2 + represent.getWidth() * 2);
+			int y = (int) (bounds.getY() + bounds.getHeight() / 2 + represent.getWidth() * 2);
+			setContentPoint(x, y);
+
+		}
 	}
 }

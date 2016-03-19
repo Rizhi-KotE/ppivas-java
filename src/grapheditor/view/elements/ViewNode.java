@@ -41,6 +41,16 @@ public class ViewNode extends ViewGraphElement {
 		setIdth(anId);
 	}
 
+	@Override
+	public void setContent(String s) throws NumberFormatException {
+		calcContentPoint();
+		super.setContent(s);
+	}
+	
+	@Override
+	public void calcContentPoint() {
+		setContentPoint((int)(getX() + represent.getRadius()*2), (int) (getY() + represent.getRadius()*2));
+	}
 	public ViewNode(double ax, double ay) {
 		this();
 
@@ -159,6 +169,7 @@ public class ViewNode extends ViewGraphElement {
 	public void drag(double dx, double dy) {
 		x += dx;
 		y += dy;
+		calcContentPoint();
 		setChanged();
 		notifyObservers();
 	}

@@ -128,7 +128,6 @@ class NodeEditor implements MouseInputListener {
 		choosePanel.setShape(new ViewGraphElement() {
 
 			ViewGraphElementRepresent represent = new RectangleRepresent(this);
-
 			@Override
 			public Shape getShape() {
 				return chooseRectangle;
@@ -156,6 +155,11 @@ class NodeEditor implements MouseInputListener {
 			@Override
 			public void paintYourSelf(Graphics2D g2d) {
 				represent.paintYourSelf(g2d);
+			}
+
+			@Override
+			public void calcContentPoint() {
+			
 			}
 		});
 		int oldX = (int) oldP.getX();

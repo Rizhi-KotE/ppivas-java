@@ -57,7 +57,7 @@ public class ClipGraph {
 				newEdgesNode2 = new ViewNode(edgesNode2);
 				newNodes.put(edgesNode2, newEdgesNode2);
 			}
-			newEdges.add(new ViewEdge(newEdgesNode1, newEdgesNode2));
+			newEdges.add(new ViewEdge(edge, newEdgesNode1, newEdgesNode2));
 		}
 		out.addAll(newNodes.values());
 		out.addAll(newEdges);

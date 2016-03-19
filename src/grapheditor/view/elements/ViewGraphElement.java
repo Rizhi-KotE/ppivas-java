@@ -5,10 +5,34 @@ import java.awt.Shape;
 import java.util.Observable;
 
 abstract public class ViewGraphElement extends Observable implements SelfPainted, SelfContained, Choousable, Cloneable {
-	private static final Color INIT_COLOR = Color.BLACK;
+	public static final Color INIT_COLOR = Color.BLACK;
 	protected boolean choose;
 	private Color color = INIT_COLOR;
 	private String content;
+	private int contentX;
+
+	/**
+	 * @return the contentX
+	 */
+	public int getContentX() {
+		return contentX;
+	}
+
+	/**
+	 * @return the contentY
+	 */
+	public int getContentY() {
+		return contentY;
+	}
+
+	public abstract void calcContentPoint();
+
+	protected void setContentPoint(int x, int y) {
+		contentX = x;
+		contentY = y;
+	}
+
+	private int contentY;
 	protected boolean isDeleted;
 
 	@Override
@@ -32,9 +56,12 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 	public ViewGraphElement() {
 		// TODO Auto-generated constructor stub
 	}
+
 	public ViewGraphElement(ViewGraphElement el) {
 
 		content = el.content;
+		contentX = el.contentX;
+		contentY = el.contentY;
 	}
 
 	public abstract void drag(double dx, double dy);
@@ -81,7 +108,7 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 		}
 	}
 
-	public void setContent(String s) {
+	public void setContent(String s) throws NumberFormatException {
 		content = s;
 		setChanged();
 		notifyObservers();

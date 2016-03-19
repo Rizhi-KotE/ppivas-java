@@ -29,7 +29,11 @@ public class IdentifierAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String s = new String();
-		s = JOptionPane.showInputDialog("Identifier");
-		panel.setContent(s);
+		s = JOptionPane.showInputDialog(panel.getParent(), "Identifier");
+		try {
+			panel.setContent(s);
+		} catch (NumberFormatException e1) {
+			JOptionPane.showMessageDialog(panel.getParent(), e1.getMessage());
+		}
 	}
 }

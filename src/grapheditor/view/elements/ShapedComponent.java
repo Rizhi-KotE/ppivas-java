@@ -59,7 +59,6 @@ public class ShapedComponent extends JLabel implements Observer {
 
 	public ShapedComponent(ViewGraphElement s) {
 		this();
-		s.addObserver(this);
 		shape = s;
 	}
 
