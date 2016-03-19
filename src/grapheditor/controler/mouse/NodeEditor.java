@@ -128,7 +128,6 @@ class NodeEditor implements MouseInputListener {
 		choosePanel.setShape(new ViewGraphElement() {
 
 			ViewGraphElementRepresent represent = new RectangleRepresent(this);
-
 			@Override
 			public Shape getShape() {
 				return chooseRectangle;

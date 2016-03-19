@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+
 import java.awt.geom.Rectangle2D;
+
 
 import grapheditor.view.elements.ViewGraphElement;
 

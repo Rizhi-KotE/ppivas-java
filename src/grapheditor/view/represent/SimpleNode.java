@@ -25,6 +25,7 @@ public class SimpleNode implements ViewNodeRepresent {
 
 	@Override
 	public boolean contains(double x, double y) {
+
 		return getShape().contains(x, y);
 	}
 
