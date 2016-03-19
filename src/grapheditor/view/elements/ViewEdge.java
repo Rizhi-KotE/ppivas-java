@@ -14,7 +14,7 @@ import frm.Counter;
 import grapheditor.view.represent.SimpleEdge;
 import grapheditor.view.represent.ViewEdgeRepresent;
 
-public class ViewEdge extends ViewGraphElement implements Observer {
+public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	private LinkedList<Point2D> extraPoints;
 	private int hash;
 	private Point2D lastPoint;
@@ -184,17 +184,17 @@ public class ViewEdge extends ViewGraphElement implements Observer {
 	}
 
 	@Override
-	protected ViewGraphElement clone() throws CloneNotSupportedException {
+	public ViewEdge clone() throws CloneNotSupportedException {
 		ViewEdge clone = (ViewEdge) super.clone();
-		clone.hash = Counter.getNextNum(ViewEdge.class);
-		clone.node1 = node1.clone();
-		clone.node2 = node2.clone();
-		return super.clone();
+		
+		//clone.hash = Counter.getNextNum(ViewEdge.class);
+		clone.node1 = node1;
+		clone.node2 = node2;
+		return clone;
 	}
 
 	@Override
 	public void paintYourSelf(Graphics2D g2d) {
 		represent.paintYourSelf(g2d);
 	}
-
 }

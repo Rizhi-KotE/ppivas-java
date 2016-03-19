@@ -5,21 +5,25 @@ import java.awt.Shape;
 import java.util.Observable;
 
 abstract public class ViewGraphElement extends Observable implements SelfPainted, SelfContained, Choousable, Cloneable {
+	private static final Color INIT_COLOR = Color.BLACK;
 	protected boolean choose;
-	private Color color = Color.BLACK;
+	private Color color = INIT_COLOR;
 	private String content;
 	protected boolean isDeleted;
 
 	@Override
 	protected ViewGraphElement clone() throws CloneNotSupportedException {
 		ViewGraphElement clone = (ViewGraphElement) super.clone();
-		clone.content = new String(content);
+		clone.content = content;
+		clone.choose = false;
+		clone.color = INIT_COLOR;
+		clone.isDeleted = false;
 		return clone;
 	}
 
 	public void currentColor() {
 		if (choose == false) {
-			color = Color.BLACK;
+			color = INIT_COLOR;
 			setChanged();
 			notifyObservers();
 		}

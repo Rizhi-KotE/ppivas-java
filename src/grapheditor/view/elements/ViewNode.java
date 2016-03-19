@@ -28,7 +28,7 @@ public class ViewNode extends ViewGraphElement {
 	}
 
 	@Override
-	protected ViewNode clone() throws CloneNotSupportedException {
+	public ViewNode clone() throws CloneNotSupportedException {
 		ViewNode clone = (ViewNode) super.clone();
 		clone.hash = Counter.getNextNum(ViewNode.class);
 		return clone;

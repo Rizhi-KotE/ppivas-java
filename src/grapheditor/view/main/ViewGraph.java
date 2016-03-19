@@ -49,6 +49,7 @@ public class ViewGraph extends Observable {
 	public ViewGraph(PaintingPanel p) {
 		this();
 		panel = p;
+		revalidateActions();
 	}
 
 	public void setPanel(PaintingPanel p) {
@@ -97,6 +98,9 @@ public class ViewGraph extends Observable {
 	public void addEdge(ViewEdge e) {
 		if (e.isComplete()) {
 			addShapedComponentToPanel(e);
+			edges.add(e);
+			panel.validate();
+			graph.addEdge(e);
 		}
 	}
 
@@ -258,8 +262,6 @@ public class ViewGraph extends Observable {
 
 	public void open(String s) {
 		SaveGraph open = new SaveGraph();
-		Collection<ViewGraphElement> elements = new ArrayList<ViewGraphElement>(nodes);
-		elements.addAll(edges);
 		ClipGraph graph = open.loadGraph(s);
 		paste(graph);
 	}
@@ -285,9 +287,9 @@ public class ViewGraph extends Observable {
 
 	private void revalidateActions() {
 		if (choose.size() == 1) {
-			panel.getActionEvent("IdentifierAction").setEnabled(true);
+			panel.getActionEvent(PaintingPanel.IDENTIFIER).setEnabled(true);
 		} else {
-			panel.getActionEvent("IdentifierAction").setEnabled(false);
+			panel.getActionEvent(PaintingPanel.IDENTIFIER).setEnabled(false);
 		}
 		if (choose.size() > 0) {
 			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(true);

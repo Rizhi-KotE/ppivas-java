@@ -44,6 +44,7 @@ public class PaintingPanel extends JPanel implements Scrollable {
 
 	public PaintingPanel() {
 		super();
+		initializationEvents();
 		viewGraph = new ViewGraph(this);
 		setPreferredSize(new Dimension(5000, 5000));
 		setBackground(new Color(255, 255, 255));
@@ -63,7 +64,7 @@ public class PaintingPanel extends JPanel implements Scrollable {
 				repaint();
 			}
 		});
-		initializationEvents();
+		
 	}
 
 	public void addEdge() {

@@ -26,9 +26,7 @@ public class ClipGraph {
 	}
 
 	public void addEdge(ViewEdge n) {
-		ViewNode n1 = n.getNode1();
-		ViewNode n2 = n.getNode2();
-		edges.add(new ViewEdge(nodes.get(n1.hashCode()), nodes.get(n2.hashCode())));
+			edges.add(n);
 	}
 
 	public void addEdge(Integer n1, Integer n2) {
@@ -41,12 +39,30 @@ public class ClipGraph {
 
 	public Collection<ViewEdge> getEdges() {
 
-		return new ArrayList<>(edges);
+		ArrayList<ViewEdge> list = new ArrayList<>(edges.size());
+		for(ViewEdge edge : edges){
+			try {
+				list.add(edge.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return list;
 	}
 
 	public Collection<ViewNode> getNodes() {
 
-		return new ArrayList<>(nodes.values());
+		ArrayList<ViewNode> list = new ArrayList<>(nodes.size());
+		for(ViewNode node : nodes.values()){
+			try {
+				list.add(node.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return list;
 	}
 
 	public boolean isEmpty() {
