@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.text.AbstractDocument.Content;
+
 import Exception.LoopEdgeException;
 import frm.Counter;
 import grapheditor.view.represent.SimpleEdge;
@@ -48,8 +50,8 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 		extraPoints = new LinkedList<Point2D>(e.extraPoints);
 		represent = new SimpleEdge(this);
 	}
-	
-	public ViewEdge(ViewEdge e,ViewNode n1, ViewNode n2) {
+
+	public ViewEdge(ViewEdge e, ViewNode n1, ViewNode n2) {
 		super(e);
 		hash = Counter.getNextNum(ViewGraphElement.class);
 		node1 = n1;
@@ -140,6 +142,10 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 
 	public ViewNode getNode2() {
 		return node2;
+	}
+
+	public ViewNode getUnnotherNode(ViewNode node) {
+		return node2.equals(node) ? node1 : node2;
 	}
 
 	public Shape getShape() {

@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Set;
-
-import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
 
 import Exception.LoopEdgeException;
 import frm.ClipGraph;
@@ -134,6 +133,10 @@ public class ViewGraph extends Observable {
 			newEdge.setDeleted(true);
 			newEdge = null;
 		}
+		for(ViewGraphElement el:getElements()){
+			el.setFixColor(false);
+			el.currentColor();
+		}
 	}
 
 	public boolean choose(Rectangle rect) {
@@ -230,6 +233,11 @@ public class ViewGraph extends Observable {
 		e.setDeleted(true);
 	}
 
+	public Collection<ViewGraphElement> getElements(){
+		List<ViewGraphElement> out = new ArrayList<>(nodes);
+		out.addAll(edges);
+		return out;
+	}
 	private void deleteNode(ViewNode a) {
 		Iterator<ViewEdge> it = graph.incidentEdgeIterator(a);
 		while (it.hasNext()) {
@@ -339,5 +347,19 @@ public class ViewGraph extends Observable {
 
 	public void setGraph(Graph graph) {
 		this.graph = graph;
+	}
+
+	/**
+	 * @return the currentNode
+	 */
+	public ViewNode getCurrentNode() {
+		return currentNode;
+	}
+
+	/**
+	 * @param currentNode the currentNode to set
+	 */
+	public void setCurrentNode(ViewNode currentNode) {
+		this.currentNode = currentNode;
 	}
 }

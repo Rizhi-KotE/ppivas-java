@@ -22,6 +22,7 @@ public class GraphPopupMenu extends JPopupMenu {
 	public static final int COPY_PASTE = 1;
 	public static final int NODE_OPERATION = 1 << 1;
 	public static final int ARC_OPERATION = 1 << 2;
+	public static final int START_ALGO = 1 << 3;
 
 	private int currentType;
 
@@ -34,6 +35,16 @@ public class GraphPopupMenu extends JPopupMenu {
 	private void constructMenu(int a) {
 		if (currentType != a) {
 			removeAll();
+			if ((a & START_ALGO) == START_ALGO) {
+				List<Action> node = new LinkedList<Action>();
+				node.add(panel.getActionEvent(PaintingPanel.FIND_MIN_PATH));
+
+				Iterator<Action> it = node.iterator();
+				while (it.hasNext()) {
+					add(new JMenuItem(it.next()));
+				}
+				add(new Separator());
+			}
 			if ((a & NODE_OPERATION) == NODE_OPERATION) {
 				List<Action> node = new LinkedList<Action>();
 				node.add(panel.getActionEvent(PaintingPanel.IDENTIFIER));
