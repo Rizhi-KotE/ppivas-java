@@ -99,9 +99,7 @@ public class ViewNode extends ViewGraphElement {
 		this.highlight = highlight;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -109,18 +107,10 @@ public class ViewNode extends ViewGraphElement {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + hash;
-		result = prime * result + (highlight ? 1231 : 1237);
-		result = prime * result + ((idth == null) ? 0 : idth.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(radius);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -136,26 +126,6 @@ public class ViewNode extends ViewGraphElement {
 		}
 		ViewNode other = (ViewNode) obj;
 		if (hash != other.hash) {
-			return false;
-		}
-		if (highlight != other.highlight) {
-			return false;
-		}
-		if (idth == null) {
-			if (other.idth != null) {
-				return false;
-			}
-		} else if (!idth.equals(other.idth)) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius)) {
 			return false;
 		}
 		return true;

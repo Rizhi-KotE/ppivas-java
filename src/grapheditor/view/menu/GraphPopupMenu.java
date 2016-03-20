@@ -22,6 +22,7 @@ public class GraphPopupMenu extends JPopupMenu {
 	public static final int COPY_PASTE = 1;
 	public static final int NODE_OPERATION = 1 << 1;
 	public static final int ARC_OPERATION = 1 << 2;
+	public static final int START_ALGO = 1 << 3;
 
 	private int currentType;
 
@@ -34,6 +35,15 @@ public class GraphPopupMenu extends JPopupMenu {
 	private void constructMenu(int a) {
 		if (currentType != a) {
 			removeAll();
+			if ((a & START_ALGO) == START_ALGO) {
+				List<Action> node = new LinkedList<Action>();
+				node.add(panel.getActionEvent(PaintingPanel.FIND_MIN_PATH));
+				node.add(panel.getActionEvent(PaintingPanel.FIND_BY_STEP));
+				Iterator<Action> it = node.iterator();
+				while (it.hasNext()) {
+					add(new JMenuItem(it.next()));
+				}
+			}
 			if ((a & NODE_OPERATION) == NODE_OPERATION) {
 				List<Action> node = new LinkedList<Action>();
 				node.add(panel.getActionEvent(PaintingPanel.IDENTIFIER));
@@ -42,9 +52,11 @@ public class GraphPopupMenu extends JPopupMenu {
 				while (it.hasNext()) {
 					add(new JMenuItem(it.next()));
 				}
-				add(new Separator());
 			}
 			if ((a & COPY_PASTE) == COPY_PASTE) {
+				if((a ^ COPY_PASTE)!=0){
+					add(new Separator());
+				}
 				List<Action> l = new LinkedList<Action>();
 				l.add(panel.getActionEvent(PaintingPanel.COPY_ACTION));
 				l.add(panel.getActionEvent(PaintingPanel.CUT_ACTION));

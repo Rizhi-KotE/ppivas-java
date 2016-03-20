@@ -78,7 +78,7 @@ class WinOfAplication {
 		but1.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Node_tool",
+				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener(GraphControlerFactory.NODE_TOOL,
 						graphPanel);
 				graphPanel.changeMouseListener(listener);
 			}
@@ -89,7 +89,7 @@ class WinOfAplication {
 		but2.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
+				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener(GraphControlerFactory.ARC_TOOL,
 						graphPanel);
 				graphPanel.changeMouseListener(listener);
 			}
@@ -101,8 +101,8 @@ class WinOfAplication {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MouseInputListener listener = GraphControlerFactory.getInstance().getMouseInputListener("Arc_tool",
-						graphPanel);
+				MouseInputListener listener = GraphControlerFactory.getInstance().getAlgoInputListener(GraphControlerFactory.MIN_PATH_LISTENER,
+				GraphControlerFactory.DIJKSTRA_S_ALGORITHM,		graphPanel);
 				graphPanel.changeMouseListener(listener);
 			}
 		});
@@ -194,7 +194,13 @@ class WinOfAplication {
 	private void openFile() {
 		JFileChooser chooser = new JFileChooser();
 		chooser.showOpenDialog(mainFrame);
-		String file = chooser.getSelectedFile().getPath();
+		String file = null;
+		try {
+			file = chooser.getSelectedFile().getPath();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			PaintingPanel graphPanel = createGraph();
 		if (file != null) {
 			graphPanel.open(file);

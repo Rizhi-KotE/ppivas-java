@@ -10,6 +10,7 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 	private Color color = INIT_COLOR;
 	private String content;
 	private int contentX;
+	private boolean fixColor;
 
 	/**
 	 * @return the contentX
@@ -46,11 +47,12 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 	}
 
 	public void currentColor() {
-		if (choose == false) {
-			color = INIT_COLOR;
-			setChanged();
-			notifyObservers();
-		}
+		if (!isFixColor())
+			if (choose == false) {
+				color = INIT_COLOR;
+				setChanged();
+				notifyObservers();
+			}
 	}
 
 	public ViewGraphElement() {
@@ -101,11 +103,12 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 	}
 
 	public void setColor(Color c) {
-		if (choose == false) {
-			color = c;
-			setChanged();
-			notifyObservers();
-		}
+		if (!isFixColor())
+			if (choose == false) {
+				color = c;
+				setChanged();
+				notifyObservers();
+			}
 	}
 
 	public void setContent(String s) throws NumberFormatException {
@@ -120,5 +123,13 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 			setChanged();
 			notifyObservers();
 		}
+	}
+
+	public boolean isFixColor() {
+		return fixColor;
+	}
+
+	public void setFixColor(boolean fixColor) {
+		this.fixColor = fixColor;
 	}
 }

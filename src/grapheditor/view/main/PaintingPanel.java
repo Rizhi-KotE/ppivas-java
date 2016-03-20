@@ -10,41 +10,54 @@ import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.Action;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.event.MouseInputListener;
+import javax.swing.text.View;
 
 import grapheditor.controler.action.CopyAction;
 import grapheditor.controler.action.CutAction;
 import grapheditor.controler.action.DeleteAction;
+import grapheditor.controler.action.FindMinPathAction;
 import grapheditor.controler.action.IdentifierAction;
 import grapheditor.controler.action.PasteAction;
+import grapheditor.controler.action.StepAlgoAction;
+import grapheditor.controler.mouse.AlgoMinPathFindListener;
 import grapheditor.controler.mouse.GraphControlerFactory;
+import grapheditor.model.main.Graph;
 import grapheditor.view.elements.ShapedComponent;
+import grapheditor.view.elements.ViewGraphElement;
+import grapheditor.view.elements.ViewNode;
 import grapheditor.view.menu.GraphPopupMenu;
+import prop.KeyStrokeProperty;
 
 public class PaintingPanel extends JPanel implements Scrollable {
 
-	private static final long serialVersionUID = 1L;
-
-	public static final String IDENTIFIER = "IdentifierAction";
-	public static final String COPY_ACTION = "CopyAction";
-	public static final String PASTE_ACTION = "PasteAction";
 	public static final String CUT_ACTION = "CutAction";
-	public static final String DELETE_ACTION = "DeleteAction";
-	private ViewGraph viewGraph;
-	private Map<String, Action> actionEvents;
 
+	public static final String COPY_ACTION = "CopyAction";
+	public static final String DELETE_ACTION = "DeleteAction";
+	public static final String FIND_BY_STEP = "find by step";
+	public static final String FIND_MIN_PATH = "find min path";
+	public static final String IDENTIFIER = "IdentifierAction";
+	public static final String PASTE_ACTION = "PasteAction";
+	private static final long serialVersionUID = 1L;
+	private Map<String, Action> actionEvents;
 	private GraphPopupMenu popupMenu;
+
+	private ViewGraph viewGraph;
 
 	public PaintingPanel() {
 		super();
 		initializationEvents();
+		initializationInputMap();
 		viewGraph = new ViewGraph(this);
 		setPreferredSize(new Dimension(5000, 5000));
 		setBackground(new Color(255, 255, 255));
@@ -64,7 +77,11 @@ public class PaintingPanel extends JPanel implements Scrollable {
 				repaint();
 			}
 		});
-		
+
+	}
+
+	private void initializationInputMap() {
+		InputMap map = getInputMap();
 	}
 
 	public void addEdge() {
@@ -77,24 +94,30 @@ public class PaintingPanel extends JPanel implements Scrollable {
 
 	public void changeMouseListener(MouseInputListener listener) {
 		MouseListener[] l1 = getMouseListeners();
-		boolean b = false;
+		boolean isNewListener = false;
 		for (MouseListener i : l1) {
 			if (!i.equals(listener)) {
 				removeMouseListener(i);
-				b |= true;
+				isNewListener |= true;
 			}
 		}
 		MouseMotionListener[] l2 = getMouseMotionListeners();
 		for (MouseMotionListener i : l2) {
 			if (!i.equals(listener)) {
 				removeMouseMotionListener(i);
-				b |= true;
+				isNewListener |= true;
 			}
 		}
-		if (b) {
+		if (isNewListener) {
 			addMouseListener(listener);
 			addMouseMotionListener(listener);
 			viewGraph.changeListener();
+		}
+		if (listener instanceof AlgoMinPathFindListener) {
+			actionEvents.put(FIND_MIN_PATH, new FindMinPathAction((AlgoMinPathFindListener) listener));
+			actionEvents.put(FIND_BY_STEP, new StepAlgoAction((AlgoMinPathFindListener) listener));
+			getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStrokeProperty.STEP_ALGO_ACTION, FIND_BY_STEP);
+			getActionMap().put(FIND_BY_STEP, getActionEvent(FIND_BY_STEP));
 		}
 	}
 
@@ -110,6 +133,12 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		getGraph().clearChoose();
 	}
 
+	public void connectGraph(ViewGraph newGraph) {
+		newGraph.setPanel(this);
+		viewGraph = newGraph;
+		viewGraph.connectViewToPanel();
+	}
+
 	public void copy() {
 		viewGraph.copy();
 
@@ -123,6 +152,12 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		viewGraph.delete();
 	}
 
+	public void disconnectGraph() {
+		removeAll();
+		viewGraph.setPanel(null);
+		viewGraph = null;
+	}
+
 	public void drag(double dx, double dy) {
 		viewGraph.dragChoosenElementOn(dx, dy);
 	}
@@ -133,6 +168,10 @@ public class PaintingPanel extends JPanel implements Scrollable {
 
 	public Action getActionEvent(String s) {
 		return actionEvents.get(s);
+	}
+
+	public ViewNode getCurrentNode() {
+		return viewGraph.getCurrentNode();
 	}
 
 	public ViewGraph getGraph() {
@@ -178,6 +217,7 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		actionEvents.put(PASTE_ACTION, new PasteAction(this));
 		actionEvents.put(CUT_ACTION, new CutAction(this));
 		actionEvents.put(DELETE_ACTION, new DeleteAction(this));
+		// actionEvents.put(FIND_MIN_PATH, new FindMinPathAction(this));
 	}
 
 	public void open(String s) {
@@ -208,20 +248,8 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		getGraph().setExtraEdgePoint(x, y);
 	}
 
-	
-	public void disconnectGraph(){
-		removeAll();
-		viewGraph.setPanel(null);
-		viewGraph = null;
-	}
-	
-	public void connectGraph(ViewGraph newGraph){
-		newGraph.setPanel(this);
-		viewGraph = newGraph;
-		viewGraph.connectViewToPanel();
-	}
 	public void setGraph(ViewGraph graph) {
-		
+
 		viewGraph = graph;
 	}
 
