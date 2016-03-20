@@ -24,7 +24,7 @@ public class ClipGraph {
 	}
 
 	public void addNode(Integer hash, ViewNode n) {
-		ViewNode newelem = new ViewNode(n.getX(), n.getY());
+		ViewNode newelem = new ViewNode(n);
 		nodes.put(hash, newelem);
 	}
 

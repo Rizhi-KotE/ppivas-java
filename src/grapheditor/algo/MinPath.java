@@ -8,13 +8,14 @@ import java.util.ListIterator;
 
 import grapheditor.view.elements.ViewGraphElement;
 
-public class MinPath implements GraphPath{
+public class MinPath implements GraphPath {
 
 	LinkedList<ViewGraphElement> path;
-	
+
 	public MinPath() {
 		path = new LinkedList<>();
 	}
+
 	@Override
 	public int size() {
 		return path.size();
@@ -47,9 +48,6 @@ public class MinPath implements GraphPath{
 
 	@Override
 	public boolean add(ViewGraphElement e) {
-		if(path.getLast().getClass().equals(e.getClass())){
-			return false;
-		}
 		return path.add(e);
 	}
 
@@ -85,7 +83,8 @@ public class MinPath implements GraphPath{
 
 	@Override
 	public void clear() {
-	path.clear();;
+		path.clear();
+		;
 	}
 
 	@Override
@@ -120,7 +119,7 @@ public class MinPath implements GraphPath{
 
 	@Override
 	public ListIterator<ViewGraphElement> listIterator() {
-		
+
 		return path.listIterator();
 	}
 
@@ -131,8 +130,8 @@ public class MinPath implements GraphPath{
 
 	@Override
 	public List<ViewGraphElement> subList(int fromIndex, int toIndex) {
-		
+
 		return path.subList(fromIndex, toIndex);
 	}
-	
+
 }

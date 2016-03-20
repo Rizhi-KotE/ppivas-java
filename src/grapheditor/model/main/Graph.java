@@ -52,6 +52,13 @@ public class Graph {
 		used = null;
 	}
 
+	public ViewEdge getEdge(ViewNode n1, ViewNode n2){
+		for(ViewEdge edge : structure.get(n1)){
+			if(n2.equals(edge.getUnnotherNode(n1)))
+				return edge;
+		}
+		return null;
+	}
 	private Graph() {
 		structure = new HashMap<ViewNode, Set<ViewEdge>>();
 	}

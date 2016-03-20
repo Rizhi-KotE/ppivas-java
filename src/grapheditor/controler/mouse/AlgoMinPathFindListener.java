@@ -66,6 +66,14 @@ public class AlgoMinPathFindListener implements MouseInputListener {
 		}
 		algo.find(panel.getGraph().getGraph(), start, end);
 	}
+	
+	public void stepAlgo() {
+		if ((start == null) || (end == null)) {
+			JOptionPane.showMessageDialog(panel.getParent(), "Алгоритм не проинициализирован");
+			return;
+		}
+		algo.nextStep(panel.getGraph().getGraph(), start, end);
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {

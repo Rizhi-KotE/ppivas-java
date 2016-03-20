@@ -38,12 +38,11 @@ public class GraphPopupMenu extends JPopupMenu {
 			if ((a & START_ALGO) == START_ALGO) {
 				List<Action> node = new LinkedList<Action>();
 				node.add(panel.getActionEvent(PaintingPanel.FIND_MIN_PATH));
-
+				node.add(panel.getActionEvent(PaintingPanel.FIND_BY_STEP));
 				Iterator<Action> it = node.iterator();
 				while (it.hasNext()) {
 					add(new JMenuItem(it.next()));
 				}
-				add(new Separator());
 			}
 			if ((a & NODE_OPERATION) == NODE_OPERATION) {
 				List<Action> node = new LinkedList<Action>();
@@ -53,9 +52,11 @@ public class GraphPopupMenu extends JPopupMenu {
 				while (it.hasNext()) {
 					add(new JMenuItem(it.next()));
 				}
-				add(new Separator());
 			}
 			if ((a & COPY_PASTE) == COPY_PASTE) {
+				if((a ^ COPY_PASTE)!=0){
+					add(new Separator());
+				}
 				List<Action> l = new LinkedList<Action>();
 				l.add(panel.getActionEvent(PaintingPanel.COPY_ACTION));
 				l.add(panel.getActionEvent(PaintingPanel.CUT_ACTION));

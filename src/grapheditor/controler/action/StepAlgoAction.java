@@ -7,8 +7,9 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import grapheditor.controler.mouse.AlgoMinPathFindListener;
+import prop.KeyStrokeProperty;
 
-public class FindMinPathAction extends AbstractAction {
+public class StepAlgoAction extends AbstractAction {
 
 	/**
 	 * 
@@ -16,20 +17,20 @@ public class FindMinPathAction extends AbstractAction {
 	private static final long serialVersionUID = 6885620313037850096L;
 	private AlgoMinPathFindListener listener;
 
-	private FindMinPathAction() {
+	private StepAlgoAction() {
 		super();
-		putValue(AbstractAction.NAME, "Start finding");
-		putValue(AbstractAction.MNEMONIC_KEY, new Integer('F'));
-		//putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S,ActionEvent.ALT_MASK));
+		putValue(AbstractAction.NAME, "Step finding");
+		putValue(AbstractAction.MNEMONIC_KEY, new Integer('S'));
+		putValue(ACCELERATOR_KEY, KeyStrokeProperty.get(KeyStrokeProperty.STEP_ALGO_ACTION));
 	}
 
-	public FindMinPathAction(AlgoMinPathFindListener listener) {
+	public StepAlgoAction(AlgoMinPathFindListener listener) {
 		this();
 		this.listener = listener;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		listener.startAlgo();
+		listener.stepAlgo();
 	}
 }

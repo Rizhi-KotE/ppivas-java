@@ -194,7 +194,13 @@ class WinOfAplication {
 	private void openFile() {
 		JFileChooser chooser = new JFileChooser();
 		chooser.showOpenDialog(mainFrame);
-		String file = chooser.getSelectedFile().getPath();
+		String file = null;
+		try {
+			file = chooser.getSelectedFile().getPath();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			PaintingPanel graphPanel = createGraph();
 		if (file != null) {
 			graphPanel.open(file);
