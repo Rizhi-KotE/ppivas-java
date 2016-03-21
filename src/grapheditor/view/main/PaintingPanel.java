@@ -9,9 +9,8 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.Action;
@@ -20,7 +19,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.event.MouseInputListener;
-import javax.swing.text.View;
 
 import grapheditor.controler.action.CopyAction;
 import grapheditor.controler.action.CutAction;
@@ -31,9 +29,7 @@ import grapheditor.controler.action.PasteAction;
 import grapheditor.controler.action.StepAlgoAction;
 import grapheditor.controler.mouse.AlgoMinPathFindListener;
 import grapheditor.controler.mouse.GraphControlerFactory;
-import grapheditor.model.main.Graph;
 import grapheditor.view.elements.ShapedComponent;
-import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.elements.ViewNode;
 import grapheditor.view.menu.GraphPopupMenu;
 import prop.KeyStrokeProperty;
@@ -121,8 +117,8 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		}
 	}
 
-	public boolean choose(Rectangle rect) {
-		return getGraph().choose(rect);
+	public boolean choose(Rectangle2D chooseRectangle) {
+		return getGraph().choose(chooseRectangle);
 	}
 
 	public void choose(ShapedComponent E) {
@@ -159,7 +155,14 @@ public class PaintingPanel extends JPanel implements Scrollable {
 	}
 
 	public void drag(double dx, double dy) {
-		viewGraph.dragChoosenElementOn(dx, dy);
+		Thread a = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				viewGraph.dragChoosenElementOn(dx, dy);
+			}
+		});
+		a.start();
+
 	}
 
 	public void fixEdgePoint() {

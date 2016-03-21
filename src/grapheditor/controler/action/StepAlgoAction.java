@@ -21,7 +21,7 @@ public class StepAlgoAction extends AbstractAction {
 		super();
 		putValue(AbstractAction.NAME, "Step finding");
 		putValue(AbstractAction.MNEMONIC_KEY, new Integer('S'));
-		putValue(ACCELERATOR_KEY, KeyStrokeProperty.get(KeyStrokeProperty.STEP_ALGO_ACTION));
+		putValue(ACCELERATOR_KEY, KeyStrokeProperty.STEP_ALGO_ACTION);
 	}
 
 	public StepAlgoAction(AlgoMinPathFindListener listener) {

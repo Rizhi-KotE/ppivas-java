@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import grapheditor.view.elements.ViewGraphElement;
+import grapheditor.view.elements.ViewNode;
 
 public class MinPath implements GraphPath {
 
@@ -48,7 +49,10 @@ public class MinPath implements GraphPath {
 
 	@Override
 	public boolean add(ViewGraphElement e) {
-		return path.add(e);
+		if (path.size() != 0)
+			if ((path.getLast() instanceof ViewNode) ^ (e instanceof ViewNode))
+				return path.add(e);
+		return false;
 	}
 
 	@Override

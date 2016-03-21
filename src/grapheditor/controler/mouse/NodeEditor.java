@@ -73,6 +73,7 @@ class NodeEditor implements MouseInputListener {
 			c.repaint();
 		}
 		if (chooseRectangle != null) {
+			panel.choose(chooseRectangle);
 			chooseRectangle = null;
 		}
 		isRectChoose = false;
@@ -90,6 +91,8 @@ class NodeEditor implements MouseInputListener {
 	private ShapedComponent choosePanel;
 	private Rectangle2D chooseRectangle;
 	private boolean isRectChoose = false;
+
+	private double oldsquare;
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -115,7 +118,6 @@ class NodeEditor implements MouseInputListener {
 		double w = Math.abs(oldP.getX() - x);
 		double h = Math.abs(oldP.getY() - y);
 		if (choosePanel == null) {
-			panel.clearChoose();
 			choosePanel = new ShapedComponent();
 			JComponent a = (JComponent) e.getComponent();
 			a.add(choosePanel);
@@ -128,6 +130,7 @@ class NodeEditor implements MouseInputListener {
 		choosePanel.setShape(new ViewGraphElement() {
 
 			ViewGraphElementRepresent represent = new RectangleRepresent(this);
+
 			@Override
 			public Shape getShape() {
 				return chooseRectangle;
@@ -149,7 +152,7 @@ class NodeEditor implements MouseInputListener {
 
 			@Override
 			public boolean contains(double x, double y) {
-				return represent.contains(x, y);
+				return chooseRectangle.contains(x, y);
 			}
 
 			@Override
@@ -159,7 +162,7 @@ class NodeEditor implements MouseInputListener {
 
 			@Override
 			public void calcContentPoint() {
-			
+
 			}
 		});
 		int oldX = (int) oldP.getX();
@@ -167,10 +170,7 @@ class NodeEditor implements MouseInputListener {
 
 		if (isChoose) {
 			oldP.setLocation(x, y);
-		} else {
-			panel.clearChoose();
-			panel.choose(new Rectangle(Math.min(oldX, x), Math.min(oldY, y), Math.abs(oldX - x), Math.abs(oldY - y)));
-		}
+		} 
 	}
 
 	@Override
