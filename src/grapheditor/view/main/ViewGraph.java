@@ -2,6 +2,7 @@ package grapheditor.view.main;
 
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -139,19 +140,19 @@ public class ViewGraph extends Observable {
 		}
 	}
 
-	public boolean choose(Rectangle rect) {
+	public boolean choose(Rectangle2D chooseRectangle) {
 		pressButton = true;
 		Iterator<ViewNode> it = nodes.iterator();
 		while (it.hasNext()) {
 			ViewNode n = it.next();
-			if (n.getShape().intersects(rect)) {
+			if (n.getShape().intersects(chooseRectangle)) {
 				choose(n, true);
 			}
 		}
 		Iterator<ViewEdge> et = edges.iterator();
 		while (et.hasNext()) {
 			ViewEdge n = et.next();
-			if (n.getShape().intersects(rect)) {
+			if (n.getShape().intersects(chooseRectangle)) {
 				choose(n, true);
 			}
 		}
@@ -361,5 +362,15 @@ public class ViewGraph extends Observable {
 	 */
 	public void setCurrentNode(ViewNode currentNode) {
 		this.currentNode = currentNode;
+	}
+
+	private Image dragElements;
+	public void dragCatch() {
+		
+		Iterator<ViewGraphElement> it = choose.iterator();
+		while (it.hasNext()) {
+			ViewGraphElement n = it.next();
+			n.drag(dx, dy);
+		}
 	}
 }

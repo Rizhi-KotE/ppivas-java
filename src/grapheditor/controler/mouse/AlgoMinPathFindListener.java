@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputListener;
 
+import Exception.NoPathException;
 import grapheditor.algo.FindMinPathAlgo;
 import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.elements.ViewNode;
@@ -64,7 +65,11 @@ public class AlgoMinPathFindListener implements MouseInputListener {
 			JOptionPane.showMessageDialog(panel.getParent(), "Алгоритм не проинициализирован");
 			return;
 		}
-		algo.find(panel.getGraph().getGraph(), start, end);
+		try {
+			algo.find(panel.getGraph().getGraph(), start, end);
+		} catch (NoPathException e) {
+			JOptionPane.showMessageDialog(panel.getParent(), "Пути не существует. Задайте другие данные");
+		}
 	}
 	
 	public void stepAlgo() {
@@ -72,7 +77,11 @@ public class AlgoMinPathFindListener implements MouseInputListener {
 			JOptionPane.showMessageDialog(panel.getParent(), "Алгоритм не проинициализирован");
 			return;
 		}
-		algo.nextStep(panel.getGraph().getGraph(), start, end);
+		try {
+			algo.nextStep(panel.getGraph().getGraph(), start, end);
+		} catch (NoPathException e) {
+			JOptionPane.showMessageDialog(panel.getParent(), "Пути не существует. Задайте другие данные");
+		}
 	}
 
 	@Override

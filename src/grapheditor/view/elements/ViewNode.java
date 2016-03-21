@@ -141,7 +141,14 @@ public class ViewNode extends ViewGraphElement {
 		y += dy;
 		calcContentPoint();
 		setChanged();
-		notifyObservers();
+		Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	@Override

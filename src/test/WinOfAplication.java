@@ -3,9 +3,17 @@ package test;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -17,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputListener;
 
 import grapheditor.controler.mouse.GraphControlerFactory;
@@ -69,6 +79,26 @@ class WinOfAplication {
 		TabPanel panel = new TabPanel(mainPaitingPanel);
 		tabbedPane.addTab(mainPaitingPanel.getGraph().getIDName(), panel);
 		tabbedPane.setSelectedComponent(panel);
+		JMenu menu = menuBar.getMenu(1);
+		menu.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				TabPanel tab = (TabPanel) tabbedPane.getSelectedComponent();
+				PaintingPanel panel = tab.getPaintingPanel();
+				for(int i = 0; i < menu.getItemCount(); i++){
+					JMenuItem item = menu.getItem(i);
+					Action event = item.getAction();
+					event.setEnabled(panel.getActionEvent(event.toString()).isEnabled());
+				}
+			}
+		});
+		menu.add(new JMenuItem(new CopyAction()));
+		menu.add(new JMenuItem(new PasteAction()));
+		menu.add(new JMenuItem(new CutAction()));
+		menu.add(new JMenuItem(new DeleteAction()));
+		menuBar.add(menu);
+		menuBar.revalidate();
 		return mainPaitingPanel;
 	}
 
@@ -176,13 +206,7 @@ class WinOfAplication {
 
 	public PaintingPanel newGraph() {
 		PaintingPanel graphPanel = new PaintingPanel();
-		JMenu menu = menuBar.getMenu(1);
-		menu.add(new JMenuItem(graphPanel.getActionEvent("CopyAction")));
-		menu.add(new JMenuItem(graphPanel.getActionEvent("PasteAction")));
-		menu.add(new JMenuItem(graphPanel.getActionEvent("CutAction")));
-		menu.add(new JMenuItem(graphPanel.getActionEvent("DeleteAction")));
-		menuBar.add(menu);
-		menuBar.revalidate();
+		
 		return graphPanel;
 	}
 
@@ -213,5 +237,80 @@ class WinOfAplication {
 		String file = chooser.getSelectedFile().getPath();
 		TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
 		panel.getPaintingPanel().save(file);
+	}
+	
+	private void copyValues(Action target, Action source){
+		target.putValue(Action.NAME, source.getValue(Action.NAME));
+		target.putValue(Action.MNEMONIC_KEY, source.getValue(Action.MNEMONIC_KEY));
+		target.putValue(Action.ACCELERATOR_KEY, source.getValue(Action.ACCELERATOR_KEY));
+		target.setEnabled(source.isEnabled());
+	}
+	private class CopyAction extends AbstractAction{
+		private final String name = PaintingPanel.COPY_ACTION;
+		public CopyAction() {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			copyValues(this, panel.getPaintingPanel().getActionEvent(name));
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			panel.getPaintingPanel().getActionEvent(name).actionPerformed(e);
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+		
+	}
+	private class PasteAction extends AbstractAction{
+		private final String name = PaintingPanel.PASTE_ACTION;
+		public PasteAction() {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			copyValues(this, panel.getPaintingPanel().getActionEvent(name));
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			panel.getPaintingPanel().getActionEvent(name).actionPerformed(e);
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+		
+	}
+	private class CutAction extends AbstractAction{
+		private final String name = PaintingPanel.CUT_ACTION;
+		public CutAction() {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			copyValues(this, panel.getPaintingPanel().getActionEvent(name));
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			panel.getPaintingPanel().getActionEvent(name).actionPerformed(e);
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+		
+	}
+	private class DeleteAction extends AbstractAction{
+		private final String name = PaintingPanel.DELETE_ACTION;
+		public DeleteAction() {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			copyValues(this, panel.getPaintingPanel().getActionEvent(name));
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			TabPanel panel = (TabPanel)tabbedPane.getSelectedComponent();
+			panel.getPaintingPanel().getActionEvent(name).actionPerformed(e);
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+		
 	}
 }

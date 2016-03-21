@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.ListIterator;
 
-import javax.swing.SwingWorker;
-
+import Exception.NoPathException;
 import catchers.ReflectionCatcher;
 import grapheditor.model.main.Graph;
 import grapheditor.view.elements.ViewEdge;
@@ -22,7 +24,7 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 
 	private static final String NEXT_NODE = "nextNode";
 
-	ArrayList<Integer> d;
+	ArrayList<Double> d;
 
 	ArrayList<ViewNode> g, p;
 	private Graph graph;
@@ -40,9 +42,10 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 	public FindMinPathDijkstra() {
 	}
 
-	private GraphPath buildPath(ViewNode start, ViewNode end) {
+	private GraphPath buildPath(ViewNode start, ViewNode end) throws NoPathException {
 		GraphPath path = new MinPath();
-		path.add(end);
+		if (!path.add(end))
+			throw new NoPathException();
 		ViewNode previos = end;
 		while (!previos.equals(start)) {
 			ViewNode curr = p.get(g.indexOf(previos));
@@ -51,9 +54,11 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 			}
 			ViewEdge edge = graph.getEdge(previos, curr);
 			if (edge != null) {
-				path.add(edge);
+				if (!path.add(edge))
+					throw new NoPathException();
 			}
-			path.add(curr);
+			if (!path.add(curr))
+				throw new NoPathException();
 			previos = curr;
 		}
 		highlightPath(path);
@@ -69,11 +74,12 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 	}
 
 	@Override
-	public GraphPath find(Graph graph, ViewNode start, ViewNode end) {
+	public GraphPath find(Graph graph, ViewNode start, ViewNode end) throws NoPathException {
 		do {
 			nextStep(graph, start, end);
 		} while (nextMethod != null);
-		return buildPath(start, end);
+		GraphPath path = buildPath(start, end);
+		return path;
 	}
 
 	void findNearestNode() {
@@ -81,9 +87,12 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 		for (int j = 0; j < g.size(); j++)
 			if (!u.get(j) && (v == -1 || d.get(j) < d.get(v)))
 				v = j;
-		/*
-		 * if (d.get(v) == Integer.MAX_VALUE) { nextMethod = null; return; }
-		 */
+
+		if (d.get(v) == Integer.MAX_VALUE) {
+			nextMethod = null;
+			return;
+		}
+
 		u.set(v, true);
 		highliteNearestNode(g.get(v));
 		try {
@@ -101,16 +110,23 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 		curr.setFixColor(true);
 	}
 
-	private void highight(ViewEdge edge) {
+	private void revert(ViewGraphElement el) {
+		el.setFixColor(false);
+		el.setColor(ViewGraphElement.INIT_COLOR);
+		el.setFixColor(true);
+	}
 
+	private void highight(ViewEdge edge) {
+		edge.setFixColor(false);
+		edge.setColor(new Color(0xff << 3));
+		edge.setFixColor(true);
 	}
 
 	private void highight(ViewNode node) {
 		if (node != null) {
 
 			int v = g.indexOf(node);
-			Color color = Color.cyan;
-			int rgb = color.getRGB() + 255 * d.get(v);
+			int rgb = 0xff << 8;
 			node.setFixColor(false);
 			node.setColor(new Color(rgb));
 			node.setFixColor(true);
@@ -121,7 +137,7 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 		g = new ArrayList<>(graph.getNodes());
 		d = new ArrayList<>(graph.getNodes().size());
 		for (int i = 0; i < g.size(); i++) {
-			d.add(Integer.MAX_VALUE);
+			d.add(Double.MAX_VALUE);
 		}
 		p = new ArrayList<>(graph.getNodes().size());
 		for (int i = 0; i < g.size(); i++) {
@@ -135,12 +151,40 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 		isInit = true;
 	}
 
+	private void calcNodeColor() {
+		double max = (double) Collections.max(d, new Comparator<Double>() {
+
+			@Override
+			public int compare(Double o1, Double o2) {
+				if ((o1 == Double.MAX_VALUE) || (o2 == Double.MAX_VALUE)) {
+					return 0;
+				}
+				return Double.compare(o1, o2);
+			}
+		});
+		ListIterator<ViewNode> it = g.listIterator();
+		while (it.hasNext()) {
+			int index = it.nextIndex();
+			Color color = Rainbow.getColor(d.get(index) / max);
+			ViewNode node = it.next();
+			node.setFixColor(false);
+			node.setColor(color);
+			node.setFixColor(true);
+		}
+	}
+
+	ViewEdge edge;
+
 	void nextIncidentEdge() {
 		if (incidentEdgeIt == null) {
 			incidentEdgeIt = graph.incidentEdgeIterator(g.get(v));
 		}
+		if (edge != null) {
+			revert(edge);
+		}
 		if (incidentEdgeIt.hasNext()) {
-			ViewEdge edge = incidentEdgeIt.next();
+			edge = incidentEdgeIt.next();
+			highight(edge);
 			int to = g.indexOf(edge.getUnnotherNode(g.get(v)));
 			int len = 1;
 			try {
@@ -152,7 +196,6 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 				d.set(to, d.get(v) + len);
 				p.set(to, g.get(v));
 			}
-			highight(g.get(to));
 			try {
 				nextMethod = this.getClass().getDeclaredMethod(NEXT_INCIDENT_EDGE, new Class<?>[0]);
 			} catch (NoSuchMethodException e) {
@@ -173,8 +216,9 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 	}
 
 	void nextNode() {
-		if (i != -1)
-			highight(g.get(i));
+		if (v != -1)
+			highight(g.get(v));
+		calcNodeColor();
 		i++;
 		if (i < g.size()) {
 			try {
@@ -184,18 +228,17 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 			} catch (SecurityException e) {
 				ReflectionCatcher.securityException(e);
 			}
-			highliteCurrentNode(g.get(i));
 		} else {
 			nextMethod = null;
 		}
 	}
 
 	@Override
-	public void nextStep(Graph graph, ViewNode start, ViewNode end) {
+	public void nextStep(Graph graph, ViewNode start, ViewNode end) throws NoPathException {
 		if (!isInit) {
 			init(graph);
 			int s = g.indexOf(start);
-			d.set(s, 0);
+			d.set(s, 0d);
 			i = -1;
 			try {
 				nextMethod = this.getClass().getDeclaredMethod(NEXT_NODE, new Class<?>[0]);
@@ -223,9 +266,7 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 
 	void highliteCurrentNode(ViewNode curr) {
 		curr.setFixColor(false);
-		curr.setColor(Color.pink);
+		curr.setColor(new Color(0xff << 8));
 		curr.setFixColor(true);
-		ViewNode path = p.get(g.indexOf(curr));
-		highight(path);
 	}
 }
