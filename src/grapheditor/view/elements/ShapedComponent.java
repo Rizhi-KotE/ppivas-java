@@ -79,9 +79,6 @@ public class ShapedComponent extends JLabel implements Observer {
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(shape.getColor());
-		g2d.setStroke(new BasicStroke(5));
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		if (shape != null) {
 			shape.paintYourSelf(g2d);
 		}

@@ -51,7 +51,14 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 			if (choose == false) {
 				color = INIT_COLOR;
 				setChanged();
-				notifyObservers();
+				Thread a = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						notifyObservers();
+					}
+				});
+				a.start();
 			}
 	}
 
@@ -95,7 +102,14 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 			if (is) {
 				color = Color.green;
 				setChanged();
-				notifyObservers();
+				Thread a = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						notifyObservers();
+					}
+				});
+				a.start();
 			} else {
 				currentColor();
 			}
@@ -107,21 +121,42 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 			if (choose == false) {
 				color = c;
 				setChanged();
-				notifyObservers();
+				Thread a = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						notifyObservers();
+					}
+				});
+				a.start();
 			}
 	}
 
 	public void setContent(String s) throws NumberFormatException {
 		content = s;
 		setChanged();
-		notifyObservers();
+Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 		if (isDeleted) {
 			setChanged();
-			notifyObservers();
+			Thread a = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					notifyObservers();
+				}
+			});
+			a.start();
 		}
 	}
 

@@ -71,14 +71,28 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 			lastPoint = null;
 		}
 		setChanged();
-		notifyObservers();
+Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	public void addPoint(Point2D p) {
 		if (extraPoints != null)
 			extraPoints.add(p);
 		setChanged();
-		notifyObservers();
+Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	@Override
@@ -133,7 +147,14 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 		}
 
 		setChanged();
-		notifyObservers();
+Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	public ViewNode getNode1() {
@@ -190,7 +211,14 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	public void setLastPoint(double x, double y) {
 		lastPoint = new Point2D.Double(x, y);
 		setChanged();
-		notifyObservers();
+Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	public void setNode1(ViewNode node1) {
@@ -205,7 +233,14 @@ public class ViewEdge extends ViewGraphElement implements Observer, Cloneable {
 	public void update(Observable o, Object arg) {
 		calcContentPoint();
 		setChanged();
-		notifyObservers();
+Thread a = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				notifyObservers();
+			}
+		});
+		a.start();
 	}
 
 	@Override

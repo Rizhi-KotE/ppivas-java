@@ -90,6 +90,7 @@ class NodeEditor implements MouseInputListener {
 	private ShapedComponent choosePanel;
 	private Rectangle2D chooseRectangle;
 	private boolean isRectChoose = false;
+	private boolean isDragMode = false;
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -97,6 +98,10 @@ class NodeEditor implements MouseInputListener {
 			if (e.getComponent().getClass().equals(ShapedComponent.class)) {
 				if (oldP == null) {
 					oldP = new Point2D.Double(e.getX(), e.getY());
+				}
+				if (!isDragMode) {
+					isDragMode = true;
+					panel.dragCatch();
 				}
 				panel.drag(e.getX() - oldP.getX(), e.getY() - oldP.getY());
 				oldP = new Point2D.Double(e.getX(), e.getY());
@@ -128,6 +133,7 @@ class NodeEditor implements MouseInputListener {
 		choosePanel.setShape(new ViewGraphElement() {
 
 			ViewGraphElementRepresent represent = new RectangleRepresent(this);
+
 			@Override
 			public Shape getShape() {
 				return chooseRectangle;
@@ -159,7 +165,7 @@ class NodeEditor implements MouseInputListener {
 
 			@Override
 			public void calcContentPoint() {
-			
+
 			}
 		});
 		int oldX = (int) oldP.getX();

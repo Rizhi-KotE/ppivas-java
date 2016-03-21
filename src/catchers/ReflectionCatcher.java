@@ -36,7 +36,7 @@ public abstract class ReflectionCatcher {
 		Throwable cause = e.getCause();
 		String message = cause.getClass().getName() + " " + cause.getMessage();
 		System.err.println(message);
-		e.printStackTrace();
+		cause.printStackTrace();
 	}
 
 	public static void noSuchMethodException(NoSuchMethodException e) {
