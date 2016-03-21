@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
@@ -49,6 +50,14 @@ public class PaintingPanel extends JPanel implements Scrollable {
 	private GraphPopupMenu popupMenu;
 
 	private ViewGraph viewGraph;
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if (viewGraph.getDragElements() != null)
+			g.drawImage(viewGraph.getDragElements(), 0, 0, null);
+		
+	}
 
 	public PaintingPanel() {
 		super();

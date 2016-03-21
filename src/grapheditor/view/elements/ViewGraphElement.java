@@ -3,6 +3,7 @@ package grapheditor.view.elements;
 import java.awt.Color;
 import java.awt.Shape;
 import java.util.Observable;
+import java.util.Observer;
 
 abstract public class ViewGraphElement extends Observable implements SelfPainted, SelfContained, Choousable, Cloneable {
 	public static final Color INIT_COLOR = Color.BLACK;
@@ -11,7 +12,7 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 	private String content;
 	private int contentX;
 	private boolean fixColor;
-
+	private ShapedComponent component;
 	/**
 	 * @return the contentX
 	 */
@@ -166,5 +167,21 @@ Thread a = new Thread(new Runnable() {
 
 	public void setFixColor(boolean fixColor) {
 		this.fixColor = fixColor;
+	}
+	
+	@Override
+	public synchronized void addObserver(Observer o) {
+		if(o instanceof ShapedComponent){
+			setComponent((ShapedComponent) o);
+		}
+		super.addObserver(o);
+	}
+
+	public ShapedComponent getComponent() {
+		return component;
+	}
+
+	public void setComponent(ShapedComponent component) {
+		this.component = component;
 	}
 }

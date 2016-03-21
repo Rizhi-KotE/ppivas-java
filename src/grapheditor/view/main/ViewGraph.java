@@ -1,8 +1,10 @@
 package grapheditor.view.main;
 
 import java.awt.Component;
-import java.awt.Rectangle;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -365,12 +367,28 @@ public class ViewGraph extends Observable {
 	}
 
 	private Image dragElements;
+	/**
+	 * @return the dragElements
+	 */
+	public Image getDragElements() {
+		return dragElements;
+	}
+
+	/**
+	 * @param dragElements the dragElements to set
+	 */
+	public void setDragElements(Image dragElements) {
+		this.dragElements = dragElements;
+	}
+
 	public void dragCatch() {
-		
+		dragElements = new BufferedImage(panel.getWidth(), panel.getHeight(),BufferedImage.TYPE_4BYTE_ABGR_PRE);
+		Graphics2D g2d = (Graphics2D) dragElements.getGraphics();
 		Iterator<ViewGraphElement> it = choose.iterator();
 		while (it.hasNext()) {
 			ViewGraphElement n = it.next();
-			n.drag(dx, dy);
+			n.paintYourSelf(g2d);
+			n.getComponent().setVisible(false);
 		}
 	}
 }
