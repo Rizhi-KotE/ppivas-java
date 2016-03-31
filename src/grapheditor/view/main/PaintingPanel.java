@@ -261,6 +261,6 @@ public class PaintingPanel extends JPanel implements Scrollable {
 	}
 
 	public void dragCatch() {
-		viewGraph.dragCatch();
+
 	}
 }

@@ -363,14 +363,4 @@ public class ViewGraph extends Observable {
 	public void setCurrentNode(ViewNode currentNode) {
 		this.currentNode = currentNode;
 	}
-
-	private Image dragElements;
-	public void dragCatch() {
-		
-		Iterator<ViewGraphElement> it = choose.iterator();
-		while (it.hasNext()) {
-			ViewGraphElement n = it.next();
-			n.drag(dx, dy);
-		}
-	}
 }

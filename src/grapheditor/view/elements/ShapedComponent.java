@@ -1,13 +1,9 @@
 package grapheditor.view.elements;
 
-import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,10 +17,8 @@ public class ShapedComponent extends JLabel implements Observer {
 	 * 
 	 */
 	private static final long serialVersionUID = 6388626636136514844L;
-
 	private final String name = "ShapedComponent";
 	private ViewGraphElement shape;
-
 	public ShapedComponent() {
 		super();
 		addMouseListener(GraphControlerFactory.getInstance().getMouseInputListener("ShapedComponent"));
@@ -105,7 +99,7 @@ public class ShapedComponent extends JLabel implements Observer {
 			if (p == null) {
 				return;
 			}
-			//p.choose(this);
+			//parent.choose(this);
 		}
 		if (getElement().isDeleted() == true) {
 			PaintingPanel p = (PaintingPanel) getParent();

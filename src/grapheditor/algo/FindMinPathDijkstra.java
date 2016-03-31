@@ -24,20 +24,20 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 
 	private static final String NEXT_NODE = "nextNode";
 
-	ArrayList<Double> d;
+	ArrayList<Double> distanceToNodes;
 
-	ArrayList<ViewNode> g, p;
-	private Graph graph;
-	private int i;
+	ArrayList<ViewNode> nodesArray, parent;
+	private Graph graphModel;
+	private int numberOfIteration;
 
 	private Iterator<ViewEdge> incidentEdgeIt;
 
 	boolean isInit = false;
 	Method nextMethod;
-	private int s;
-	private int to;
-	ArrayList<Boolean> u;
-	private int v;
+	private int startNodeIndex;
+	private int toNodeIndex;
+	ArrayList<Boolean> usedArray;
+	private int currentNodeIndex;
 
 	public FindMinPathDijkstra() {
 	}
@@ -48,11 +48,11 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 			throw new NoPathException();
 		ViewNode previos = end;
 		while (!previos.equals(start)) {
-			ViewNode curr = p.get(g.indexOf(previos));
+			ViewNode curr = parent.get(nodesArray.indexOf(previos));
 			if (curr == null) {
 				curr = start;
 			}
-			ViewEdge edge = graph.getEdge(previos, curr);
+			ViewEdge edge = graphModel.getEdge(previos, curr);
 			if (edge != null) {
 				if (!path.add(edge))
 					throw new NoPathException();
@@ -83,18 +83,18 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 	}
 
 	void findNearestNode() {
-		v = -1;
-		for (int j = 0; j < g.size(); j++)
-			if (!u.get(j) && (v == -1 || d.get(j) < d.get(v)))
-				v = j;
+		currentNodeIndex = -1;
+		for (int nodeIndex = 0; nodeIndex < nodesArray.size(); nodeIndex++)
+			if (!usedArray.get(nodeIndex) && (currentNodeIndex == -1 || distanceToNodes.get(nodeIndex) < distanceToNodes.get(currentNodeIndex)))
+				currentNodeIndex = nodeIndex;
 
-		if (d.get(v) == Integer.MAX_VALUE) {
+		if (distanceToNodes.get(currentNodeIndex) == Integer.MAX_VALUE) {
 			nextMethod = null;
 			return;
 		}
 
-		u.set(v, true);
-		highliteNearestNode(g.get(v));
+		usedArray.set(currentNodeIndex, true);
+		highliteNearestNode(nodesArray.get(currentNodeIndex));
 		try {
 			nextMethod = this.getClass().getDeclaredMethod(NEXT_INCIDENT_EDGE, new Class<?>[0]);
 		} catch (NoSuchMethodException e) {
@@ -124,35 +124,33 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 
 	private void highight(ViewNode node) {
 		if (node != null) {
-
-			int v = g.indexOf(node);
-			int rgb = 0xff << 8;
+			int rgbColor = 0xff << 8;
 			node.setFixColor(false);
-			node.setColor(new Color(rgb));
+			node.setColor(new Color(rgbColor));
 			node.setFixColor(true);
 		}
 	}
 
 	private void init(Graph graph) {
-		g = new ArrayList<>(graph.getNodes());
-		d = new ArrayList<>(graph.getNodes().size());
-		for (int i = 0; i < g.size(); i++) {
-			d.add(Double.MAX_VALUE);
+		nodesArray = new ArrayList<>(graph.getNodes());
+		distanceToNodes = new ArrayList<>(graph.getNodes().size());
+		for (int i = 0; i < nodesArray.size(); i++) {
+			distanceToNodes.add(Double.MAX_VALUE);
 		}
-		p = new ArrayList<>(graph.getNodes().size());
-		for (int i = 0; i < g.size(); i++) {
-			p.add(null);
+		parent = new ArrayList<>(graph.getNodes().size());
+		for (int i = 0; i < nodesArray.size(); i++) {
+			parent.add(null);
 		}
-		u = new ArrayList<>(graph.getNodes().size());
-		for (int i = 0; i < g.size(); i++) {
-			u.add(false);
+		usedArray = new ArrayList<>(graph.getNodes().size());
+		for (int i = 0; i < nodesArray.size(); i++) {
+			usedArray.add(false);
 		}
-		this.graph = graph;
+		this.graphModel = graph;
 		isInit = true;
 	}
 
 	private void calcNodeColor() {
-		double max = (double) Collections.max(d, new Comparator<Double>() {
+		double max = (double) Collections.max(distanceToNodes, new Comparator<Double>() {
 
 			@Override
 			public int compare(Double o1, Double o2) {
@@ -162,11 +160,11 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 				return Double.compare(o1, o2);
 			}
 		});
-		ListIterator<ViewNode> it = g.listIterator();
-		while (it.hasNext()) {
-			int index = it.nextIndex();
-			Color color = Rainbow.getColor(d.get(index) / max);
-			ViewNode node = it.next();
+		ListIterator<ViewNode> nodeIt = nodesArray.listIterator();
+		while (nodeIt.hasNext()) {
+			int index = nodeIt.nextIndex();
+			Color color = Rainbow.getColor(distanceToNodes.get(index) / max);
+			ViewNode node = nodeIt.next();
 			node.setFixColor(false);
 			node.setColor(color);
 			node.setFixColor(true);
@@ -177,7 +175,7 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 
 	void nextIncidentEdge() {
 		if (incidentEdgeIt == null) {
-			incidentEdgeIt = graph.incidentEdgeIterator(g.get(v));
+			incidentEdgeIt = graphModel.incidentEdgeIterator(nodesArray.get(currentNodeIndex));
 		}
 		if (edge != null) {
 			revert(edge);
@@ -185,16 +183,16 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 		if (incidentEdgeIt.hasNext()) {
 			edge = incidentEdgeIt.next();
 			highight(edge);
-			int to = g.indexOf(edge.getUnnotherNode(g.get(v)));
+			int to = nodesArray.indexOf(edge.getUnnotherNode(nodesArray.get(currentNodeIndex)));
 			int len = 1;
 			try {
 				len = Integer.parseInt(edge.getContent());
 			} catch (NumberFormatException e) {
 
 			}
-			if (d.get(v) + len < d.get(to)) {
-				d.set(to, d.get(v) + len);
-				p.set(to, g.get(v));
+			if (distanceToNodes.get(currentNodeIndex) + len < distanceToNodes.get(to)) {
+				distanceToNodes.set(to, distanceToNodes.get(currentNodeIndex) + len);
+				parent.set(to, nodesArray.get(currentNodeIndex));
 			}
 			try {
 				nextMethod = this.getClass().getDeclaredMethod(NEXT_INCIDENT_EDGE, new Class<?>[0]);
@@ -216,11 +214,11 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 	}
 
 	void nextNode() {
-		if (v != -1)
-			highight(g.get(v));
+		if (currentNodeIndex != -1)
+			highight(nodesArray.get(currentNodeIndex));
 		calcNodeColor();
-		i++;
-		if (i < g.size()) {
+		numberOfIteration++;
+		if (numberOfIteration < nodesArray.size()) {
 			try {
 				nextMethod = this.getClass().getDeclaredMethod(FIND_NEAREST_NODE, new Class<?>[0]);
 			} catch (NoSuchMethodException e) {
@@ -237,9 +235,9 @@ public class FindMinPathDijkstra implements FindMinPathAlgo {
 	public void nextStep(Graph graph, ViewNode start, ViewNode end) throws NoPathException {
 		if (!isInit) {
 			init(graph);
-			int s = g.indexOf(start);
-			d.set(s, 0d);
-			i = -1;
+			int s = nodesArray.indexOf(start);
+			distanceToNodes.set(s, 0d);
+			numberOfIteration = -1;
 			try {
 				nextMethod = this.getClass().getDeclaredMethod(NEXT_NODE, new Class<?>[0]);
 			} catch (NoSuchMethodException e) {

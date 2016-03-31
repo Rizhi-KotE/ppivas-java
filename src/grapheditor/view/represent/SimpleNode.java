@@ -2,10 +2,10 @@ package grapheditor.view.represent;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
 import grapheditor.view.elements.ViewGraphElement;
@@ -14,7 +14,7 @@ import grapheditor.view.elements.ViewNode;
 public class SimpleNode implements ViewNodeRepresent {
 
 	ViewNode node;
-
+	private static Stroke stroke = new BasicStroke(2);
 	private int radius = 5;
 
 	private Ellipse2D shape;
@@ -65,7 +65,7 @@ public class SimpleNode implements ViewNodeRepresent {
 	@Override
 	public void paintYourSelf(Graphics2D g2d) {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setStroke(new BasicStroke(2));
+		g2d.setStroke(stroke);
 		Shape s = getShape();
 		g2d.setColor(Color.white);
 		g2d.fill(s);

@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
@@ -14,7 +15,7 @@ import grapheditor.view.elements.ViewGraphElement;
 public class SimpleEdge implements ViewEdgeRepresent {
 
 	ViewEdge edge;
-
+	private static Stroke stroke = new BasicStroke(2);
 	private double radius = 5;
 	private Point2D point1;
 	private Point2D point2;
@@ -35,7 +36,7 @@ public class SimpleEdge implements ViewEdgeRepresent {
 	public void paintYourSelf(Graphics2D g2d) {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(edge.getColor());
-		g2d.setStroke(new BasicStroke(2));
+		g2d.setStroke(stroke);
 		g2d.draw(edge.getShape());
 		drawContent(g2d);
 	}
