@@ -60,24 +60,26 @@ public class SaveGraph {
 		root.appendChild(arcs);
 
 		for (ViewGraphElement el : elements) {
-			switch (el.getType()) {
+			switch (el.getElementType()) {
 			case "Node": {
-				Element n = doc.createElement(el.getType());
+				Element n = doc.createElement(el.getElementType());
 				ViewNode v = (ViewNode) el;
 				n.setAttribute("Content", el.getContent());
 				n.setAttribute("Hash", new Integer(el.hashCode()).toString());
 				n.setAttribute("X", (new Double(v.getX()).toString()));
 				n.setAttribute("Y", (new Double(v.getY()).toString()));
+				n.setAttribute("type", v.getElementType());
 				nodes.appendChild(n);
 				break;
 			}
 			case "Edge": {
-				Element n = doc.createElement(el.getType());
+				Element n = doc.createElement(el.getElementType());
 				ViewEdge edge = (ViewEdge) el;
 				n.setAttribute("Content", el.getContent());
 				n.setAttribute("Hash", new Integer(el.hashCode()).toString());
 				n.setAttribute("Node1", new Integer(edge.getNode1().hashCode()).toString());
 				n.setAttribute("Node2", new Integer(edge.getNode2().hashCode()).toString());
+				n.setAttribute("type", edge.getElementType());
 				arcs.appendChild(n);
 				break;
 			}
@@ -174,6 +176,8 @@ public class SaveGraph {
 				} catch (NumberFormatException e) {
 					
 				}
+				String type = attr.getValue("type");
+				edge.setType(type);
 				clipGraph.addEdge(edge);
 			}
 
@@ -184,6 +188,8 @@ public class SaveGraph {
 				double y = Double.parseDouble(attr.getValue("Y"));
 				ViewNode node = new ViewNode(x,y);
 				node.setContent(content);
+				String type = attr.getValue("type");
+				node.setType(type);
 				clipGraph.addNode(hash, node);
 			}
 

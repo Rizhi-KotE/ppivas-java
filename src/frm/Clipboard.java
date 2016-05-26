@@ -27,7 +27,7 @@ public class Clipboard {
 		clipGraph = new ClipGraph();
 		List<ViewEdge> edgeList = new LinkedList<ViewEdge>();
 		for (ViewGraphElement el : elements) {
-			switch (el.getType()) {
+			switch (el.getElementType()) {
 			case "Node": {
 				ViewNode n = (ViewNode) el;
 				clipGraph.addNode(n.hashCode(), n);

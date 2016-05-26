@@ -1,3 +1,4 @@
+
 package grapheditor.view.main;
 
 import java.awt.BorderLayout;
@@ -10,7 +11,9 @@ import java.awt.event.ContainerListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Action;
@@ -20,21 +23,40 @@ import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.event.MouseInputListener;
 
+import grapheditor.controler.action.ChangeEdgeOrientationAction;
+import grapheditor.controler.action.ChangeElementType;
 import grapheditor.controler.action.CopyAction;
 import grapheditor.controler.action.CutAction;
 import grapheditor.controler.action.DeleteAction;
 import grapheditor.controler.action.FindMinPathAction;
+import grapheditor.controler.action.GetUdjustMatrixAction;
+import grapheditor.controler.action.GetUdjustmentListAction;
 import grapheditor.controler.action.IdentifierAction;
+import grapheditor.controler.action.IncidenceMatrixAction;
+import grapheditor.controler.action.NodeVertexesCount;
 import grapheditor.controler.action.PasteAction;
 import grapheditor.controler.action.StepAlgoAction;
 import grapheditor.controler.mouse.AlgoMinPathFindListener;
 import grapheditor.controler.mouse.GraphControlerFactory;
 import grapheditor.view.elements.ShapedComponent;
+import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.elements.ViewNode;
 import grapheditor.view.menu.GraphPopupMenu;
 import prop.KeyStrokeProperty;
 
 public class PaintingPanel extends JPanel implements Scrollable {
+
+	public static final String GET_INCIDENT_MATRIX = "getIncidentMatrix";
+
+	public static final String GET_UDJUST_LIST = "getUdjustList";
+
+	public static final String CHANGE_VERTEX_ORIENTATION = "changeVertexOrientation";
+
+	public static final String VERTEXES_AND_EDGES_COUNT = "vertexesAndEdgesCount";
+
+	public static final String CHANGE_ELEMENT_TYPE = "change_element_type";
+
+	public static final String GET_UDJUST_MATRIX = "getUdjustMatrix";
 
 	public static final String CUT_ACTION = "CutAction";
 
@@ -155,14 +177,7 @@ public class PaintingPanel extends JPanel implements Scrollable {
 	}
 
 	public void drag(double dx, double dy) {
-		Thread a = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				viewGraph.dragChoosenElementOn(dx, dy);
-			}
-		});
-		a.start();
-
+		viewGraph.dragChoosenElementOn(dx, dy);
 	}
 
 	public void fixEdgePoint() {
@@ -186,6 +201,10 @@ public class PaintingPanel extends JPanel implements Scrollable {
 			setPopupMenu(new GraphPopupMenu(this));
 		}
 		return popupMenu;
+	}
+
+	public final List<ViewGraphElement> getChoosedElements() {
+		return new ArrayList<>(viewGraph.choose);
 	}
 
 	@Override
@@ -220,6 +239,12 @@ public class PaintingPanel extends JPanel implements Scrollable {
 		actionEvents.put(PASTE_ACTION, new PasteAction(this));
 		actionEvents.put(CUT_ACTION, new CutAction(this));
 		actionEvents.put(DELETE_ACTION, new DeleteAction(this));
+		actionEvents.put(GET_UDJUST_MATRIX, new GetUdjustMatrixAction(this));
+		actionEvents.put(GET_INCIDENT_MATRIX, new IncidenceMatrixAction(this));
+		actionEvents.put(GET_UDJUST_LIST, new GetUdjustmentListAction(this));
+		actionEvents.put(CHANGE_ELEMENT_TYPE, new ChangeElementType(this));
+		actionEvents.put(VERTEXES_AND_EDGES_COUNT, new NodeVertexesCount(this));
+		actionEvents.put(CHANGE_VERTEX_ORIENTATION, new ChangeEdgeOrientationAction(this));
 		// actionEvents.put(FIND_MIN_PATH, new FindMinPathAction(this));
 	}
 

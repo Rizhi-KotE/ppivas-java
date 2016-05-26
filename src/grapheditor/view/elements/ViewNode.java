@@ -3,6 +3,8 @@ package grapheditor.view.elements;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.util.Collections;
+import java.util.List;
 
 import frm.Counter;
 import grapheditor.view.represent.SimpleNode;
@@ -131,7 +133,7 @@ public class ViewNode extends ViewGraphElement {
 		return true;
 	}
 
-	public String getType() {
+	public String getElementType() {
 		return name;
 	}
 
@@ -164,5 +166,18 @@ public class ViewNode extends ViewGraphElement {
 	@Override
 	public Shape getShape() {
 		return represent.getShape();
+	}
+
+
+	@Override
+	public List<String> getTypesList() {
+		return Collections.emptyList();
+	}
+
+
+	@Override
+	public void setType(String type) {
+		// TODO Auto-generated method stub
+		
 	}
 }

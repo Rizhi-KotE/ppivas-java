@@ -2,6 +2,7 @@ package grapheditor.view.elements;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.util.List;
 import java.util.Observable;
 
 abstract public class ViewGraphElement extends Observable implements SelfPainted, SelfContained, Choousable, Cloneable {
@@ -27,6 +28,10 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 	}
 
 	public abstract void calcContentPoint();
+	
+	public abstract List<String> getTypesList();
+	
+	public abstract void setType(String type);
 
 	protected void setContentPoint(int x, int y) {
 		contentX = x;
@@ -85,7 +90,7 @@ abstract public class ViewGraphElement extends Observable implements SelfPainted
 
 	public abstract Shape getShape();
 
-	public abstract String getType();
+	public abstract String getElementType();
 
 	@Override
 	public boolean isChoosed() {

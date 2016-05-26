@@ -1,7 +1,6 @@
 package grapheditor.view.main;
 
 import java.awt.Component;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,7 +133,7 @@ public class ViewGraph extends Observable {
 			newEdge.setDeleted(true);
 			newEdge = null;
 		}
-		for(ViewGraphElement el:getElements()){
+		for (ViewGraphElement el : getElements()) {
 			el.setFixColor(false);
 			el.currentColor();
 		}
@@ -234,11 +233,12 @@ public class ViewGraph extends Observable {
 		e.setDeleted(true);
 	}
 
-	public Collection<ViewGraphElement> getElements(){
+	public Collection<ViewGraphElement> getElements() {
 		List<ViewGraphElement> out = new ArrayList<>(nodes);
 		out.addAll(edges);
 		return out;
 	}
+
 	private void deleteNode(ViewNode a) {
 		Iterator<ViewEdge> it = graph.incidentEdgeIterator(a);
 		while (it.hasNext()) {
@@ -305,16 +305,21 @@ public class ViewGraph extends Observable {
 	private void revalidateActions() {
 		if (choose.size() == 1) {
 			panel.getActionEvent(PaintingPanel.IDENTIFIER).setEnabled(true);
+			panel.getActionEvent(PaintingPanel.CHANGE_ELEMENT_TYPE).setEnabled(true);
+			panel.getActionEvent(PaintingPanel.CHANGE_VERTEX_ORIENTATION).setEnabled(true);
 		} else {
 			panel.getActionEvent(PaintingPanel.IDENTIFIER).setEnabled(false);
+			panel.getActionEvent(PaintingPanel.CHANGE_ELEMENT_TYPE).setEnabled(false);
+			panel.getActionEvent(PaintingPanel.CHANGE_VERTEX_ORIENTATION).setEnabled(false);
 		}
 		if (choose.size() > 0) {
 			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(true);
 			panel.getActionEvent(PaintingPanel.COPY_ACTION).setEnabled(true);
+			panel.getActionEvent(PaintingPanel.CUT_ACTION).setEnabled(true);
 		} else {
 			panel.getActionEvent(PaintingPanel.DELETE_ACTION).setEnabled(false);
 			panel.getActionEvent(PaintingPanel.COPY_ACTION).setEnabled(false);
-
+			panel.getActionEvent(PaintingPanel.CUT_ACTION).setEnabled(false);
 		}
 		if (Clipboard.getInstance().isEmpty()) {
 			panel.getActionEvent(PaintingPanel.PASTE_ACTION).setEnabled(true);
@@ -333,7 +338,7 @@ public class ViewGraph extends Observable {
 	public void setCurrentNode(Component component) {
 		if (component.getName().equals("ShapedComponent")) {
 			ViewGraphElement el = ((ShapedComponent) component).getElement();
-			if (el.getType().equals("Node")) {
+			if (el.getElementType().equals("Node")) {
 				currentNode = (ViewNode) el;
 			}
 		}
@@ -358,9 +363,24 @@ public class ViewGraph extends Observable {
 	}
 
 	/**
-	 * @param currentNode the currentNode to set
+	 * @param currentNode
+	 *            the currentNode to set
 	 */
 	public void setCurrentNode(ViewNode currentNode) {
 		this.currentNode = currentNode;
+	}
+
+	public void changeEdgeOrientation() {
+		if (choose.size() != 1) {
+			return;
+		}
+		Iterator<ViewGraphElement> it = choose.iterator();
+		if (it.hasNext()) {
+			ViewGraphElement element = it.next();
+			if (!element.getElementType().equals(ViewEdge.EDGE)) {
+				return;
+			}
+			((ViewEdge) element).changeOrientation();
+		}
 	}
 }

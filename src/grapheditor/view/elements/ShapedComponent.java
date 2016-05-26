@@ -2,8 +2,10 @@ package grapheditor.view.elements;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
 

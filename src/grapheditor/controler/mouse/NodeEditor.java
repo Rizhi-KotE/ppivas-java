@@ -1,21 +1,21 @@
 package grapheditor.controler.mouse;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
 import grapheditor.view.elements.ShapedComponent;
+import grapheditor.view.elements.ViewEdge;
 import grapheditor.view.elements.ViewGraphElement;
 import grapheditor.view.main.PaintingPanel;
-
 import grapheditor.view.menu.GraphPopupMenu;
 import grapheditor.view.represent.RectangleRepresent;
 import grapheditor.view.represent.ViewGraphElementRepresent;
@@ -51,6 +51,12 @@ class NodeEditor implements MouseInputListener {
 			if (e.getSource() instanceof ShapedComponent) {
 				panel.choose((ShapedComponent) e.getComponent());
 				type |= GraphPopupMenu.NODE_OPERATION;
+			}
+			if (e.getSource() instanceof ShapedComponent) {
+				ShapedComponent comp = (ShapedComponent) e.getSource();
+				if (comp.getElement() instanceof ViewEdge) {
+					type |= GraphPopupMenu.ARC_OPERATION;
+				}
 			}
 			panel.getPopupMenu().show(panel, e.getX(), e.getY(), type);
 			break;
@@ -140,7 +146,7 @@ class NodeEditor implements MouseInputListener {
 			}
 
 			@Override
-			public String getType() {
+			public String getElementType() {
 				return "rand";
 			}
 
@@ -166,6 +172,18 @@ class NodeEditor implements MouseInputListener {
 			@Override
 			public void calcContentPoint() {
 
+			}
+
+			@Override
+			public List<String> getTypesList() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void setType(String type) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		int oldX = (int) oldP.getX();
